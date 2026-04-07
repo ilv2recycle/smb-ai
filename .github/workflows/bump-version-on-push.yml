@@ -1,21 +1,28 @@
-# Bump version on every push to main, build Tailwind, deploy to Cloudflare Pages.
+# Build Tailwind, bump version, deploy to GitHub Pages.
 # Runs only when the push is NOT our own bump commit ([skip ci]), so we avoid a loop.
 
-name: Build & Deploy to Cloudflare Pages
+name: Build & Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
-  deploy:
+  build:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
     concurrency:
       group: version-main-sequence
       cancel-in-progress: false
-    permissions:
-      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,7 +46,7 @@ jobs:
           RELEASE_ACTOR_LOGIN: ${{ github.actor }}
           RELEASE_BRANCH: main
           RELEASE_PUSHED_AT: ${{ github.event.head_commit.timestamp }}
-          RELEASE_SOURCE: cloudflare-pages-deploy
+          RELEASE_SOURCE: github-pages-deploy
         run: ./scripts/bump-version.sh --model ci
 
       - name: Commit and push version bump
@@ -51,9 +58,22 @@ jobs:
           git commit -m "chore: bump version [skip ci]"
           git push origin main
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy . --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT || 'your-project' }}
+          path: .
+
+  deploy:
+    needs: build
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -26,7 +26,7 @@ const FALLBACK_CONFIG = {
   },
   domain: {
     primary: 'YOUR_DOMAIN',
-    github_pages: 'USERNAME.github.io/REPO',
+    github_pages: 'ilv2recycle.github.io/smb-ai',
     camera_proxy: 'YOUR_CAMERA_PROXY',
   },
   email: {

@@ -1,9 +1,9 @@
 ## Project Identity Check
 
-This is **alpacapps-infra**. If the user mentions **finleg**, **portsie**, or **sponic** and the request doesn't match this project, **STOP** and warn:
+This is **smb-ai**. If the user mentions **finleg**, **portsie**, or **sponic** and the request doesn't match this project, **STOP** and warn:
 > "You mentioned **{keyword}** but this session is in **alpacapps-infra**. Did you mean to run this in the other project?"
 
-# [Your Project Name] — Project Directives
+# smb-ai — Project Directives
 
 > **On-demand docs — load when the task matches:**
 > - `docs/CREDENTIALS.md` — **load for:** SQL queries, deploying functions, SSH, API calls
@@ -26,7 +26,7 @@ This is **alpacapps-infra**. If the user mentions **finleg**, **portsie**, or **
 ## Mandatory Behaviors
 
 1. After code changes: end response with `vYYMMDD.NN H:MMa [model]` + affected URLs (read `version.json`)
-2. Push immediately — Cloudflare Pages deploys on push to main. See `docs/DEPLOY.md`
+2. Push immediately — GitHub Pages deploys on push to main. See `docs/DEPLOY.md`
 3. CI bumps version — never bump locally
 4. Run SQL migrations directly — never ask the user to run SQL manually
 
@@ -41,7 +41,9 @@ This is **alpacapps-infra**. If the user mentions **finleg**, **portsie**, or **
 ## Quick Refs
 
 - **Tech:** Vanilla HTML/JS + Tailwind v4 | Supabase | Cloudflare Pages
-- **Live:** https://YOUR_PROJECT.pages.dev/ (or custom domain)
+- **Live:** https://ilv2recycle.github.io/smb-ai/
+- **GitHub:** https://github.com/ilv2recycle/smb-ai
+- **Supabase:** https://rokbxycamserwmxxazve.supabase.co
 - **Architecture:** Browser → Cloudflare Pages → Supabase (no server-side code)
 - **Template repo:** https://github.com/rsonnad/alpacapps-infra
 - **Upgrade guide:** `infra/infra-upgrade-guide.md`

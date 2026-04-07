@@ -1,6 +1,6 @@
 // Supabase client configuration with auth support
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://rokbxycamserwmxxazve.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJva2J4eWNhbXNlcndteHhhenZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1ODk2NTEsImV4cCI6MjA5MTE2NTY1MX0.ctTGiMp_CG1QgwCIS6drHzIQmwwuUigr0hG-WsqlwwU';
 
 // Wait for Supabase to be available (handles race condition with script loading)
 function waitForSupabase(maxAttempts = 50) {
@@ -31,7 +31,7 @@ if (window.supabase?.createClient) {
       persistSession: true,
       detectSessionInUrl: true,
       storage: window.localStorage,
-      storageKey: 'your-project-auth',
+      storageKey: 'smb-ai-auth',
       flowType: 'pkce',
     },
   });
@@ -44,7 +44,7 @@ if (window.supabase?.createClient) {
       persistSession: true,
       detectSessionInUrl: true,
       storage: window.localStorage,
-      storageKey: 'your-project-auth',
+      storageKey: 'smb-ai-auth',
       flowType: 'pkce',
     },
   });
