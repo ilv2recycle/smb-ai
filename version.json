@@ -1,0 +1,12 @@
+{
+  "version": "v260405.04 8:39p",
+  "release": 4,
+  "sha": "ce825e2",
+  "fullSha": "ce825e256063f65a250ebd433973431adc87e8fe",
+  "actor": "rsonnad",
+  "source": "cloudflare-pages-deploy",
+  "model": "ci",
+  "machine": "runnervm727z3",
+  "pushedAt": "2026-04-05T15:38:54-05:00",
+  "commits": [{"sha":"ce825e2","message":"Remove hardcoded rahulioson@gmail.com from template repo","author":"Rahul"}]
+}
