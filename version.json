@@ -1,12 +1,12 @@
 {
-  "version": "v260409.08 1:09a",
-  "release": 9,
-  "sha": "ed38cb7",
-  "fullSha": "ed38cb7e101e4dff6eefc7f6adaee18499243ef8",
+  "version": "v260409.09 1:18a",
+  "release": 10,
+  "sha": "9e83428",
+  "fullSha": "9e834284a993ae05b9fba7d945af5c67424b32df",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
-  "machine": "runnervm727z3",
-  "pushedAt": "2026-04-09 06:09:48+00",
-  "commits": [{"sha":"32974f7","message":"Add methodology disclaimer noting estimates are not customer-validated","author":"Monique Mason"},{"sha":"ed38cb7","message":"Merge pull request #9 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
+  "machine": "runnervm35a4x",
+  "pushedAt": "2026-04-09 06:18:39+00",
+  "commits": [{"sha":"5e4ddf8","message":"Expand methodology disclaimer with explicit assumptions and credibility criteria","author":"Monique Mason"},{"sha":"9e83428","message":"Merge pull request #10 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
 }
