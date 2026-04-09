@@ -1620,7 +1620,7 @@
       <div class="calculator-result-value" id="calcSavings">$258,800</div>
     </div>
     <div class="calculator-result">
-      <div class="calculator-result-label">Net Profit</div>
+      <div class="calculator-result-label">Net Savings</div>
       <div class="calculator-result-value" id="calcProfit" style="color: var(--accent-emerald);">$248,000</div>
     </div>
   </div>
@@ -1745,9 +1745,9 @@
             <svg viewBox="0 0 80 80"><circle class="stat-ring-bg" cx="40" cy="40" r="34"/><circle class="stat-ring-fill" cx="40" cy="40" r="34" stroke="#059669" data-percent="92"/></svg>
             <div class="stat-ring-label">NET</div>
           </div>
-          <div class="stat-label">Net Profit</div>
+          <div class="stat-label">Net Savings</div>
           <div class="stat-value" id="netProfit">$248,000</div>
-          <div class="stat-note">Bottom-line impact</div>
+          <div class="stat-note">Total savings minus subscription cost</div>
         </div>
         <div class="stat-card">
           <div class="stat-ring">
@@ -3336,7 +3336,7 @@
             labels: years,
             datasets: [
               { label: 'Cumulative Savings', data: savingsData, borderColor: '#6366F1', backgroundColor: 'rgba(99, 102, 241, 0.1)', fill: true, tension: 0.4, borderWidth: 3, pointRadius: 6, pointBackgroundColor: '#6366F1' },
-              { label: 'Cumulative Net Profit', data: netData, borderColor: '#059669', backgroundColor: 'rgba(5, 150, 105, 0.08)', fill: true, tension: 0.4, borderWidth: 3, pointRadius: 6, pointBackgroundColor: '#059669' },
+              { label: 'Cumulative Net Savings', data: netData, borderColor: '#059669', backgroundColor: 'rgba(5, 150, 105, 0.08)', fill: true, tension: 0.4, borderWidth: 3, pointRadius: 6, pointBackgroundColor: '#059669' },
               { label: 'Cumulative Cost', data: costData, borderColor: '#F43F5E', backgroundColor: 'rgba(244, 63, 94, 0.06)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#F43F5E', borderDash: [6, 4] }
             ]
           },
