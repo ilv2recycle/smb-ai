@@ -1473,10 +1473,12 @@
     <!-- Quick Reference Guide -->
     <div class="card explainer guide reveal reveal-delay-1">
       <h3><span class="icon">&#x1F4CA;</span> How to Read This Dashboard</h3>
-      <p><strong>Annual Cost Savings:</strong> The dollar amount a customer saves per year by using this AI feature. For example, "$60,000/year" means preventing 6 driver resignations &times; $10,000 cost per resignation.</p>
-      <p><strong>Time to Break Even:</strong> How long until the feature pays for itself. "1 Month" means the savings in month 1 cover the entire annual LytxOne subscription cost.</p>
-      <p><strong>Lytx Development Cost:</strong> What it costs Lytx to build this feature once (internal business case metric).</p>
-      <p><strong>AI Computing Cost:</strong> Ongoing API/cloud costs Lytx pays per vehicle or driver each month (affects gross margin).</p>
+      <p><strong>Annual Cost Savings (Customer):</strong> The dollar amount a customer saves per year by using this AI feature. For example, "$60,000/year" means preventing 6 driver resignations &times; $10,000 cost per resignation.</p>
+      <p><strong>Customer Break-Even:</strong> How long until the customer's savings exceed their LytxOne subscription cost. "1 Month" means savings in month 1 already cover the full annual subscription. This is the customer-facing metric &mdash; the value proposition for the buyer.</p>
+      <p><strong>ROI Progress Bar:</strong> A visual indicator showing what percentage of total potential savings this strategy contributes relative to the highest-saving strategy (Driver Retention at $60K). It is NOT a timeline or completion metric &mdash; it's a relative comparison between strategies.</p>
+      <p><strong>Lytx Development Cost:</strong> The one-time engineering investment Lytx would spend to build this feature (developers, ML engineers, infrastructure, testing). This is an internal business case metric for Lytx product leadership &mdash; not shown to customers.</p>
+      <p><strong>AI Computing Cost:</strong> Ongoing API/cloud costs Lytx pays per vehicle or driver each month. This directly affects gross margin on the $45/vehicle/month subscription.</p>
+      <p><strong>Lytx ROI &amp; Break-Even:</strong> Shown in the internal metrics box for each strategy. Lytx ROI = how many customers Lytx needs at $45/vehicle/month to recoup the development investment. Lytx break-even = the number of 20-vehicle fleet customers needed before development costs are recovered. This is separate from the customer break-even above.</p>
       <p><strong>&#x1F30A; Blue Ocean:</strong> A market with zero competition. Lytx would be the only company solving this problem, meaning no price wars or feature comparisons with competitors.</p>
     </div>
 
@@ -1654,7 +1656,7 @@
             </div>
           </div>
           <div class="metric-card">
-            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-label">Customer Break-Even</div>
             <div class="metric-value" style="color: var(--accent-emerald);">1 Month</div>
             <div class="metric-note">Fastest customer ROI via insurance savings</div>
             <div class="progress-container">
@@ -1670,7 +1672,7 @@
         </div>
 
         <div class="internal-box">
-          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="internal-note">Internal Lytx metrics (for business case &amp; Lytx ROI, not customer-facing):</div>
           <div class="metrics-grid">
             <div class="metric-card">
               <div class="metric-label">Lytx Development Cost</div>
@@ -1681,6 +1683,18 @@
               <div class="metric-label">AI Computing Cost</div>
               <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$0.23</div>
               <div class="metric-note">Per incident (Lytx pays)</div>
+            </div>
+          </div>
+          <div class="metrics-grid" style="margin-top: 16px;">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Break-Even</div>
+              <div class="metric-value" style="color: var(--accent-amber); font-size: 1.75rem;">42 fleets</div>
+              <div class="metric-note">20-vehicle fleets needed to recoup $450K dev cost at $10,800/fleet/year</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Lytx Year-1 ROI (at 500 fleets)</div>
+              <div class="metric-value" style="color: var(--accent-emerald); font-size: 1.75rem;">12x</div>
+              <div class="metric-note">$5.4M revenue vs. $450K investment</div>
             </div>
           </div>
         </div>
@@ -1726,14 +1740,14 @@
             <div class="metric-note">Per year (20-vehicle fleet baseline)</div>
           </div>
           <div class="metric-card">
-            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-label">Customer Break-Even</div>
             <div class="metric-value" style="color: var(--accent-emerald);">3 Months</div>
             <div class="metric-note">After first major breakdown prevented</div>
           </div>
         </div>
 
         <div class="internal-box">
-          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="internal-note">Internal Lytx metrics (for business case &amp; Lytx ROI, not customer-facing):</div>
           <div class="metrics-grid">
             <div class="metric-card">
               <div class="metric-label">Lytx Development Cost</div>
@@ -1744,6 +1758,18 @@
               <div class="metric-label">AI Computing Cost</div>
               <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$0.90</div>
               <div class="metric-note">Per vehicle/month (Lytx pays)</div>
+            </div>
+          </div>
+          <div class="metrics-grid" style="margin-top: 16px;">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Break-Even</div>
+              <div class="metric-value" style="color: var(--accent-amber); font-size: 1.75rem;">70 fleets</div>
+              <div class="metric-note">20-vehicle fleets needed to recoup $750K dev cost</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Lytx Year-1 ROI (at 500 fleets)</div>
+              <div class="metric-value" style="color: var(--accent-emerald); font-size: 1.75rem;">7x</div>
+              <div class="metric-note">$5.4M revenue vs. $750K investment</div>
             </div>
           </div>
         </div>
@@ -1798,14 +1824,14 @@
             <div class="metric-note">Per year (20-vehicle fleet baseline)</div>
           </div>
           <div class="metric-card">
-            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-label">Customer Break-Even</div>
             <div class="metric-value" style="color: var(--accent-emerald);">2 Months</div>
             <div class="metric-note">After accident reduction begins</div>
           </div>
         </div>
 
         <div class="internal-box">
-          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="internal-note">Internal Lytx metrics (for business case &amp; Lytx ROI, not customer-facing):</div>
           <div class="metrics-grid">
             <div class="metric-card">
               <div class="metric-label">Lytx Development Cost</div>
@@ -1816,6 +1842,18 @@
               <div class="metric-label">AI Computing Cost</div>
               <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$0.72</div>
               <div class="metric-note">Per driver/month (Lytx pays)</div>
+            </div>
+          </div>
+          <div class="metrics-grid" style="margin-top: 16px;">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Break-Even</div>
+              <div class="metric-value" style="color: var(--accent-amber); font-size: 1.75rem;">74 fleets</div>
+              <div class="metric-note">20-vehicle fleets needed to recoup $800K dev cost</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Lytx Year-1 ROI (at 500 fleets)</div>
+              <div class="metric-value" style="color: var(--accent-emerald); font-size: 1.75rem;">7x</div>
+              <div class="metric-note">$5.4M revenue vs. $800K investment</div>
             </div>
           </div>
         </div>
@@ -1884,14 +1922,14 @@
             <div class="metric-note">Highest ROI (20-vehicle fleet baseline)</div>
           </div>
           <div class="metric-card">
-            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-label">Customer Break-Even</div>
             <div class="metric-value" style="color: var(--accent-emerald);">1 Month</div>
             <div class="metric-note">After preventing first resignation</div>
           </div>
         </div>
 
         <div class="internal-box">
-          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="internal-note">Internal Lytx metrics (for business case &amp; Lytx ROI, not customer-facing):</div>
           <div class="metrics-grid">
             <div class="metric-card">
               <div class="metric-label">Lytx Development Cost</div>
@@ -1902,6 +1940,18 @@
               <div class="metric-label">AI Computing Cost</div>
               <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$1.50</div>
               <div class="metric-note">Per driver/month (Lytx pays)</div>
+            </div>
+          </div>
+          <div class="metrics-grid" style="margin-top: 16px;">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Break-Even</div>
+              <div class="metric-value" style="color: var(--accent-amber); font-size: 1.75rem;">111 fleets</div>
+              <div class="metric-note">20-vehicle fleets needed to recoup $1.2M dev cost</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Lytx Year-1 ROI (at 500 fleets)</div>
+              <div class="metric-value" style="color: var(--accent-emerald); font-size: 1.75rem;">5x</div>
+              <div class="metric-note">$5.4M revenue vs. $1.2M investment</div>
             </div>
           </div>
         </div>
@@ -1947,14 +1997,14 @@
             <div class="metric-note">Per year (20-vehicle fleet baseline)</div>
           </div>
           <div class="metric-card">
-            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-label">Customer Break-Even</div>
             <div class="metric-value" style="color: var(--accent-emerald);">3 Months</div>
             <div class="metric-note">At insurance renewal cycle</div>
           </div>
         </div>
 
         <div class="internal-box">
-          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="internal-note">Internal Lytx metrics (for business case &amp; Lytx ROI, not customer-facing):</div>
           <div class="metrics-grid">
             <div class="metric-card">
               <div class="metric-label">Lytx Development Cost</div>
@@ -1965,6 +2015,18 @@
               <div class="metric-label">AI Computing Cost</div>
               <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$1.80</div>
               <div class="metric-note">Per vehicle/month (Lytx pays)</div>
+            </div>
+          </div>
+          <div class="metrics-grid" style="margin-top: 16px;">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Break-Even</div>
+              <div class="metric-value" style="color: var(--accent-amber); font-size: 1.75rem;">139 fleets</div>
+              <div class="metric-note">20-vehicle fleets needed to recoup $1.5M dev cost</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Lytx Year-1 ROI (at 500 fleets)</div>
+              <div class="metric-value" style="color: var(--accent-emerald); font-size: 1.75rem;">4x</div>
+              <div class="metric-note">$5.4M revenue vs. $1.5M investment</div>
             </div>
           </div>
         </div>
@@ -2013,14 +2075,14 @@
             <div class="metric-note">Manager time savings (20-vehicle baseline)</div>
           </div>
           <div class="metric-card">
-            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-label">Customer Break-Even</div>
             <div class="metric-value" style="color: var(--accent-emerald);">Week 1</div>
             <div class="metric-note">Savings begin immediately (20 hrs/week &times; $50/hr = $1K/week)</div>
           </div>
         </div>
 
         <div class="internal-box">
-          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="internal-note">Internal Lytx metrics (for business case &amp; Lytx ROI, not customer-facing):</div>
           <div class="metrics-grid">
             <div class="metric-card">
               <div class="metric-label">Lytx Development Cost</div>
@@ -2031,6 +2093,18 @@
               <div class="metric-label">AI Computing Cost</div>
               <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$3-5</div>
               <div class="metric-note">Per vehicle/month (Lytx pays)</div>
+            </div>
+          </div>
+          <div class="metrics-grid" style="margin-top: 16px;">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Break-Even</div>
+              <div class="metric-value" style="color: var(--accent-amber); font-size: 1.75rem;">185 fleets</div>
+              <div class="metric-note">20-vehicle fleets needed to recoup $2.0M dev cost</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Lytx Year-1 ROI (at 500 fleets)</div>
+              <div class="metric-value" style="color: var(--accent-emerald); font-size: 1.75rem;">3x</div>
+              <div class="metric-note">$5.4M revenue vs. $2.0M investment</div>
             </div>
           </div>
         </div>
@@ -2081,14 +2155,14 @@
             <div class="metric-note">Manager productivity gains (20-vehicle baseline)</div>
           </div>
           <div class="metric-card">
-            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-label">Customer Break-Even</div>
             <div class="metric-value" style="color: var(--accent-emerald);">Day 1</div>
             <div class="metric-note">Immediate productivity improvement</div>
           </div>
         </div>
 
         <div class="internal-box">
-          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="internal-note">Internal Lytx metrics (for business case &amp; Lytx ROI, not customer-facing):</div>
           <div class="metrics-grid">
             <div class="metric-card">
               <div class="metric-label">Lytx Development Cost</div>
@@ -2099,6 +2173,18 @@
               <div class="metric-label">AI Computing Cost</div>
               <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$0.80</div>
               <div class="metric-note">Per user/month (Lytx pays)</div>
+            </div>
+          </div>
+          <div class="metrics-grid" style="margin-top: 16px;">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Break-Even</div>
+              <div class="metric-value" style="color: var(--accent-amber); font-size: 1.75rem;">56 fleets</div>
+              <div class="metric-note">20-vehicle fleets needed to recoup $600K dev cost</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Lytx Year-1 ROI (at 500 fleets)</div>
+              <div class="metric-value" style="color: var(--accent-emerald); font-size: 1.75rem;">9x</div>
+              <div class="metric-note">$5.4M revenue vs. $600K investment</div>
             </div>
           </div>
         </div>
@@ -2144,14 +2230,14 @@
             <div class="metric-note">Avoided claims + reduced cargo insurance (20-vehicle baseline)</div>
           </div>
           <div class="metric-card">
-            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-label">Customer Break-Even</div>
             <div class="metric-value" style="color: var(--accent-emerald);">2 Months</div>
             <div class="metric-note">After first cargo dispute avoided</div>
           </div>
         </div>
 
         <div class="internal-box">
-          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="internal-note">Internal Lytx metrics (for business case &amp; Lytx ROI, not customer-facing):</div>
           <div class="metrics-grid">
             <div class="metric-card">
               <div class="metric-label">Lytx Development Cost</div>
@@ -2162,6 +2248,18 @@
               <div class="metric-label">AI Computing Cost</div>
               <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$0.15</div>
               <div class="metric-note">Per verification (edge-processed, minimal cloud)</div>
+            </div>
+          </div>
+          <div class="metrics-grid" style="margin-top: 16px;">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Break-Even</div>
+              <div class="metric-value" style="color: var(--accent-amber); font-size: 1.75rem;">83 fleets</div>
+              <div class="metric-note">20-vehicle fleets needed to recoup $900K dev cost</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Lytx Year-1 ROI (at 500 fleets)</div>
+              <div class="metric-value" style="color: var(--accent-emerald); font-size: 1.75rem;">6x</div>
+              <div class="metric-note">$5.4M revenue vs. $900K investment</div>
             </div>
           </div>
         </div>
@@ -2207,14 +2305,14 @@
             <div class="metric-note">Performance improvements driven by benchmark insights</div>
           </div>
           <div class="metric-card">
-            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-label">Customer Break-Even</div>
             <div class="metric-value" style="color: var(--accent-emerald);">1 Month</div>
             <div class="metric-note">Insights available immediately upon activation</div>
           </div>
         </div>
 
         <div class="internal-box">
-          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="internal-note">Internal Lytx metrics (for business case &amp; Lytx ROI, not customer-facing):</div>
           <div class="metrics-grid">
             <div class="metric-card">
               <div class="metric-label">Lytx Development Cost</div>
@@ -2225,6 +2323,18 @@
               <div class="metric-label">AI Computing Cost</div>
               <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$0.30</div>
               <div class="metric-note">Per fleet/month (batch processing)</div>
+            </div>
+          </div>
+          <div class="metrics-grid" style="margin-top: 16px;">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Break-Even</div>
+              <div class="metric-value" style="color: var(--accent-amber); font-size: 1.75rem;">46 fleets</div>
+              <div class="metric-note">20-vehicle fleets needed to recoup $500K dev cost</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Lytx Year-1 ROI (at 500 fleets)</div>
+              <div class="metric-value" style="color: var(--accent-emerald); font-size: 1.75rem;">11x</div>
+              <div class="metric-note">$5.4M revenue vs. $500K investment</div>
             </div>
           </div>
         </div>
@@ -2270,14 +2380,14 @@
             <div class="metric-note">Avoided disputes + automated timesheets (20-vehicle baseline)</div>
           </div>
           <div class="metric-card">
-            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-label">Customer Break-Even</div>
             <div class="metric-value" style="color: var(--accent-emerald);">2 Weeks</div>
             <div class="metric-note">First documented dispute avoidance</div>
           </div>
         </div>
 
         <div class="internal-box">
-          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="internal-note">Internal Lytx metrics (for business case &amp; Lytx ROI, not customer-facing):</div>
           <div class="metrics-grid">
             <div class="metric-card">
               <div class="metric-label">Lytx Development Cost</div>
@@ -2288,6 +2398,18 @@
               <div class="metric-label">AI Computing Cost</div>
               <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$0.25</div>
               <div class="metric-note">Per service visit (edge + cloud hybrid)</div>
+            </div>
+          </div>
+          <div class="metrics-grid" style="margin-top: 16px;">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Break-Even</div>
+              <div class="metric-value" style="color: var(--accent-amber); font-size: 1.75rem;">65 fleets</div>
+              <div class="metric-note">20-vehicle fleets needed to recoup $700K dev cost</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Lytx Year-1 ROI (at 500 fleets)</div>
+              <div class="metric-value" style="color: var(--accent-emerald); font-size: 1.75rem;">8x</div>
+              <div class="metric-note">$5.4M revenue vs. $700K investment</div>
             </div>
           </div>
         </div>
@@ -2333,14 +2455,14 @@
             <div class="metric-note">Avoided fines + audit prep time savings (20-vehicle baseline)</div>
           </div>
           <div class="metric-card">
-            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-label">Customer Break-Even</div>
             <div class="metric-value" style="color: var(--accent-emerald);">1 Month</div>
             <div class="metric-note">After first prevented violation</div>
           </div>
         </div>
 
         <div class="internal-box">
-          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="internal-note">Internal Lytx metrics (for business case &amp; Lytx ROI, not customer-facing):</div>
           <div class="metrics-grid">
             <div class="metric-card">
               <div class="metric-label">Lytx Development Cost</div>
@@ -2351,6 +2473,18 @@
               <div class="metric-label">AI Computing Cost</div>
               <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$0.60</div>
               <div class="metric-note">Per vehicle/month (Lytx pays)</div>
+            </div>
+          </div>
+          <div class="metrics-grid" style="margin-top: 16px;">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Break-Even</div>
+              <div class="metric-value" style="color: var(--accent-amber); font-size: 1.75rem;">79 fleets</div>
+              <div class="metric-note">20-vehicle fleets needed to recoup $850K dev cost</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Lytx Year-1 ROI (at 500 fleets)</div>
+              <div class="metric-value" style="color: var(--accent-emerald); font-size: 1.75rem;">6x</div>
+              <div class="metric-note">$5.4M revenue vs. $850K investment</div>
             </div>
           </div>
         </div>
@@ -2493,6 +2627,8 @@
       <span>Confidential</span>
       <span class="dot"></span>
       <span>Updated April 2026</span>
+      <span class="dot"></span>
+      <span>Created by Monique Mascio</span>
     </div>
   </footer>
 
