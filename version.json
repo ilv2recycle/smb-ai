@@ -1,12 +1,12 @@
 {
-  "version": "v260409.12 1:54a",
-  "release": 13,
-  "sha": "1da0747",
-  "fullSha": "1da0747e2db5ac3537a6cd69e7d9952ad7edad51",
+  "version": "v260409.13 11:24a",
+  "release": 14,
+  "sha": "80d6998",
+  "fullSha": "80d6998bc62d1398d4f8754f59e8b38b57dcc82c",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
-  "machine": "runnervm727z3",
-  "pushedAt": "2026-04-09 06:54:27+00",
-  "commits": [{"sha":"7af4fff","message":"Add emoji reaction voting system with live leaderboard","author":"Monique Mason"},{"sha":"1da0747","message":"Merge pull request #13 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
+  "machine": "runnervm35a4x",
+  "pushedAt": "2026-04-09 16:24:18+00",
+  "commits": [{"sha":"f64fe0c","message":"Add Supabase-backed shared voting tally system","author":"Monique Mason"},{"sha":"80d6998","message":"Merge pull request #14 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
 }
