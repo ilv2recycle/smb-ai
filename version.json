@@ -1,12 +1,12 @@
 {
-  "version": "v260409.06 1:00a",
-  "release": 7,
-  "sha": "4ff5f26",
-  "fullSha": "4ff5f26d1b1cc3f25b276f26082bd309b96d2e9f",
+  "version": "v260409.07 1:04a",
+  "release": 8,
+  "sha": "57850b2",
+  "fullSha": "57850b2575634f2bca6de3a01a7f3f353f105099",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
   "machine": "runnervm727z3",
-  "pushedAt": "2026-04-09 06:00:38+00",
-  "commits": [{"sha":"81636f5","message":"Add 5 expansion strategies + premium visual polish","author":"Monique Mason"},{"sha":"4ff5f26","message":"Merge pull request #7 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
+  "pushedAt": "2026-04-09 06:04:11+00",
+  "commits": [{"sha":"a1d9d10","message":"Add graphics, animations, and hover features for premium feel","author":"Monique Mason"},{"sha":"57850b2","message":"Merge pull request #8 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
 }
