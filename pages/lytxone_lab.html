@@ -9,9 +9,9 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg: #FAFBFE;
-      --bg-alt: #F1F3F9;
-      --bg-card: rgba(255,255,255,0.95);
+      --bg: #F8FAFC;
+      --bg-alt: #F1F5F9;
+      --bg-card: rgba(255,255,255,0.98);
       --bg-glass: rgba(255,255,255,0.7);
       --accent: #6366F1;
       --accent-v: #8B5CF6;
@@ -23,10 +23,12 @@
       --text-2: #475569;
       --text-3: #94A3B8;
       --border: rgba(0,0,0,0.06);
-      --shadow: 0 4px 24px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.03);
-      --shadow-lg: 0 16px 48px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+      --shadow: 0 4px 24px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.03);
       --shadow-glow: 0 0 48px rgba(99,102,241,0.08);
       --radius: 20px;
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     body {
@@ -40,154 +42,199 @@
 
     ::selection { background: rgba(99,102,241,0.15); }
 
-    /* Hero - Dark dramatic header */
+    /* ==================== HERO ==================== */
     .hero {
-      padding: 100px 48px 120px;
+      padding: 120px 48px 140px;
       text-align: center;
       position: relative;
       overflow: hidden;
-      background: linear-gradient(135deg, #0F172A 0%, #1E293B 40%, #1a1a3e 70%, #0F172A 100%);
+      background: linear-gradient(160deg, #0B1120 0%, #111B33 30%, #151832 55%, #0E1628 80%, #0B1120 100%);
     }
     .hero::before {
       content: '';
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 60% 50% at 25% 40%, rgba(99,102,241,0.2), transparent 60%),
-        radial-gradient(ellipse 50% 40% at 75% 30%, rgba(139,92,246,0.15), transparent 50%),
-        radial-gradient(ellipse 40% 30% at 50% 80%, rgba(6,182,212,0.1), transparent 40%);
-      animation: heroBreath 12s ease-in-out infinite;
+        radial-gradient(ellipse 70% 50% at 20% 50%, rgba(99,102,241,0.18), transparent 60%),
+        radial-gradient(ellipse 50% 50% at 80% 30%, rgba(139,92,246,0.12), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 50% 90%, rgba(6,182,212,0.08), transparent 40%);
+      animation: heroBreath 14s ease-in-out infinite;
     }
     .hero::after {
       content: '';
       position: absolute;
       bottom: -1px; left: 0; right: 0;
-      height: 160px;
+      height: 200px;
       background: linear-gradient(to top, var(--bg), transparent);
+      z-index: 2;
     }
     @keyframes heroBreath {
       0%, 100% { opacity: 0.6; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.05); }
+      50% { opacity: 1; transform: scale(1.08); }
     }
+
     /* Floating orbs */
     .hero-orb {
       position: absolute;
       border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.25;
-      animation: orbFloat 20s ease-in-out infinite;
+      filter: blur(80px);
+      opacity: 0.2;
+      animation: orbFloat 22s ease-in-out infinite;
     }
-    .hero-orb-1 { width: 300px; height: 300px; background: #6366F1; top: -80px; left: -50px; }
-    .hero-orb-2 { width: 200px; height: 200px; background: #8B5CF6; top: 40px; right: 10%; animation-delay: -7s; }
-    .hero-orb-3 { width: 150px; height: 150px; background: #06B6D4; bottom: 20px; left: 40%; animation-delay: -14s; }
+    .hero-orb-1 { width: 400px; height: 400px; background: #6366F1; top: -120px; left: -80px; }
+    .hero-orb-2 { width: 280px; height: 280px; background: #8B5CF6; top: 20px; right: 5%; animation-delay: -8s; }
+    .hero-orb-3 { width: 200px; height: 200px; background: #06B6D4; bottom: -20px; left: 35%; animation-delay: -15s; }
+    .hero-orb-4 { width: 160px; height: 160px; background: #F59E0B; top: 50%; right: 20%; filter: blur(100px); opacity: 0.1; animation-delay: -4s; }
     @keyframes orbFloat {
-      0%, 100% { transform: translate(0, 0); }
-      33% { transform: translate(20px, -15px); }
-      66% { transform: translate(-15px, 10px); }
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(30px, -20px) rotate(2deg); }
+      50% { transform: translate(-15px, 15px) rotate(-1deg); }
+      75% { transform: translate(20px, 10px) rotate(1deg); }
     }
+
+    /* Noise texture overlay */
+    .hero-noise {
+      position: absolute;
+      inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 256px;
+      pointer-events: none;
+    }
+
     .hero-eyebrow {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 20px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
+      gap: 10px;
+      padding: 10px 24px;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 100px;
-      font-size: 0.75rem;
+      font-size: 0.6875rem;
       font-weight: 700;
-      color: rgba(255,255,255,0.8);
+      color: rgba(255,255,255,0.7);
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 28px;
+      letter-spacing: 0.14em;
+      margin-bottom: 32px;
       position: relative;
-      z-index: 1;
+      z-index: 3;
     }
     .hero-eyebrow::before {
       content: '';
       width: 8px; height: 8px;
       background: #34D399;
       border-radius: 50%;
+      box-shadow: 0 0 12px rgba(52,211,153,0.6);
       animation: pulse-dot 2s ease-in-out infinite;
     }
-    @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+    @keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
+
     .hero h1 {
-      font-size: clamp(3rem, 6vw, 5rem);
+      font-size: clamp(3.25rem, 7vw, 5.5rem);
       font-weight: 900;
       letter-spacing: -0.04em;
-      line-height: 1.05;
-      margin-bottom: 24px;
+      line-height: 1.02;
+      margin-bottom: 28px;
       position: relative;
-      z-index: 1;
+      z-index: 3;
       color: #FFFFFF;
     }
     .hero h1 span {
-      background: linear-gradient(135deg, #818CF8 0%, #A78BFA 35%, #22D3EE 100%);
+      background: linear-gradient(135deg, #818CF8 0%, #C4B5FD 30%, #22D3EE 70%, #818CF8 100%);
+      background-size: 200% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      animation: gradientShift 8s ease-in-out infinite;
+    }
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% center; }
+      50% { background-position: 100% center; }
     }
     .hero p {
-      font-size: 1.3125rem;
-      color: rgba(255,255,255,0.65);
-      max-width: 640px;
-      margin: 0 auto 40px;
+      font-size: 1.25rem;
+      color: rgba(255,255,255,0.5);
+      max-width: 580px;
+      margin: 0 auto 44px;
       position: relative;
-      z-index: 1;
-      line-height: 1.7;
+      z-index: 3;
+      line-height: 1.75;
+      font-weight: 400;
     }
     .hero-link {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      color: rgba(255,255,255,0.85);
-      font-weight: 700;
-      font-size: 0.9375rem;
+      color: rgba(255,255,255,0.75);
+      font-weight: 600;
+      font-size: 0.875rem;
       text-decoration: none;
       position: relative;
-      z-index: 1;
-      padding: 12px 24px;
+      z-index: 3;
+      padding: 12px 28px;
       border-radius: 100px;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.06);
-      transition: all 0.25s ease;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all 0.3s ease;
     }
     .hero-link:hover {
-      background: rgba(255,255,255,0.12);
-      border-color: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.2);
       transform: translateY(-2px);
+      color: rgba(255,255,255,0.95);
     }
 
-    /* Demo Grid */
+    /* ==================== DEMO GRID ==================== */
     .grid-container {
       max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 48px 80px;
+      margin: -40px auto 0;
+      padding: 0 48px 100px;
       position: relative;
-      z-index: 1;
+      z-index: 3;
     }
     .grid-label {
       font-size: 0.6875rem;
       font-weight: 800;
       color: var(--text-3);
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      margin-bottom: 20px;
+      letter-spacing: 0.14em;
+      margin-bottom: 24px;
     }
     .demo-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
+
+    /* Tile entrance animations */
     .demo-tile {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 0;
       cursor: pointer;
-      transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+      transition: all 0.5s var(--spring);
       position: relative;
       overflow: hidden;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: tileEnter 0.7s var(--ease-out) forwards;
     }
+    .demo-tile:nth-child(1) { animation-delay: 0.05s; }
+    .demo-tile:nth-child(2) { animation-delay: 0.12s; }
+    .demo-tile:nth-child(3) { animation-delay: 0.19s; }
+    .demo-tile:nth-child(4) { animation-delay: 0.26s; }
+    .demo-tile:nth-child(5) { animation-delay: 0.33s; }
+    .demo-tile:nth-child(6) { animation-delay: 0.40s; }
+    @keyframes tileEnter {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .tile-preview {
       height: 140px;
       background: var(--tile-bg, linear-gradient(135deg, #EEF2FF, #E0E7FF));
@@ -201,18 +248,172 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(to bottom, transparent 60%, var(--bg-card));
+      background: linear-gradient(to bottom, transparent 50%, var(--bg-card));
     }
-    .tile-preview-graphic {
-      font-size: 3.5rem;
-      opacity: 0.7;
-      transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+
+    /* Mini CSS mockup graphics */
+    .tile-mockup {
+      position: relative;
+      z-index: 1;
+      transition: all 0.5s var(--ease-out);
     }
-    .demo-tile:hover .tile-preview-graphic {
-      transform: scale(1.15) translateY(-4px);
-      opacity: 1;
+    .demo-tile:hover .tile-mockup { transform: scale(1.08) translateY(-4px); }
+
+    /* Incident: mini timeline */
+    .mockup-timeline {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 20px;
     }
+    .mockup-timeline-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .mockup-timeline-dot::after {
+      content: ''; position: absolute; top: 50%; left: 100%;
+      width: 28px; height: 2px; background: rgba(0,0,0,0.08);
+    }
+    .mockup-timeline-dot:last-child::after { display: none; }
+    .mockup-timeline-dot:nth-child(1) { background: #F43F5E; box-shadow: 0 0 12px rgba(244,63,94,0.4); }
+    .mockup-timeline-dot:nth-child(2) { background: #F59E0B; box-shadow: 0 0 12px rgba(245,158,11,0.4); }
+    .mockup-timeline-dot:nth-child(3) { background: #06B6D4; box-shadow: 0 0 12px rgba(6,182,212,0.4); }
+    .mockup-timeline-dot:nth-child(4) { background: #059669; box-shadow: 0 0 12px rgba(5,150,105,0.4); }
+
+    /* Coaching: mini text lines */
+    .mockup-report {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 10px;
+      width: 140px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .mockup-report-line {
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(139,92,246,0.15);
+    }
+    .mockup-report-line:nth-child(1) { width: 60%; background: rgba(139,92,246,0.3); }
+    .mockup-report-line:nth-child(2) { width: 100%; }
+    .mockup-report-line:nth-child(3) { width: 85%; }
+    .mockup-report-line:nth-child(4) { width: 40%; background: rgba(139,92,246,0.25); }
+
+    /* Retention: mini bar chart */
+    .mockup-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 70px;
+      padding: 0 10px;
+    }
+    .mockup-bar {
+      width: 18px;
+      border-radius: 4px 4px 0 0;
+      transition: height 0.5s var(--ease-out);
+    }
+    .mockup-bar:nth-child(1) { height: 85%; background: linear-gradient(to top, #6366F1, #818CF8); }
+    .mockup-bar:nth-child(2) { height: 55%; background: linear-gradient(to top, #8B5CF6, #A78BFA); }
+    .mockup-bar:nth-child(3) { height: 95%; background: linear-gradient(to top, #F43F5E, #FB7185); }
+    .mockup-bar:nth-child(4) { height: 40%; background: linear-gradient(to top, #059669, #34D399); }
+    .mockup-bar:nth-child(5) { height: 70%; background: linear-gradient(to top, #F59E0B, #FBBF24); }
+    .mockup-bar:nth-child(6) { height: 30%; background: linear-gradient(to top, #06B6D4, #22D3EE); }
+
+    /* Route Risk: mini gauge */
+    .mockup-gauge {
+      width: 80px; height: 44px;
+      border-radius: 80px 80px 0 0;
+      border: 5px solid rgba(6,182,212,0.2);
+      border-bottom: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .mockup-gauge::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%;
+      width: 4px; height: 36px;
+      background: #06B6D4;
+      border-radius: 2px;
+      transform-origin: bottom center;
+      transform: translateX(-50%) rotate(-30deg);
+      box-shadow: 0 0 8px rgba(6,182,212,0.5);
+    }
+    .mockup-gauge::after {
+      content: '32';
+      position: absolute;
+      bottom: -4px; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: #06B6D4;
+    }
+
+    /* Chat: mini chat bubbles */
+    .mockup-chat {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 150px;
+    }
+    .mockup-bubble {
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.5rem;
+      font-weight: 600;
+      max-width: 110px;
+      line-height: 1.4;
+    }
+    .mockup-bubble-user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #059669, #10B981);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .mockup-bubble-ai {
+      align-self: flex-start;
+      background: white;
+      color: #475569;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    /* Workflow: mini pipeline */
+    .mockup-pipeline {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .mockup-node {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(244,63,94,0.3);
+      position: relative;
+    }
+    .mockup-node.filled {
+      background: #F43F5E;
+      border-color: #F43F5E;
+      box-shadow: 0 0 10px rgba(244,63,94,0.4);
+    }
+    .mockup-node.active {
+      border-color: #F43F5E;
+      animation: mockupPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes mockupPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(244,63,94,0.3); }
+      50% { box-shadow: 0 0 0 6px rgba(244,63,94,0); }
+    }
+    .mockup-connector {
+      width: 16px; height: 2px;
+      background: rgba(244,63,94,0.2);
+      position: relative;
+    }
+    .mockup-connector.done { background: #F43F5E; }
+
     .tile-body {
       padding: 24px 28px 28px;
       position: relative;
@@ -225,14 +426,14 @@
       background: linear-gradient(90deg, var(--tile-c1, var(--accent)), var(--tile-c2, var(--accent-v)));
       transform: scaleX(0);
       transform-origin: left;
-      transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+      transition: transform 0.5s var(--ease-out);
       z-index: 2;
     }
     .demo-tile:hover::before { transform: scaleX(1); }
     .demo-tile:hover {
       transform: translateY(-8px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 0 40px rgba(99,102,241,0.06);
-      border-color: rgba(99,102,241,0.15);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 0 0 1px rgba(99,102,241,0.08);
+      border-color: rgba(99,102,241,0.12);
     }
     .tile-icon {
       width: 44px; height: 44px;
@@ -244,18 +445,19 @@
       margin-bottom: 14px;
       position: relative;
       z-index: 1;
+      transition: transform 0.4s var(--spring);
     }
-    .demo-tile:hover .tile-icon { transform: scale(1.05); }
+    .demo-tile:hover .tile-icon { transform: scale(1.08); }
     .tile-title {
       font-size: 1.125rem;
-      font-weight: 800;
+      font-weight: 900;
       margin-bottom: 8px;
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
       position: relative;
       z-index: 1;
     }
     .tile-desc {
-      font-size: 0.875rem;
+      font-size: 0.8125rem;
       color: var(--text-2);
       line-height: 1.7;
       margin-bottom: 20px;
@@ -284,7 +486,7 @@
       justify-content: center;
       font-size: 0.875rem;
       color: var(--text-3);
-      transition: all 0.3s ease;
+      transition: all 0.35s var(--spring);
       z-index: 1;
     }
     .demo-tile:hover .tile-arrow {
@@ -293,44 +495,46 @@
       transform: translateX(4px);
     }
 
-    /* Demo View */
+    /* ==================== DEMO VIEW ==================== */
     .demo-view {
       display: none;
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 48px 80px;
-      animation: fadeIn 0.4s ease;
+      animation: fadeIn 0.5s var(--ease-out);
     }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     .demo-view.active { display: block; }
+
     .demo-back {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      color: var(--accent);
+      color: var(--text-2);
       font-weight: 700;
-      font-size: 0.875rem;
+      font-size: 0.8125rem;
       cursor: pointer;
       border: none;
-      background: rgba(99,102,241,0.04);
-      padding: 10px 18px;
-      margin-bottom: 28px;
+      background: var(--bg-alt);
+      padding: 10px 20px;
+      margin-bottom: 32px;
       font-family: inherit;
       border-radius: 100px;
-      border: 1px solid rgba(99,102,241,0.12);
-      transition: all 0.2s ease;
+      border: 1px solid var(--border);
+      transition: all 0.25s ease;
     }
     .demo-back:hover {
-      background: rgba(99,102,241,0.08);
-      border-color: rgba(99,102,241,0.25);
+      background: rgba(99,102,241,0.06);
+      border-color: rgba(99,102,241,0.2);
+      color: var(--accent);
     }
     .demo-header {
       margin-bottom: 36px;
     }
     .demo-header h2 {
-      font-size: 2.25rem;
+      font-size: 2.5rem;
       font-weight: 900;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.04em;
       margin-bottom: 10px;
     }
     .demo-header p {
@@ -338,6 +542,49 @@
       color: var(--text-2);
       line-height: 1.7;
     }
+
+    /* App chrome wrapper */
+    .app-chrome {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      background: var(--bg-card);
+    }
+    .app-chrome-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      background: linear-gradient(180deg, #1E293B, #1A2332);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .app-chrome-dots {
+      display: flex;
+      gap: 7px;
+    }
+    .app-chrome-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+    .app-chrome-dot:nth-child(1) { background: #FF5F57; }
+    .app-chrome-dot:nth-child(2) { background: #FEBC2E; }
+    .app-chrome-dot:nth-child(3) { background: #28C840; }
+    .app-chrome-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    .app-chrome-breadcrumb span { color: rgba(255,255,255,0.7); }
+    .app-chrome-breadcrumb-sep { opacity: 0.3; }
+    .app-chrome-body {
+      padding: 36px;
+    }
+
     .demo-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -350,7 +597,7 @@
       background: linear-gradient(135deg, rgba(99,102,241,0.03), rgba(139,92,246,0.02));
       border: 1px solid rgba(99,102,241,0.08);
       border-left: 3px solid var(--accent);
-      border-radius: var(--radius);
+      border-radius: 16px;
       padding: 24px 28px;
       margin-bottom: 28px;
       font-size: 0.875rem;
@@ -371,7 +618,7 @@
       font-size: 0.9375rem;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      transition: all 0.35s var(--spring);
     }
     .sim-btn-primary {
       background: linear-gradient(135deg, var(--accent), var(--accent-v));
@@ -393,7 +640,7 @@
     .typewriter { border-right: 2px solid var(--accent); animation: blink-cursor 0.8s infinite; }
     @keyframes blink-cursor { 0%,100% { border-color: var(--accent); } 50% { border-color: transparent; } }
 
-    /* Demo 1: Incident Response */
+    /* ==================== DEMO 1: INCIDENT RESPONSE ==================== */
     .event-timeline { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
     .event-item {
       display: flex; align-items: center; gap: 16px;
@@ -401,7 +648,7 @@
       border-radius: 14px;
       border: 1px solid var(--border);
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      transition: all 0.35s var(--spring);
       background: var(--bg-card);
     }
     .event-item:hover { border-color: rgba(99,102,241,0.2); background: rgba(99,102,241,0.02); transform: translateX(4px); }
@@ -453,7 +700,7 @@
     .report-field-label { font-size: 0.6875rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
     .report-field-value { font-size: 0.9375rem; color: var(--text); font-weight: 600; line-height: 1.6; }
 
-    /* Demo 2: Coaching */
+    /* ==================== DEMO 2: COACHING ==================== */
     .driver-profile {
       display: flex; align-items: center; gap: 20px;
       padding: 24px; border-radius: 16px;
@@ -473,7 +720,7 @@
     .coaching-report { padding: 28px; line-height: 1.9; }
     .coaching-section {
       margin-bottom: 24px; opacity: 0; transform: translateY(12px);
-      transition: all 0.6s cubic-bezier(0.16,1,0.3,1);
+      transition: all 0.6s var(--ease-out);
       padding: 20px 24px;
       border-radius: 14px;
       background: var(--bg-alt);
@@ -486,12 +733,12 @@
       padding-bottom: 8px; border-bottom: 1px solid var(--border);
     }
 
-    /* Demo 3: Retention */
+    /* ==================== DEMO 3: RETENTION ==================== */
     .driver-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
     .driver-card {
       padding: 24px 20px; border-radius: 16px;
       border: 1px solid var(--border); background: var(--bg-card);
-      cursor: pointer; transition: all 0.4s cubic-bezier(0.16,1,0.3,1); text-align: center;
+      cursor: pointer; transition: all 0.4s var(--spring); text-align: center;
       position: relative; overflow: hidden;
     }
     .driver-card::before {
@@ -510,7 +757,7 @@
     .driver-card.low-risk .risk-gauge { color: var(--accent-e); }
     .risk-gauge {
       font-family: 'JetBrains Mono', monospace; font-size: 2.25rem; font-weight: 800;
-      transition: transform 0.3s ease;
+      transition: transform 0.35s var(--spring);
     }
     .driver-card:hover .risk-gauge { transform: scale(1.08); }
     .driver-card-name { font-weight: 700; font-size: 0.9375rem; margin: 10px 0 4px; }
@@ -520,10 +767,10 @@
       border: 2px solid var(--accent-r); background: rgba(244,63,94,0.02);
       display: none; box-shadow: 0 8px 32px rgba(244,63,94,0.08);
     }
-    .retention-detail.visible { display: block; animation: slideUp 0.5s cubic-bezier(0.16,1,0.3,1); }
+    .retention-detail.visible { display: block; animation: slideUp 0.5s var(--ease-out); }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Demo 4: Route Risk */
+    /* ==================== DEMO 4: ROUTE RISK ==================== */
     .route-controls {
       display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 28px;
     }
@@ -535,7 +782,7 @@
     .toggle-opt {
       padding: 10px 18px; border-radius: 8px; border: none; background: transparent;
       font-family: inherit; font-size: 0.8125rem; font-weight: 700; color: var(--text-3);
-      cursor: pointer; transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
+      cursor: pointer; transition: all 0.3s var(--spring);
     }
     .toggle-opt.active {
       background: white; color: var(--accent);
@@ -545,7 +792,7 @@
     .route-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .route-card {
       padding: 32px; border-radius: var(--radius); border: 1px solid var(--border);
-      text-align: center; transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+      text-align: center; transition: all 0.4s var(--ease-out);
       background: var(--bg-card);
     }
     .route-card.recommended {
@@ -555,64 +802,64 @@
     }
     .route-score {
       font-family: 'JetBrains Mono', monospace; font-size: 3.5rem; font-weight: 800;
-      transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+      transition: all 0.5s var(--ease-out);
       line-height: 1;
     }
     .route-score-label { font-size: 0.6875rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px; }
     .route-factors { text-align: left; margin-top: 20px; font-size: 0.8125rem; color: var(--text-2); line-height: 1.7; }
     .route-factors li { margin-bottom: 8px; padding-left: 4px; }
 
-    /* Demo 5: Chat */
+    /* ==================== DEMO 5: CHAT ==================== */
     .chat-container {
-      height: 540px; display: flex; flex-direction: column;
-      border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
-      box-shadow: var(--shadow);
+      height: 560px; display: flex; flex-direction: column;
+      overflow: hidden;
       background: var(--bg-card);
     }
     .chat-header {
       padding: 16px 24px; border-bottom: 1px solid var(--border);
       display: flex; align-items: center; gap: 12px;
-      background: linear-gradient(135deg, rgba(99,102,241,0.04), rgba(139,92,246,0.02));
+      background: var(--bg-card);
     }
-    .chat-header-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-e); animation: pulse-dot 2s infinite; }
+    .chat-header-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-e); animation: pulse-dot 2s infinite; box-shadow: 0 0 8px rgba(5,150,105,0.4); }
     .chat-header-text { font-size: 0.875rem; font-weight: 700; color: var(--text); }
     .chat-header-sub { font-size: 0.75rem; color: var(--text-3); }
     .chat-messages {
       flex: 1; overflow-y: auto; padding: 28px;
-      display: flex; flex-direction: column; gap: 16px;
-      background: var(--bg-alt);
+      display: flex; flex-direction: column; gap: 12px;
+      background: linear-gradient(180deg, #F8FAFC, #F1F5F9);
     }
     .chat-msg {
-      max-width: 82%; padding: 16px 20px; border-radius: 18px;
-      font-size: 0.9375rem; line-height: 1.7; animation: msgIn 0.35s cubic-bezier(0.16,1,0.3,1);
+      max-width: 80%; padding: 14px 18px; border-radius: 20px;
+      font-size: 0.9375rem; line-height: 1.7;
+      animation: msgIn 0.4s var(--spring);
     }
-    @keyframes msgIn { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes msgIn { from { opacity: 0; transform: translateY(10px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
     .chat-msg.user {
       align-self: flex-end;
-      background: linear-gradient(135deg, var(--accent), var(--accent-v));
+      background: linear-gradient(135deg, var(--accent), #7C6BF5);
       color: white; border-bottom-right-radius: 6px;
-      box-shadow: 0 4px 12px rgba(99,102,241,0.2);
+      box-shadow: 0 2px 12px rgba(99,102,241,0.2);
     }
     .chat-msg.ai {
-      align-self: flex-start; background: var(--bg-card); color: var(--text);
-      border: 1px solid var(--border); border-bottom-left-radius: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      align-self: flex-start; background: white; color: var(--text);
+      border-bottom-left-radius: 6px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.03);
     }
     .chat-msg.ai strong { color: var(--accent); }
     .chat-typing {
-      align-self: flex-start; padding: 16px 20px; background: var(--bg-card);
-      border: 1px solid var(--border); border-radius: 18px; border-bottom-left-radius: 6px;
+      align-self: flex-start; padding: 16px 20px; background: white;
+      border-radius: 20px; border-bottom-left-radius: 6px;
       display: flex; gap: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.03);
     }
     .typing-dot {
       width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
-      opacity: 0.4;
+      opacity: 0.3;
       animation: typingBounce 1.2s infinite;
     }
     .typing-dot:nth-child(2) { animation-delay: 0.2s; }
     .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes typingBounce { 0%,60%,100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
+    @keyframes typingBounce { 0%,60%,100% { transform: translateY(0); opacity: 0.3; } 30% { transform: translateY(-6px); opacity: 1; } }
     .chat-input-area {
       padding: 20px 24px; border-top: 1px solid var(--border);
       display: flex; flex-direction: column; gap: 14px;
@@ -622,59 +869,89 @@
     .chat-suggestion {
       padding: 8px 16px; border-radius: 100px; border: 1px solid var(--border);
       background: var(--bg-card); font-size: 0.8125rem; font-weight: 600;
-      color: var(--text-2); cursor: pointer; transition: all 0.25s ease;
+      color: var(--text-2); cursor: pointer; transition: all 0.3s var(--spring);
       font-family: inherit;
     }
     .chat-suggestion:hover {
       border-color: rgba(99,102,241,0.3); color: var(--accent);
-      background: rgba(99,102,241,0.04); transform: translateY(-1px);
+      background: rgba(99,102,241,0.04); transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99,102,241,0.08);
     }
     .chat-input-row { display: flex; gap: 10px; }
     .chat-input {
-      flex: 1; padding: 14px 18px; border-radius: 12px; border: 1px solid var(--border);
+      flex: 1; padding: 14px 18px; border-radius: 14px; border: 2px solid var(--border);
       font-family: inherit; font-size: 0.9375rem; background: var(--bg-alt);
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
     }
-    .chat-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.08); }
+    .chat-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(99,102,241,0.08); background: white; }
     .chat-send {
-      padding: 14px 24px; border-radius: 12px; border: none;
+      padding: 14px 24px; border-radius: 14px; border: none;
       background: linear-gradient(135deg, var(--accent), var(--accent-v)); color: white;
       font-weight: 700; cursor: pointer; font-family: inherit;
-      transition: all 0.25s ease;
+      transition: all 0.3s var(--spring);
       box-shadow: 0 4px 12px rgba(99,102,241,0.2);
     }
-    .chat-send:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(99,102,241,0.3); }
+    .chat-send:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,0.3); }
 
-    /* Demo 6: Workflow */
+    /* ==================== DEMO 6: WORKFLOW ==================== */
     .workflow-pipeline {
-      display: flex; align-items: center; gap: 8px; overflow-x: auto;
+      display: flex; align-items: center; gap: 0; overflow-x: auto;
       padding: 24px 0; margin-bottom: 28px;
+      position: relative;
     }
     .wf-step {
       flex-shrink: 0; padding: 24px; border-radius: 16px;
       border: 2px solid var(--border); background: var(--bg-card);
-      text-align: center; min-width: 150px; transition: all 0.6s cubic-bezier(0.16,1,0.3,1);
-      opacity: 0.35;
+      text-align: center; min-width: 150px; transition: all 0.6s var(--ease-out);
+      opacity: 0.3;
+      position: relative;
+      z-index: 1;
     }
     .wf-step.active {
       border-color: var(--accent);
       background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(139,92,246,0.03));
       opacity: 1; transform: scale(1.06);
       box-shadow: 0 0 0 4px rgba(99,102,241,0.08), 0 8px 24px rgba(99,102,241,0.1);
+      animation: stepPulse 2s ease-in-out infinite;
+    }
+    @keyframes stepPulse {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(99,102,241,0.08), 0 8px 24px rgba(99,102,241,0.1); }
+      50% { box-shadow: 0 0 0 8px rgba(99,102,241,0.04), 0 8px 24px rgba(99,102,241,0.15); }
     }
     .wf-step.done {
       border-color: var(--accent-e);
       background: linear-gradient(135deg, rgba(5,150,105,0.04), rgba(16,185,129,0.02));
       opacity: 1;
     }
-    .wf-step-icon { font-size: 1.75rem; margin-bottom: 10px; transition: transform 0.4s ease; }
+    .wf-step-icon { font-size: 1.75rem; margin-bottom: 10px; transition: transform 0.4s var(--spring); }
     .wf-step.active .wf-step-icon { transform: scale(1.15); }
     .wf-step-label { font-size: 0.75rem; font-weight: 700; color: var(--text-2); }
     .wf-step-time {
       font-family: 'JetBrains Mono', monospace; font-size: 0.6875rem;
       color: var(--accent); margin-top: 6px; font-weight: 600;
     }
-    .wf-arrow { color: var(--text-3); font-size: 1.25rem; flex-shrink: 0; opacity: 0.4; }
+    .wf-arrow {
+      color: var(--text-3);
+      font-size: 0;
+      flex-shrink: 0;
+      width: 40px;
+      height: 2px;
+      background: repeating-linear-gradient(90deg, var(--text-3) 0, var(--text-3) 6px, transparent 6px, transparent 12px);
+      opacity: 0.25;
+      position: relative;
+      margin: 0 4px;
+    }
+    .wf-arrow::after {
+      content: '';
+      position: absolute;
+      right: -2px; top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 6px solid var(--text-3);
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      opacity: 0.5;
+    }
     .wf-comparison {
       display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 28px;
     }
@@ -686,7 +963,7 @@
     .wf-compare-card h4 { font-size: 0.6875rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); margin-bottom: 12px; }
     .wf-compare-value { font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 800; }
 
-    /* Footer */
+    /* ==================== FOOTER ==================== */
     .lab-footer {
       max-width: 1200px; margin: 0 auto; padding: 48px;
       border-top: 1px solid var(--border);
@@ -696,15 +973,17 @@
     .lab-footer a { color: var(--accent); text-decoration: none; font-weight: 700; }
     .lab-footer a:hover { text-decoration: underline; }
 
-    /* Responsive */
+    /* ==================== RESPONSIVE ==================== */
     @media (max-width: 768px) {
       .demo-grid { grid-template-columns: 1fr; }
       .route-cards { grid-template-columns: 1fr; }
       .wf-comparison { grid-template-columns: 1fr; }
       .hero, .grid-container, .demo-view { padding-left: 24px; padding-right: 24px; }
       .workflow-pipeline { flex-direction: column; }
-      .wf-arrow { transform: rotate(90deg); }
+      .wf-arrow { transform: rotate(90deg); width: 2px; height: 30px; margin: 4px 0; background: repeating-linear-gradient(180deg, var(--text-3) 0, var(--text-3) 6px, transparent 6px, transparent 12px); }
+      .wf-arrow::after { display: none; }
       .chat-container { height: 480px; }
+      .app-chrome-body { padding: 20px; }
     }
     @media (max-width: 1024px) {
       .demo-grid { grid-template-columns: repeat(2, 1fr); }
@@ -715,9 +994,11 @@
 
   <!-- Hero -->
   <div class="hero">
+    <div class="hero-noise"></div>
     <div class="hero-orb hero-orb-1"></div>
     <div class="hero-orb hero-orb-2"></div>
     <div class="hero-orb hero-orb-3"></div>
+    <div class="hero-orb hero-orb-4"></div>
     <div class="hero-eyebrow">Interactive Prototypes</div>
     <h1><span>LytxOne</span> AI Lab</h1>
     <p>Experience the future of fleet intelligence. Click any strategy below to see what the product could feel like.</p>
@@ -728,9 +1009,18 @@
   <div class="grid-container" id="demoGrid">
     <div class="grid-label">Choose a demo to explore</div>
     <div class="demo-grid">
+
+      <!-- Incident Response -->
       <div class="demo-tile" onclick="showDemo('incident')" style="--tile-c1: #F59E0B; --tile-c2: #F97316; --tile-bg: linear-gradient(135deg, #FFF7ED, #FFEDD5, #FEF3C7);">
         <div class="tile-preview">
-          <div class="tile-preview-graphic">&#x1F4CB;&#x1F6A8;</div>
+          <div class="tile-mockup">
+            <div class="mockup-timeline">
+              <div class="mockup-timeline-dot"></div>
+              <div class="mockup-timeline-dot"></div>
+              <div class="mockup-timeline-dot"></div>
+              <div class="mockup-timeline-dot"></div>
+            </div>
+          </div>
         </div>
         <div class="tile-body">
           <div class="tile-icon" style="background: rgba(245,158,11,0.1);">&#x1F6A8;</div>
@@ -740,9 +1030,18 @@
           <div class="tile-arrow">&rarr;</div>
         </div>
       </div>
+
+      <!-- Coaching -->
       <div class="demo-tile" onclick="showDemo('coaching')" style="--tile-c1: #8B5CF6; --tile-c2: #A855F7; --tile-bg: linear-gradient(135deg, #F5F3FF, #EDE9FE, #DDD6FE);">
         <div class="tile-preview">
-          <div class="tile-preview-graphic">&#x1F4DD;&#x1F3AF;</div>
+          <div class="tile-mockup">
+            <div class="mockup-report">
+              <div class="mockup-report-line"></div>
+              <div class="mockup-report-line"></div>
+              <div class="mockup-report-line"></div>
+              <div class="mockup-report-line"></div>
+            </div>
+          </div>
         </div>
         <div class="tile-body">
           <div class="tile-icon" style="background: rgba(139,92,246,0.1);">&#x1F4DD;</div>
@@ -752,9 +1051,20 @@
           <div class="tile-arrow">&rarr;</div>
         </div>
       </div>
+
+      <!-- Retention -->
       <div class="demo-tile" onclick="showDemo('retention')" style="--tile-c1: #6366F1; --tile-c2: #8B5CF6; --tile-bg: linear-gradient(135deg, #EEF2FF, #E0E7FF, #C7D2FE);">
         <div class="tile-preview">
-          <div class="tile-preview-graphic">&#x1F4CA;&#x1F6A9;</div>
+          <div class="tile-mockup">
+            <div class="mockup-bars">
+              <div class="mockup-bar"></div>
+              <div class="mockup-bar"></div>
+              <div class="mockup-bar"></div>
+              <div class="mockup-bar"></div>
+              <div class="mockup-bar"></div>
+              <div class="mockup-bar"></div>
+            </div>
+          </div>
         </div>
         <div class="tile-body">
           <div class="tile-icon" style="background: rgba(99,102,241,0.1);">&#x1F4CA;</div>
@@ -764,9 +1074,13 @@
           <div class="tile-arrow">&rarr;</div>
         </div>
       </div>
+
+      <!-- Route Risk -->
       <div class="demo-tile" onclick="showDemo('risk')" style="--tile-c1: #06B6D4; --tile-c2: #0891B2; --tile-bg: linear-gradient(135deg, #ECFEFF, #CFFAFE, #A5F3FC);">
         <div class="tile-preview">
-          <div class="tile-preview-graphic">&#x1F6E3;&#xFE0F;&#x26A0;&#xFE0F;</div>
+          <div class="tile-mockup">
+            <div class="mockup-gauge"></div>
+          </div>
         </div>
         <div class="tile-body">
           <div class="tile-icon" style="background: rgba(6,182,212,0.1);">&#x1F6E3;&#xFE0F;</div>
@@ -776,9 +1090,16 @@
           <div class="tile-arrow">&rarr;</div>
         </div>
       </div>
+
+      <!-- Chat -->
       <div class="demo-tile" onclick="showDemo('chat')" style="--tile-c1: #059669; --tile-c2: #10B981; --tile-bg: linear-gradient(135deg, #ECFDF5, #D1FAE5, #A7F3D0);">
         <div class="tile-preview">
-          <div class="tile-preview-graphic">&#x1F4AC;&#x1F9E0;</div>
+          <div class="tile-mockup">
+            <div class="mockup-chat">
+              <div class="mockup-bubble mockup-bubble-user">Fleet status?</div>
+              <div class="mockup-bubble mockup-bubble-ai">All 20 vehicles active. 3 need maintenance.</div>
+            </div>
+          </div>
         </div>
         <div class="tile-body">
           <div class="tile-icon" style="background: rgba(5,150,105,0.1);">&#x1F4AC;</div>
@@ -788,9 +1109,23 @@
           <div class="tile-arrow">&rarr;</div>
         </div>
       </div>
+
+      <!-- Workflow -->
       <div class="demo-tile" onclick="showDemo('workflow')" style="--tile-c1: #F43F5E; --tile-c2: #FB7185; --tile-bg: linear-gradient(135deg, #FFF1F2, #FFE4E6, #FECDD3);">
         <div class="tile-preview">
-          <div class="tile-preview-graphic">&#x1F916;&#x26A1;</div>
+          <div class="tile-mockup">
+            <div class="mockup-pipeline">
+              <div class="mockup-node filled"></div>
+              <div class="mockup-connector done"></div>
+              <div class="mockup-node filled"></div>
+              <div class="mockup-connector done"></div>
+              <div class="mockup-node active"></div>
+              <div class="mockup-connector"></div>
+              <div class="mockup-node"></div>
+              <div class="mockup-connector"></div>
+              <div class="mockup-node"></div>
+            </div>
+          </div>
         </div>
         <div class="tile-body">
           <div class="tile-icon" style="background: rgba(244,63,94,0.1);">&#x1F916;</div>
@@ -800,6 +1135,7 @@
           <div class="tile-arrow">&rarr;</div>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -811,27 +1147,41 @@
       <p>Click an event from the dashcam timeline. AI generates a structured accident report with fault determination.</p>
     </div>
     <div class="demo-explainer"><strong>What this shows:</strong> Instead of managers spending 4+ hours writing incident reports, AI generates court-admissible documentation in seconds from video evidence. This is new capability — LytxOne has video AI for detection, but not automated claims/report generation.</div>
-    <div class="demo-card">
-      <h4 style="font-size: 0.8125rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 16px;">Dashcam Event Timeline — April 8, 2026</h4>
-      <div class="event-timeline" id="eventTimeline">
-        <div class="event-item" onclick="selectEvent(0, this)">
-          <div class="event-dot critical"></div>
-          <div class="event-time">8:42 AM</div>
-          <div class="event-label">Hard collision detected — Vehicle #17, I-5 Northbound MP 142</div>
+    <div class="app-chrome">
+      <div class="app-chrome-bar">
+        <div class="app-chrome-dots">
+          <div class="app-chrome-dot"></div>
+          <div class="app-chrome-dot"></div>
+          <div class="app-chrome-dot"></div>
         </div>
-        <div class="event-item" onclick="selectEvent(1, this)">
-          <div class="event-dot warning"></div>
-          <div class="event-time">9:15 AM</div>
-          <div class="event-label">Hard braking event — Vehicle #03, Industrial Blvd & 5th St</div>
-        </div>
-        <div class="event-item" onclick="selectEvent(2, this)">
-          <div class="event-dot info"></div>
-          <div class="event-time">11:30 AM</div>
-          <div class="event-label">Distracted driving alert — Vehicle #22, Highway 101 Southbound</div>
+        <div class="app-chrome-breadcrumb">
+          LytxOne <span class="app-chrome-breadcrumb-sep">/</span>
+          <span>Safety Events</span> <span class="app-chrome-breadcrumb-sep">/</span>
+          <span>Incident AI</span>
         </div>
       </div>
-      <div class="report-output" id="reportOutput">
-        <div style="text-align: center; color: var(--text-3); padding: 40px;">Click an event above to generate an AI incident report</div>
+      <div class="app-chrome-body">
+        <h4 style="font-size: 0.8125rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 16px;">Dashcam Event Timeline — April 8, 2026</h4>
+        <div class="event-timeline" id="eventTimeline">
+          <div class="event-item" onclick="selectEvent(0, this)">
+            <div class="event-dot critical"></div>
+            <div class="event-time">8:42 AM</div>
+            <div class="event-label">Hard collision detected — Vehicle #17, I-5 Northbound MP 142</div>
+          </div>
+          <div class="event-item" onclick="selectEvent(1, this)">
+            <div class="event-dot warning"></div>
+            <div class="event-time">9:15 AM</div>
+            <div class="event-label">Hard braking event — Vehicle #03, Industrial Blvd & 5th St</div>
+          </div>
+          <div class="event-item" onclick="selectEvent(2, this)">
+            <div class="event-dot info"></div>
+            <div class="event-time">11:30 AM</div>
+            <div class="event-label">Distracted driving alert — Vehicle #22, Highway 101 Southbound</div>
+          </div>
+        </div>
+        <div class="report-output" id="reportOutput">
+          <div style="text-align: center; color: var(--text-3); padding: 40px;">Click an event above to generate an AI incident report</div>
+        </div>
       </div>
     </div>
   </div>
@@ -844,16 +1194,30 @@
       <p>See how AI creates personalized weekly coaching reports for individual drivers.</p>
     </div>
     <div class="demo-explainer"><strong>What this shows:</strong> Today, managers manually review events and write coaching notes for each driver. AI scales this to 100+ drivers with personalized, context-aware reports — including route-specific safety nudges. Samsara launched AI Coach in March 2026; Lytx needs this.</div>
-    <div class="demo-card">
-      <div class="driver-profile">
-        <div class="driver-avatar">RM</div>
-        <div>
-          <div class="driver-name">Roberto Martinez</div>
-          <div class="driver-meta">Vehicle #17 &bull; Route: Downtown Loop &bull; Safety Score: 72/100 &bull; 8 events this week</div>
+    <div class="app-chrome">
+      <div class="app-chrome-bar">
+        <div class="app-chrome-dots">
+          <div class="app-chrome-dot"></div>
+          <div class="app-chrome-dot"></div>
+          <div class="app-chrome-dot"></div>
+        </div>
+        <div class="app-chrome-breadcrumb">
+          LytxOne <span class="app-chrome-breadcrumb-sep">/</span>
+          <span>Coaching</span> <span class="app-chrome-breadcrumb-sep">/</span>
+          <span>AI Reports</span>
         </div>
       </div>
-      <button class="sim-btn sim-btn-primary" onclick="generateCoaching()" id="coachBtn">Generate Weekly Report</button>
-      <div class="coaching-report" id="coachingOutput"></div>
+      <div class="app-chrome-body">
+        <div class="driver-profile">
+          <div class="driver-avatar">RM</div>
+          <div>
+            <div class="driver-name">Roberto Martinez</div>
+            <div class="driver-meta">Vehicle #17 &bull; Route: Downtown Loop &bull; Safety Score: 72/100 &bull; 8 events this week</div>
+          </div>
+        </div>
+        <button class="sim-btn sim-btn-primary" onclick="generateCoaching()" id="coachBtn">Generate Weekly Report</button>
+        <div class="coaching-report" id="coachingOutput"></div>
+      </div>
     </div>
   </div>
 
@@ -865,9 +1229,23 @@
       <p>AI monitors 50+ behavioral signals to predict which drivers will quit in the next 30-60 days.</p>
     </div>
     <div class="demo-explainer"><strong>What this shows:</strong> Each resignation costs $5K-$15K. AI detects patterns (fewer route acceptances, declining safety scores, reduced coaching engagement) that predict turnover weeks before it happens. Click a high-risk driver to see recommended retention actions.</div>
-    <div class="demo-card">
-      <div class="driver-grid" id="retentionGrid"></div>
-      <div class="retention-detail" id="retentionDetail"></div>
+    <div class="app-chrome">
+      <div class="app-chrome-bar">
+        <div class="app-chrome-dots">
+          <div class="app-chrome-dot"></div>
+          <div class="app-chrome-dot"></div>
+          <div class="app-chrome-dot"></div>
+        </div>
+        <div class="app-chrome-breadcrumb">
+          LytxOne <span class="app-chrome-breadcrumb-sep">/</span>
+          <span>Workforce</span> <span class="app-chrome-breadcrumb-sep">/</span>
+          <span>Retention Dashboard</span>
+        </div>
+      </div>
+      <div class="app-chrome-body">
+        <div class="driver-grid" id="retentionGrid"></div>
+        <div class="retention-detail" id="retentionDetail"></div>
+      </div>
     </div>
   </div>
 
@@ -879,44 +1257,58 @@
       <p>AI scores every route 0-100 based on driver, vehicle, weather, cargo, and historical accident data.</p>
     </div>
     <div class="demo-explainer"><strong>What this shows:</strong> No competitor offers this. Routes are scored using Lytx's 341B miles of historical accident data on specific road segments. Toggle the conditions below to see risk scores change in real-time. This data powers insurance premium negotiations.</div>
-    <div class="demo-card">
-      <div class="route-controls">
-        <div class="control-group">
-          <div class="control-label">Weather</div>
-          <div class="control-toggle" data-var="weather">
-            <button class="toggle-opt active" onclick="setVar('weather','clear',this)">Clear</button>
-            <button class="toggle-opt" onclick="setVar('weather','rain',this)">Rain</button>
-            <button class="toggle-opt" onclick="setVar('weather','snow',this)">Snow</button>
-          </div>
+    <div class="app-chrome">
+      <div class="app-chrome-bar">
+        <div class="app-chrome-dots">
+          <div class="app-chrome-dot"></div>
+          <div class="app-chrome-dot"></div>
+          <div class="app-chrome-dot"></div>
         </div>
-        <div class="control-group">
-          <div class="control-label">Time</div>
-          <div class="control-toggle" data-var="time">
-            <button class="toggle-opt active" onclick="setVar('time','day',this)">Day</button>
-            <button class="toggle-opt" onclick="setVar('time','night',this)">Night</button>
-          </div>
-        </div>
-        <div class="control-group">
-          <div class="control-label">Cargo</div>
-          <div class="control-toggle" data-var="cargo">
-            <button class="toggle-opt active" onclick="setVar('cargo','general',this)">General</button>
-            <button class="toggle-opt" onclick="setVar('cargo','hazmat',this)">Hazmat</button>
-            <button class="toggle-opt" onclick="setVar('cargo','fragile',this)">Fragile</button>
-          </div>
+        <div class="app-chrome-breadcrumb">
+          LytxOne <span class="app-chrome-breadcrumb-sep">/</span>
+          <span>Routes</span> <span class="app-chrome-breadcrumb-sep">/</span>
+          <span>Risk Analysis</span>
         </div>
       </div>
-      <div class="route-cards">
-        <div class="route-card" id="routeA">
-          <div style="font-weight: 800; margin-bottom: 4px;">Route A: I-5 via Downtown</div>
-          <div class="route-score" id="scoreA" style="color: var(--accent-a);">38</div>
-          <div class="route-score-label">Risk Score</div>
-          <ul class="route-factors" id="factorsA"></ul>
+      <div class="app-chrome-body">
+        <div class="route-controls">
+          <div class="control-group">
+            <div class="control-label">Weather</div>
+            <div class="control-toggle" data-var="weather">
+              <button class="toggle-opt active" onclick="setVar('weather','clear',this)">Clear</button>
+              <button class="toggle-opt" onclick="setVar('weather','rain',this)">Rain</button>
+              <button class="toggle-opt" onclick="setVar('weather','snow',this)">Snow</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">Time</div>
+            <div class="control-toggle" data-var="time">
+              <button class="toggle-opt active" onclick="setVar('time','day',this)">Day</button>
+              <button class="toggle-opt" onclick="setVar('time','night',this)">Night</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">Cargo</div>
+            <div class="control-toggle" data-var="cargo">
+              <button class="toggle-opt active" onclick="setVar('cargo','general',this)">General</button>
+              <button class="toggle-opt" onclick="setVar('cargo','hazmat',this)">Hazmat</button>
+              <button class="toggle-opt" onclick="setVar('cargo','fragile',this)">Fragile</button>
+            </div>
+          </div>
         </div>
-        <div class="route-card recommended" id="routeB">
-          <div style="font-weight: 800; margin-bottom: 4px;">Route B: US-101 Bypass</div>
-          <div class="route-score" id="scoreB" style="color: var(--accent-e);">22</div>
-          <div class="route-score-label">Risk Score &bull; Recommended</div>
-          <ul class="route-factors" id="factorsB"></ul>
+        <div class="route-cards">
+          <div class="route-card" id="routeA">
+            <div style="font-weight: 800; margin-bottom: 4px;">Route A: I-5 via Downtown</div>
+            <div class="route-score" id="scoreA" style="color: var(--accent-a);">38</div>
+            <div class="route-score-label">Risk Score</div>
+            <ul class="route-factors" id="factorsA"></ul>
+          </div>
+          <div class="route-card recommended" id="routeB">
+            <div style="font-weight: 800; margin-bottom: 4px;">Route B: US-101 Bypass</div>
+            <div class="route-score" id="scoreB" style="color: var(--accent-e);">22</div>
+            <div class="route-score-label">Risk Score &bull; Recommended</div>
+            <ul class="route-factors" id="factorsB"></ul>
+          </div>
         </div>
       </div>
     </div>
@@ -930,7 +1322,18 @@
       <p>Natural language interface for fleet intelligence. Ask questions about your fleet data.</p>
     </div>
     <div class="demo-explainer"><strong>What this shows:</strong> Instead of navigating dashboards, managers ask plain-English questions and get instant answers with data. This is the "front door" to LytxOne — every feature becomes accessible through conversation. No competitor offers this.</div>
-    <div class="demo-card" style="padding: 0;">
+    <div class="app-chrome" style="overflow: hidden;">
+      <div class="app-chrome-bar">
+        <div class="app-chrome-dots">
+          <div class="app-chrome-dot"></div>
+          <div class="app-chrome-dot"></div>
+          <div class="app-chrome-dot"></div>
+        </div>
+        <div class="app-chrome-breadcrumb">
+          LytxOne <span class="app-chrome-breadcrumb-sep">/</span>
+          <span>Ask AI</span>
+        </div>
+      </div>
       <div class="chat-container">
         <div class="chat-header">
           <div class="chat-header-dot"></div>
@@ -966,29 +1369,43 @@
       <p>Watch AI auto-resolve a safety event end-to-end — from detection to case closed.</p>
     </div>
     <div class="demo-explainer"><strong>What this shows:</strong> Samsara auto-triages events (step 1). This goes steps 2-10: full end-to-end resolution without a human. AI reviews video, determines fault, sends coaching, and closes the ticket. Only 20% of edge cases need human review.</div>
-    <div class="demo-card">
-      <button class="sim-btn sim-btn-primary" onclick="runWorkflow()" id="wfBtn">Run Autonomous Resolution</button>
-      <div class="workflow-pipeline" id="wfPipeline">
-        <div class="wf-step" id="wf-0"><div class="wf-step-icon">&#x1F4F9;</div><div class="wf-step-label">Event Detected</div><div class="wf-step-time"></div></div>
-        <div class="wf-arrow">&rarr;</div>
-        <div class="wf-step" id="wf-1"><div class="wf-step-icon">&#x1F9E0;</div><div class="wf-step-label">AI Reviews Video</div><div class="wf-step-time"></div></div>
-        <div class="wf-arrow">&rarr;</div>
-        <div class="wf-step" id="wf-2"><div class="wf-step-icon">&#x2696;&#xFE0F;</div><div class="wf-step-label">Fault Determined</div><div class="wf-step-time"></div></div>
-        <div class="wf-arrow">&rarr;</div>
-        <div class="wf-step" id="wf-3"><div class="wf-step-icon">&#x1F4E8;</div><div class="wf-step-label">Coaching Sent</div><div class="wf-step-time"></div></div>
-        <div class="wf-arrow">&rarr;</div>
-        <div class="wf-step" id="wf-4"><div class="wf-step-icon">&#x2705;</div><div class="wf-step-label">Ticket Closed</div><div class="wf-step-time"></div></div>
-      </div>
-      <div class="wf-comparison">
-        <div class="wf-compare-card">
-          <h4>Manual Process</h4>
-          <div class="wf-compare-value" style="color: var(--accent-r);">4.2 hrs</div>
-          <div style="font-size: 0.8125rem; color: var(--text-3); margin-top: 4px;">Manager reviews, writes report, assigns coaching, follows up</div>
+    <div class="app-chrome">
+      <div class="app-chrome-bar">
+        <div class="app-chrome-dots">
+          <div class="app-chrome-dot"></div>
+          <div class="app-chrome-dot"></div>
+          <div class="app-chrome-dot"></div>
         </div>
-        <div class="wf-compare-card">
-          <h4>AI Autonomous</h4>
-          <div class="wf-compare-value" style="color: var(--accent-e);" id="wfTime">—</div>
-          <div style="font-size: 0.8125rem; color: var(--text-3); margin-top: 4px;">End-to-end, no human needed</div>
+        <div class="app-chrome-breadcrumb">
+          LytxOne <span class="app-chrome-breadcrumb-sep">/</span>
+          <span>Automation</span> <span class="app-chrome-breadcrumb-sep">/</span>
+          <span>Workflow Engine</span>
+        </div>
+      </div>
+      <div class="app-chrome-body">
+        <button class="sim-btn sim-btn-primary" onclick="runWorkflow()" id="wfBtn">Run Autonomous Resolution</button>
+        <div class="workflow-pipeline" id="wfPipeline">
+          <div class="wf-step" id="wf-0"><div class="wf-step-icon">&#x1F4F9;</div><div class="wf-step-label">Event Detected</div><div class="wf-step-time"></div></div>
+          <div class="wf-arrow">&rarr;</div>
+          <div class="wf-step" id="wf-1"><div class="wf-step-icon">&#x1F9E0;</div><div class="wf-step-label">AI Reviews Video</div><div class="wf-step-time"></div></div>
+          <div class="wf-arrow">&rarr;</div>
+          <div class="wf-step" id="wf-2"><div class="wf-step-icon">&#x2696;&#xFE0F;</div><div class="wf-step-label">Fault Determined</div><div class="wf-step-time"></div></div>
+          <div class="wf-arrow">&rarr;</div>
+          <div class="wf-step" id="wf-3"><div class="wf-step-icon">&#x1F4E8;</div><div class="wf-step-label">Coaching Sent</div><div class="wf-step-time"></div></div>
+          <div class="wf-arrow">&rarr;</div>
+          <div class="wf-step" id="wf-4"><div class="wf-step-icon">&#x2705;</div><div class="wf-step-label">Ticket Closed</div><div class="wf-step-time"></div></div>
+        </div>
+        <div class="wf-comparison">
+          <div class="wf-compare-card">
+            <h4>Manual Process</h4>
+            <div class="wf-compare-value" style="color: var(--accent-r);">4.2 hrs</div>
+            <div style="font-size: 0.8125rem; color: var(--text-3); margin-top: 4px;">Manager reviews, writes report, assigns coaching, follows up</div>
+          </div>
+          <div class="wf-compare-card">
+            <h4>AI Autonomous</h4>
+            <div class="wf-compare-value" style="color: var(--accent-e);" id="wfTime">—</div>
+            <div style="font-size: 0.8125rem; color: var(--text-3); margin-top: 4px;">End-to-end, no human needed</div>
+          </div>
         </div>
       </div>
     </div>
