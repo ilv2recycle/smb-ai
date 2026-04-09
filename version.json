@@ -1,12 +1,12 @@
 {
-  "version": "v260409.16 4:03p",
-  "release": 17,
-  "sha": "da95ace",
-  "fullSha": "da95ace655e6a1f2052e55a4467f7b32f20feb1f",
+  "version": "v260409.17 4:05p",
+  "release": 18,
+  "sha": "ce9e69e",
+  "fullSha": "ce9e69e7627acfe991c81d0d73553648162f5c2b",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
   "machine": "runnervm35a4x",
-  "pushedAt": "2026-04-09 21:03:58+00",
-  "commits": [{"sha":"9ee19b2","message":"Move AI Lab CTA to prominent banner at top of page","author":"Monique Mason"},{"sha":"da95ace","message":"Merge pull request #17 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
+  "pushedAt": "2026-04-09 21:05:44+00",
+  "commits": [{"sha":"2559129","message":"Rename 'Net Profit' to 'Net Savings' with clearer description","author":"Monique Mason"},{"sha":"ce9e69e","message":"Merge pull request #18 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
 }
