@@ -2677,8 +2677,8 @@
 
       <!-- Voting Leaderboard -->
       <div class="card leaderboard reveal">
-        <div class="leaderboard-title">&#x1F3C6; Strategy Popularity</div>
-        <div class="leaderboard-subtitle">Vote on strategies using the reaction buttons on each card. Rankings update live. Votes are saved per device.</div>
+        <div class="leaderboard-title">&#x1F3C6; Strategy Popularity &mdash; <span id="total-votes-count">0</span> total votes</div>
+        <div class="leaderboard-subtitle">Connecting...</div>
         <div id="leaderboard-rows"></div>
       </div>
 
@@ -3319,7 +3319,11 @@
     const statsEl = document.querySelector('.stats-container');
     if (statsEl) ringObserver.observe(statsEl);
 
-    // ===== VOTING SYSTEM =====
+    // ===== VOTING SYSTEM (Supabase-backed with localStorage fallback) =====
+    const SB_URL = 'https://rokbxycamserwmxxazve.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJva2J4eWNhbXNlcndteHhhenZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1ODk2NTEsImV4cCI6MjA5MTE2NTY1MX0.ctTGiMp_CG1QgwCIS6drHzIQmwwuUigr0hG-WsqlwwU';
+    let useSupabase = true;
+
     const strategyIds = [
       { id: 'incident', name: 'Incident Response' },
       { id: 'maintenance', name: 'Predictive Maintenance' },
@@ -3341,31 +3345,107 @@
       { emoji: '🚀', label: 'Rocket' }
     ];
 
-    // Load votes from localStorage
-    function getVotes() {
+    // Anonymous voter ID (persistent per browser, no PII)
+    function getVoterId() {
+      let id = localStorage.getItem('lytxone-voter-id');
+      if (!id) {
+        id = 'v_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+        localStorage.setItem('lytxone-voter-id', id);
+      }
+      return id;
+    }
+
+    // Supabase REST helpers
+    async function sbFetch(path, options = {}) {
+      const res = await fetch(SB_URL + '/rest/v1/' + path, {
+        ...options,
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': 'Bearer ' + SB_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': options.prefer || 'return=minimal',
+          ...options.headers
+        }
+      });
+      return res;
+    }
+
+    // localStorage fallback
+    function getLocalVotes() {
       try { return JSON.parse(localStorage.getItem('lytxone-votes') || '{}'); }
       catch { return {}; }
     }
-    function saveVotes(votes) {
+    function saveLocalVotes(votes) {
       localStorage.setItem('lytxone-votes', JSON.stringify(votes));
     }
 
-    // Inject vote bars into each strategy card
-    function initVoting() {
+    // Fetch all vote counts from Supabase
+    async function fetchVoteCounts() {
+      try {
+        const res = await sbFetch('lytxone_votes?select=strategy_id,emoji', { headers: { 'Prefer': '' } });
+        if (!res.ok) throw new Error('Table not found');
+        const rows = await res.json();
+        const counts = {};
+        rows.forEach(r => {
+          const key = r.strategy_id + '-' + r.emoji;
+          counts[key] = (counts[key] || 0) + 1;
+        });
+        return counts;
+      } catch (e) {
+        useSupabase = false;
+        return getLocalVotes();
+      }
+    }
+
+    // Check if this voter has voted on a specific strategy+emoji
+    async function fetchMyVotes() {
+      if (!useSupabase) return getLocalVotes();
+      try {
+        const vid = getVoterId();
+        const res = await sbFetch(`lytxone_votes?voter_id=eq.${vid}&select=strategy_id,emoji`, { headers: { 'Prefer': '' } });
+        if (!res.ok) throw new Error('Table not found');
+        const rows = await res.json();
+        const myVotes = {};
+        rows.forEach(r => {
+          myVotes[r.strategy_id + '-' + r.emoji + '-voted'] = true;
+        });
+        return myVotes;
+      } catch {
+        useSupabase = false;
+        return getLocalVotes();
+      }
+    }
+
+    // Global vote state
+    let voteCounts = {};
+    let myVotes = {};
+
+    async function initVoting() {
+      [voteCounts, myVotes] = await Promise.all([fetchVoteCounts(), fetchMyVotes()]);
+      // Merge for localStorage fallback
+      if (!useSupabase) {
+        const local = getLocalVotes();
+        voteCounts = local;
+        myVotes = local;
+      }
+
+      const modeLabel = useSupabase ? '🌐 Live tally — votes shared across all viewers' : '💾 Local mode — votes saved on this device only';
+      const leaderSub = document.querySelector('.leaderboard-subtitle');
+      if (leaderSub) leaderSub.textContent = modeLabel;
+
       const cards = document.querySelectorAll('.strategy-card');
       cards.forEach((card, i) => {
         if (i >= strategyIds.length) return;
         const sid = strategyIds[i].id;
-        const votes = getVotes();
 
         const bar = document.createElement('div');
         bar.className = 'vote-bar';
         bar.innerHTML = '<span class="vote-bar-label">Vote</span>' +
           reactions.map(r => {
             const key = sid + '-' + r.emoji;
-            const count = (votes[key] || 0);
-            const voted = votes[key + '-voted'] ? 'voted' : '';
-            return `<button class="vote-btn ${voted}" data-key="${key}" onclick="castVote(this, '${key}', '${r.emoji}')">
+            const count = voteCounts[key] || 0;
+            const voted = myVotes[key + '-voted'] ? 'voted' : '';
+            return `<button class="vote-btn ${voted}" data-key="${key}" data-sid="${sid}" data-emoji="${r.emoji}" onclick="castVote(this)">
               <span class="vote-emoji">${r.emoji}</span>
               <span class="vote-count">${count || ''}</span>
             </button>`;
@@ -3373,50 +3453,75 @@
 
         card.appendChild(bar);
       });
+
+      updateLeaderboard();
     }
 
-    function castVote(btn, key, emoji) {
-      const votes = getVotes();
-      const votedKey = key + '-voted';
+    async function castVote(btn) {
+      const sid = btn.dataset.sid;
+      const emoji = btn.dataset.emoji;
+      const key = btn.dataset.key;
+      const vid = getVoterId();
+      const isVoted = myVotes[key + '-voted'];
 
-      if (votes[votedKey]) {
+      if (isVoted) {
         // Un-vote
-        votes[key] = Math.max(0, (votes[key] || 0) - 1);
-        delete votes[votedKey];
+        if (useSupabase) {
+          await sbFetch(`lytxone_votes?strategy_id=eq.${sid}&emoji=eq.${encodeURIComponent(emoji)}&voter_id=eq.${vid}`, { method: 'DELETE' });
+        }
+        voteCounts[key] = Math.max(0, (voteCounts[key] || 0) - 1);
+        delete myVotes[key + '-voted'];
         btn.classList.remove('voted');
       } else {
         // Vote
-        votes[key] = (votes[key] || 0) + 1;
-        votes[votedKey] = true;
+        if (useSupabase) {
+          await sbFetch('lytxone_votes', {
+            method: 'POST',
+            body: JSON.stringify({ strategy_id: sid, emoji: emoji, voter_id: vid }),
+            prefer: 'return=minimal'
+          });
+        }
+        voteCounts[key] = (voteCounts[key] || 0) + 1;
+        myVotes[key + '-voted'] = true;
         btn.classList.add('voted');
 
         // Confetti burst
-        for (let i = 0; i < 3; i++) {
+        for (let c = 0; c < 3; c++) {
           const confetti = document.createElement('span');
           confetti.className = 'vote-confetti';
           confetti.textContent = emoji;
           confetti.style.left = (Math.random() * 30 + 10) + 'px';
           confetti.style.top = '-5px';
-          confetti.style.animationDelay = (i * 0.1) + 's';
+          confetti.style.animationDelay = (c * 0.1) + 's';
           btn.appendChild(confetti);
           setTimeout(() => confetti.remove(), 900);
         }
       }
 
-      saveVotes(votes);
-      btn.querySelector('.vote-count').textContent = votes[key] || '';
+      // Always save to localStorage as backup
+      if (!useSupabase) {
+        const local = getLocalVotes();
+        local[key] = voteCounts[key];
+        if (myVotes[key + '-voted']) local[key + '-voted'] = true;
+        else delete local[key + '-voted'];
+        saveLocalVotes(local);
+      }
+
+      btn.querySelector('.vote-count').textContent = voteCounts[key] || '';
       updateLeaderboard();
     }
 
-    // Leaderboard
     function getTotalVotes(sid) {
-      const votes = getVotes();
-      return reactions.reduce((sum, r) => sum + (votes[sid + '-' + r.emoji] || 0), 0);
+      return reactions.reduce((sum, r) => sum + (voteCounts[sid + '-' + r.emoji] || 0), 0);
     }
 
     function updateLeaderboard() {
       const container = document.getElementById('leaderboard-rows');
       if (!container) return;
+
+      const totalAll = strategyIds.reduce((sum, s) => sum + getTotalVotes(s.id), 0);
+      const totalEl = document.getElementById('total-votes-count');
+      if (totalEl) totalEl.textContent = totalAll;
 
       const ranked = strategyIds
         .map(s => ({ ...s, total: getTotalVotes(s.id) }))
@@ -3438,7 +3543,6 @@
     }
 
     initVoting();
-    updateLeaderboard();
 
     // ===== KEYBOARD SHORTCUTS =====
     document.addEventListener('keydown', e => {
