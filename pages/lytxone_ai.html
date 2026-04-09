@@ -58,11 +58,26 @@
 
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(180deg, var(--bg-primary) 0%, #FFFFFF 100%);
+      background: #FFFFFF;
       color: var(--text-primary);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
       overflow-x: hidden;
+    }
+
+    /* Subtle grain overlay for premium texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      opacity: 0.018;
+      pointer-events: none;
+      z-index: 9998;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 256px;
     }
 
     /* ===== SCROLL PROGRESS ===== */
@@ -86,7 +101,7 @@
       height: 100%;
       pointer-events: none;
       z-index: 0;
-      opacity: 0.4;
+      opacity: 0.25;
     }
 
     /* ===== HERO HEADER ===== */
@@ -230,7 +245,7 @@
       z-index: 10;
     }
 
-    /* ===== GLASSMORPHISM CARDS ===== */
+    /* ===== PREMIUM CARDS ===== */
     .card {
       background: var(--bg-card);
       backdrop-filter: blur(20px);
@@ -238,7 +253,7 @@
       border-radius: var(--radius-lg);
       border: 1px solid var(--border);
       overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
     }
 
@@ -249,12 +264,36 @@
       left: 0;
       right: 0;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      background: linear-gradient(90deg, transparent 10%, rgba(99, 102, 241, 0.12) 50%, transparent 90%);
     }
 
     .card:hover {
       border-color: var(--border-glow);
-      box-shadow: var(--shadow-glow);
+      box-shadow: var(--shadow-glow), var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    /* Animated gradient border accent on strategy cards */
+    .strategy-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--accent-indigo), var(--accent-violet), var(--accent-cyan), var(--accent-emerald));
+      background-size: 100% 300%;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      animation: gradientSlide 6s ease infinite;
+    }
+
+    .strategy-card:hover::after {
+      opacity: 1;
+    }
+
+    @keyframes gradientSlide {
+      0%, 100% { background-position: 0% 0%; }
+      50% { background-position: 0% 100%; }
     }
 
     /* ===== EXPLAINER BOXES ===== */
@@ -547,12 +586,13 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    .tab:hover { color: var(--text-secondary); background: rgba(255, 255, 255, 0.03); }
+    .tab:hover { color: var(--text-primary); background: rgba(99, 102, 241, 0.04); }
 
     .tab.active {
-      background: rgba(129, 140, 248, 0.1);
+      background: #FFFFFF;
       color: var(--accent-indigo);
-      box-shadow: 0 0 20px rgba(129, 140, 248, 0.05);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(99, 102, 241, 0.1);
+      font-weight: 800;
     }
 
     .tab-content { display: none; }
@@ -611,13 +651,18 @@
 
     .badge {
       padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 0.75rem;
+      border-radius: 100px;
+      font-size: 0.6875rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       border: 1px solid;
       position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .badge:hover {
+      transform: translateY(-1px);
     }
 
     .badge.purple {
@@ -940,7 +985,7 @@
 
     .chart-wrapper {
       position: relative;
-      height: 420px;
+      height: 560px;
     }
 
     .chart-stats {
@@ -1105,6 +1150,55 @@
     @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
     .pulse-on-update { animation: pulse 0.5s ease; }
 
+    /* ===== PREMIUM FOOTER ===== */
+    .footer {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 60px 48px 48px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      letter-spacing: -0.01em;
+    }
+
+    .footer-brand span {
+      background: linear-gradient(135deg, #4F46E5, #7C3AED);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer-meta {
+      display: flex;
+      gap: 24px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .footer-meta .dot {
+      width: 4px; height: 4px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      align-self: center;
+    }
+
+    /* ===== SELECTION COLOR ===== */
+    ::selection {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--text-primary);
+    }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1024px) {
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1192,7 +1286,7 @@
     <!-- Stats -->
     <div class="card stats-container reveal reveal-delay-2">
       <div class="stats-title">Customer Economics Summary</div>
-      <div class="stats-subtitle">Complete financial picture for a 20-vehicle fleet using all 6 AI strategies</div>
+      <div class="stats-subtitle">Complete financial picture for a 20-vehicle fleet using all 11 AI strategies</div>
 
       <div class="stats-grid">
         <div class="stat-card">
@@ -1245,9 +1339,10 @@
 
     <!-- Tabs -->
     <div class="tabs reveal">
-      <button class="tab active" onclick="switchTab('foundation', event)">Foundation Strategies (3)</button>
-      <button class="tab" onclick="switchTab('differentiated', event)">Differentiated Innovations (3)</button>
-      <button class="tab" onclick="switchTab('comparison', event)">Side-by-Side Comparison</button>
+      <button class="tab active" onclick="switchTab('foundation', event)">Foundation (3)</button>
+      <button class="tab" onclick="switchTab('differentiated', event)">Differentiated (3)</button>
+      <button class="tab" onclick="switchTab('expansion', event)">Expansion (5)</button>
+      <button class="tab" onclick="switchTab('comparison', event)">Comparison</button>
     </div>
 
     <!-- ===== FOUNDATION TAB ===== -->
@@ -1685,6 +1780,326 @@
       </div>
     </div>
 
+    <!-- ===== EXPANSION TAB ===== -->
+    <div id="expansion" class="tab-content">
+      <p style="font-size: 1.0625rem; color: var(--text-tertiary); margin-bottom: 32px; font-weight: 500;">Five additional AI strategies that leverage LytxOne's unique camera + telematics combination in ways no competitor can replicate</p>
+
+      <!-- Strategy 7: Ask LytxOne -->
+      <div class="card strategy-card reveal">
+        <div class="rank-badge">&#x1F4AC;</div>
+        <div class="strategy-header">
+          <div class="strategy-title">"Ask LytxOne" &mdash; Conversational Fleet Intelligence</div>
+          <div class="strategy-subtitle">Natural language interface that turns dashboards into conversations</div>
+          <div class="badges">
+            <span class="badge blue">&#x1F30A; Blue Ocean</span>
+            <span class="badge green">Zero Learning Curve</span>
+            <span class="badge purple">GenAI Native</span>
+          </div>
+        </div>
+
+        <div class="strategy-description">
+          <h4>What LytxOne Already Has</h4>
+          <p>Rich dashboards with driver scores, trip data, maintenance alerts, compliance status, and video events. However, extracting insights requires navigating multiple screens and filters &mdash; a barrier for SMB fleet managers who aren't data analysts.</p>
+
+          <h4>What This Adds</h4>
+          <p>A conversational AI interface where managers ask plain-English questions: "Which drivers had the most hard braking events last week?" "What's my fuel spend trending vs last quarter?" "Show me all unresolved safety events for Driver Martinez." "What maintenance is overdue?" The AI queries all LytxOne data and responds with charts, summaries, and actionable recommendations. Works via dashboard chat, SMS, or voice.</p>
+
+          <h4>Value for Customers</h4>
+          <ul>
+            <li><strong>Zero learning curve:</strong> No training needed &mdash; if you can ask a question, you can use LytxOne</li>
+            <li><strong>Faster decisions:</strong> Get answers in seconds vs. minutes of dashboard navigation</li>
+            <li><strong>Proactive alerts:</strong> AI surfaces anomalies managers wouldn't think to look for</li>
+            <li><strong>SMB-perfect:</strong> Small fleet owners who don't have time for complex dashboards</li>
+          </ul>
+
+          <h4>Competitive Context</h4>
+          <p><strong>No competitor offers this:</strong> Samsara, Geotab, and Motive all rely on traditional dashboard UIs. Natural language fleet querying is uncontested. This becomes the "front door" to LytxOne &mdash; every other feature is accessed through conversation, dramatically increasing platform stickiness and feature discovery.</p>
+        </div>
+
+        <div class="metrics-title">Customer-Facing Metrics</div>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Annual Cost Savings for Customer</div>
+            <div class="metric-value" id="askone-roi">$18,000</div>
+            <div class="metric-note">Manager productivity gains (20-vehicle baseline)</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-value" style="color: var(--accent-emerald);">Day 1</div>
+            <div class="metric-note">Immediate productivity improvement</div>
+          </div>
+        </div>
+
+        <div class="internal-box">
+          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Development Cost</div>
+              <div class="metric-value" style="color: var(--text-secondary); font-size: 1.75rem;">$600K</div>
+              <div class="metric-note">LLM integration + data pipeline</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">AI Computing Cost</div>
+              <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$0.80</div>
+              <div class="metric-note">Per user/month (Lytx pays)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Strategy 8: Computer Vision Cargo Verification -->
+      <div class="card strategy-card reveal">
+        <div class="rank-badge">&#x1F4E6;</div>
+        <div class="strategy-header">
+          <div class="strategy-title">Computer Vision Cargo &amp; Load Verification</div>
+          <div class="strategy-subtitle">Existing cameras repurposed for cargo integrity and proof-of-delivery</div>
+          <div class="badges">
+            <span class="badge blue">&#x1F30A; True Blue Ocean</span>
+            <span class="badge green">Uses Existing Hardware</span>
+            <span class="badge purple">Camera Moat</span>
+          </div>
+        </div>
+
+        <div class="strategy-description">
+          <h4>What LytxOne Already Has</h4>
+          <p>Dual HD cameras (road-facing + driver-facing) with real-time AI edge processing on the RZ41 device. Currently used only for safety behavior detection.</p>
+
+          <h4>What This Adds</h4>
+          <p>Computer vision models that use existing cameras to: verify cargo is properly loaded and secured before departure, detect load shifts or unsecured items during transit, create timestamped visual proof of cargo condition at pickup and delivery, and flag overloading or improper stacking. For service fleets: document property condition before/after work, verify equipment deployment, and create visual service records.</p>
+
+          <h4>Value for Customers</h4>
+          <ul>
+            <li><strong>Eliminated cargo disputes:</strong> Timestamped visual proof of cargo condition at every stop ($8K-$15K/year in avoided claims)</li>
+            <li><strong>Reduced cargo damage:</strong> AI detects unsecured loads before accidents happen</li>
+            <li><strong>Proof of service:</strong> For HVAC/plumbing/electrical fleets &mdash; document work completed, property condition</li>
+            <li><strong>Insurance leverage:</strong> Demonstrable cargo safety reduces cargo insurance premiums</li>
+          </ul>
+
+          <h4>Competitive Context</h4>
+          <p><strong>True Blue Ocean &mdash; requires cameras:</strong> Telematics-only players (Geotab, Verizon Connect) physically cannot do this. Samsara has cameras but hasn't applied CV to cargo. This repurposes existing hardware for entirely new value &mdash; zero additional hardware cost for the customer. Lytx's edge AI processing on the RZ41 means this runs locally without cloud latency.</p>
+        </div>
+
+        <div class="metrics-title">Customer-Facing Metrics</div>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Annual Cost Savings for Customer</div>
+            <div class="metric-value" id="cargo-roi">$24,000</div>
+            <div class="metric-note">Avoided claims + reduced cargo insurance (20-vehicle baseline)</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-value" style="color: var(--accent-emerald);">2 Months</div>
+            <div class="metric-note">After first cargo dispute avoided</div>
+          </div>
+        </div>
+
+        <div class="internal-box">
+          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Development Cost</div>
+              <div class="metric-value" style="color: var(--text-secondary); font-size: 1.75rem;">$900K</div>
+              <div class="metric-note">CV model training + edge deployment</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">AI Computing Cost</div>
+              <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$0.15</div>
+              <div class="metric-note">Per verification (edge-processed, minimal cloud)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Strategy 9: Cross-Fleet Benchmarking -->
+      <div class="card strategy-card reveal">
+        <div class="rank-badge">&#x1F4CA;</div>
+        <div class="strategy-header">
+          <div class="strategy-title">Cross-Fleet Intelligence &amp; Benchmarking Network</div>
+          <div class="strategy-subtitle">Anonymized industry benchmarks powered by Lytx's 341B-mile dataset</div>
+          <div class="badges">
+            <span class="badge blue">&#x1F30A; Blue Ocean</span>
+            <span class="badge green">Network Effects Moat</span>
+            <span class="badge purple">Data Advantage</span>
+          </div>
+        </div>
+
+        <div class="strategy-description">
+          <h4>What LytxOne Already Has</h4>
+          <p>Individual fleet analytics: driver scores, safety trends, fuel data, maintenance history. All analysis is siloed to each customer's own data.</p>
+
+          <h4>What This Adds</h4>
+          <p>Anonymized benchmarking across Lytx's entire customer base. "Your fleet's distraction rate is 2.3x the HVAC industry average in the Southeast." "Your fuel efficiency ranks in the top 15% of plumbing fleets with 15-25 vehicles." "Fleets similar to yours reduced hard braking by 40% after implementing weekly coaching &mdash; you've only achieved 12%." Includes regional, industry-specific, and fleet-size-matched benchmarks with actionable recommendations to close gaps.</p>
+
+          <h4>Value for Customers</h4>
+          <ul>
+            <li><strong>Contextualized performance:</strong> "Am I doing well?" finally has a data-backed answer</li>
+            <li><strong>Competitive intelligence:</strong> Understand where you stand vs. similar fleets without sharing data</li>
+            <li><strong>Targeted improvement:</strong> AI identifies your biggest gaps vs. top performers and recommends specific actions</li>
+            <li><strong>Insurance negotiation:</strong> "Our fleet ranks in the top 10% nationally" is powerful at renewal</li>
+          </ul>
+
+          <h4>Competitive Context</h4>
+          <p><strong>Network effects moat:</strong> This gets better with every customer Lytx adds. Samsara could theoretically build this, but Lytx has 27 years of data across every industry vertical. Geotab has scale but lacks video data. The benchmarks create a flywheel: better benchmarks attract more customers, which improves benchmarks. Extremely difficult for competitors to replicate without matching Lytx's data depth and breadth.</p>
+        </div>
+
+        <div class="metrics-title">Customer-Facing Metrics</div>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Annual Cost Savings for Customer</div>
+            <div class="metric-value" id="benchmark-roi">$15,000</div>
+            <div class="metric-note">Performance improvements driven by benchmark insights</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-value" style="color: var(--accent-emerald);">1 Month</div>
+            <div class="metric-note">Insights available immediately upon activation</div>
+          </div>
+        </div>
+
+        <div class="internal-box">
+          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Development Cost</div>
+              <div class="metric-value" style="color: var(--text-secondary); font-size: 1.75rem;">$500K</div>
+              <div class="metric-note">Data pipeline + anonymization + UI</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">AI Computing Cost</div>
+              <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$0.30</div>
+              <div class="metric-note">Per fleet/month (batch processing)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Strategy 10: Video-Verified Proof of Service -->
+      <div class="card strategy-card reveal">
+        <div class="rank-badge">&#x2705;</div>
+        <div class="strategy-header">
+          <div class="strategy-title">Video-Verified Proof of Service</div>
+          <div class="strategy-subtitle">Camera-based service documentation for field service fleets</div>
+          <div class="badges">
+            <span class="badge blue">&#x1F30A; Blue Ocean</span>
+            <span class="badge green">Uses Existing Hardware</span>
+            <span class="badge purple">Service Fleet Focus</span>
+          </div>
+        </div>
+
+        <div class="strategy-description">
+          <h4>What LytxOne Already Has</h4>
+          <p>Dual cameras with GPS and timestamp data. Currently captures driving events but ignores what happens at job sites.</p>
+
+          <h4>What This Adds</h4>
+          <p>When a vehicle arrives at a job site (detected via geofence), cameras automatically capture: property condition on arrival, duration of service, departure condition. AI generates timestamped visual service reports: "Arrived 9:02 AM, departed 11:47 AM, property condition documented." For delivery fleets: proof of delivery with visual confirmation. For construction/utility: before/after documentation of work sites. All reports auto-attached to job tickets in dispatching systems.</p>
+
+          <h4>Value for Customers</h4>
+          <ul>
+            <li><strong>Eliminated "he said/she said":</strong> Visual proof resolves customer disputes instantly ($5K-$10K/year)</li>
+            <li><strong>Reduced liability:</strong> Pre-existing property damage documented before work begins</li>
+            <li><strong>Automated timesheets:</strong> GPS + video confirms actual time on site vs. reported time</li>
+            <li><strong>Customer confidence:</strong> Send arrival/completion notifications with visual confirmation</li>
+          </ul>
+
+          <h4>Competitive Context</h4>
+          <p><strong>Unique to camera-equipped platforms:</strong> Telematics-only players cannot offer visual proof of service. Samsara has cameras but focuses on driving safety, not job-site documentation. This is particularly compelling for HVAC, plumbing, electrical, landscaping, and pest control fleets &mdash; LytxOne's core SMB market. Transforms cameras from a "safety cost" into a "revenue protection tool."</p>
+        </div>
+
+        <div class="metrics-title">Customer-Facing Metrics</div>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Annual Cost Savings for Customer</div>
+            <div class="metric-value" id="proof-roi">$20,000</div>
+            <div class="metric-note">Avoided disputes + automated timesheets (20-vehicle baseline)</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-value" style="color: var(--accent-emerald);">2 Weeks</div>
+            <div class="metric-note">First documented dispute avoidance</div>
+          </div>
+        </div>
+
+        <div class="internal-box">
+          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Development Cost</div>
+              <div class="metric-value" style="color: var(--text-secondary); font-size: 1.75rem;">$700K</div>
+              <div class="metric-note">Geofence triggers + CV + report generation</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">AI Computing Cost</div>
+              <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$0.25</div>
+              <div class="metric-note">Per service visit (edge + cloud hybrid)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Strategy 11: AI Compliance Autopilot -->
+      <div class="card strategy-card reveal">
+        <div class="rank-badge">&#x1F6E1;&#xFE0F;</div>
+        <div class="strategy-header">
+          <div class="strategy-title">AI Compliance Autopilot</div>
+          <div class="strategy-subtitle">Predictive compliance that prevents violations before they happen</div>
+          <div class="badges">
+            <span class="badge green">&#x2713; Builds on Existing Compliance</span>
+            <span class="badge blue">Predictive, Not Reactive</span>
+            <span class="badge purple">Audit-Ready Automation</span>
+          </div>
+        </div>
+
+        <div class="strategy-description">
+          <h4>What LytxOne Already Has</h4>
+          <p>Digital DVIR workflows, jurisdiction-level mileage tracking, and basic compliance documentation. These are reactive &mdash; they track what happened, not what's about to go wrong.</p>
+
+          <h4>What This Adds</h4>
+          <p>Predictive AI that: forecasts HOS (Hours of Service) violations 2-4 hours before they occur and recommends rest stops, auto-generates audit-ready documentation packages when DOT inspections are likely (based on route, region, and historical inspection patterns), monitors regulatory changes across all operating jurisdictions and flags fleet-specific impacts, scores each vehicle's "audit readiness" and prioritizes fixes, and auto-completes IFTA filings with GPS-verified mileage data.</p>
+
+          <h4>Value for Customers</h4>
+          <ul>
+            <li><strong>Prevented HOS violations:</strong> $16K average fine per violation &mdash; AI prevents them before they happen</li>
+            <li><strong>Audit readiness:</strong> Always prepared for DOT inspections with auto-generated documentation</li>
+            <li><strong>Regulatory monitoring:</strong> Never miss a new rule that affects your fleet</li>
+            <li><strong>IFTA automation:</strong> Eliminate hours of manual fuel tax reporting</li>
+          </ul>
+
+          <h4>Competitive Context</h4>
+          <p><strong>Enhancement over everyone's basics:</strong> All competitors offer reactive compliance (DVIR, ELD). Nobody offers predictive compliance that prevents violations before they occur. Lytx's video data adds a unique dimension: camera footage can verify driver condition (fatigue detection) as an additional HOS safety layer that telematics-only players cannot offer.</p>
+        </div>
+
+        <div class="metrics-title">Customer-Facing Metrics</div>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Annual Cost Savings for Customer</div>
+            <div class="metric-value" id="compliance-roi">$22,000</div>
+            <div class="metric-note">Avoided fines + audit prep time savings (20-vehicle baseline)</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Time to Break Even</div>
+            <div class="metric-value" style="color: var(--accent-emerald);">1 Month</div>
+            <div class="metric-note">After first prevented violation</div>
+          </div>
+        </div>
+
+        <div class="internal-box">
+          <div class="internal-note">Internal Lytx metrics (for business case, not customer-facing):</div>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-label">Lytx Development Cost</div>
+              <div class="metric-value" style="color: var(--text-secondary); font-size: 1.75rem;">$850K</div>
+              <div class="metric-note">Regulatory DB + prediction models + auto-filing</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">AI Computing Cost</div>
+              <div class="metric-value" style="color: var(--accent-cyan); font-size: 1.75rem;">$0.60</div>
+              <div class="metric-note">Per vehicle/month (Lytx pays)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ===== COMPARISON TAB ===== -->
     <div id="comparison" class="tab-content">
       <div class="card chart-section">
@@ -1712,6 +2127,18 @@
       </div>
     </div>
   </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-brand"><span>LytxOne</span> AI Strategy Portfolio</div>
+    <div class="footer-meta">
+      <span>11 Strategies</span>
+      <span class="dot"></span>
+      <span>Confidential</span>
+      <span class="dot"></span>
+      <span>Updated April 2026</span>
+    </div>
+  </footer>
 
   <script>
     // ===== PARTICLE SYSTEM =====
@@ -1810,7 +2237,12 @@
       incident: 2400,
       maintenance: 1800,
       risk: 1800,
-      coaching: 1440
+      coaching: 1440,
+      cargo: 1200,
+      compliance: 1100,
+      proof: 1000,
+      askone: 900,
+      benchmark: 750
     };
 
     let strategiesChart = null;
@@ -1849,9 +2281,7 @@
     }
 
     function updateMetrics(fleetSize) {
-      const totalSavings = fleetSize * (savingsPerVehicle.retention + savingsPerVehicle.workflow +
-        savingsPerVehicle.incident + savingsPerVehicle.maintenance +
-        savingsPerVehicle.risk + savingsPerVehicle.coaching);
+      const totalSavings = fleetSize * Object.values(savingsPerVehicle).reduce((a, b) => a + b, 0);
 
       const annualCost = fleetSize * baseMonthlyPrice * 12;
       const netProfit = totalSavings - annualCost;
@@ -1862,7 +2292,7 @@
       animateCounter(document.getElementById('netProfit'), netProfit);
       animateCounter(document.getElementById('customerROI'), roiMultiplier, 1000, '', 'x', 1);
 
-      const ids = { 'incident-roi': 'incident', 'maintenance-roi': 'maintenance', 'coaching-roi': 'coaching', 'retention-roi': 'retention', 'risk-roi': 'risk', 'workflow-roi': 'workflow' };
+      const ids = { 'incident-roi': 'incident', 'maintenance-roi': 'maintenance', 'coaching-roi': 'coaching', 'retention-roi': 'retention', 'risk-roi': 'risk', 'workflow-roi': 'workflow', 'askone-roi': 'askone', 'cargo-roi': 'cargo', 'benchmark-roi': 'benchmark', 'proof-roi': 'proof', 'compliance-roi': 'compliance' };
       Object.entries(ids).forEach(([id, key]) => {
         const el = document.getElementById(id);
         if (el) animateCounter(el, fleetSize * savingsPerVehicle[key]);
@@ -1872,7 +2302,7 @@
       const avgEl = document.getElementById('avgStrategy');
       const totalEl = document.getElementById('totalStrategy');
       if (topEl) animateCounter(topEl, fleetSize * savingsPerVehicle.retention);
-      if (avgEl) animateCounter(avgEl, totalSavings / 6);
+      if (avgEl) animateCounter(avgEl, totalSavings / 11);
       if (totalEl) animateCounter(totalEl, totalSavings);
 
       updateCharts(fleetSize);
@@ -1913,17 +2343,22 @@
       strategiesChart = new Chart(ctx.getContext('2d'), {
         type: 'bar',
         data: {
-          labels: ['Driver Retention', 'Autonomous Workflow', 'Incident Response', 'Maintenance', 'Route Risk', 'AI Coaching'],
+          labels: ['Driver Retention', 'Autonomous Workflow', 'Incident Response', 'Maintenance', 'Route Risk', 'AI Coaching', 'Cargo Verification', 'Compliance Autopilot', 'Proof of Service', 'Ask LytxOne', 'Benchmarking'],
           datasets: [{
             label: 'Annual Savings',
-            data: [60000, 50000, 48000, 36000, 36000, 28800],
+            data: [60000, 50000, 48000, 36000, 36000, 28800, 24000, 22000, 20000, 18000, 15000],
             backgroundColor: [
               'rgba(167, 139, 250, 0.8)',
               'rgba(129, 140, 248, 0.8)',
               'rgba(251, 191, 36, 0.8)',
               'rgba(52, 211, 153, 0.8)',
               'rgba(34, 211, 238, 0.8)',
-              'rgba(192, 132, 252, 0.8)'
+              'rgba(192, 132, 252, 0.8)',
+              'rgba(244, 114, 182, 0.8)',
+              'rgba(251, 146, 60, 0.8)',
+              'rgba(74, 222, 128, 0.8)',
+              'rgba(96, 165, 250, 0.8)',
+              'rgba(148, 163, 184, 0.8)'
             ],
             borderColor: [
               'rgba(167, 139, 250, 1)',
@@ -1931,7 +2366,12 @@
               'rgba(251, 191, 36, 1)',
               'rgba(52, 211, 153, 1)',
               'rgba(34, 211, 238, 1)',
-              'rgba(192, 132, 252, 1)'
+              'rgba(192, 132, 252, 1)',
+              'rgba(244, 114, 182, 1)',
+              'rgba(251, 146, 60, 1)',
+              'rgba(74, 222, 128, 1)',
+              'rgba(96, 165, 250, 1)',
+              'rgba(148, 163, 184, 1)'
             ],
             borderWidth: 1,
             borderRadius: 8,
@@ -1981,15 +2421,9 @@
 
     function updateCharts(fleetSize) {
       if (!strategiesChart || !strategiesChart.data || !strategiesChart.data.datasets) return;
-      const d = {
-        retention: fleetSize * savingsPerVehicle.retention,
-        workflow: fleetSize * savingsPerVehicle.workflow,
-        incident: fleetSize * savingsPerVehicle.incident,
-        maintenance: fleetSize * savingsPerVehicle.maintenance,
-        risk: fleetSize * savingsPerVehicle.risk,
-        coaching: fleetSize * savingsPerVehicle.coaching
-      };
-      strategiesChart.data.datasets[0].data = [d.retention, d.workflow, d.incident, d.maintenance, d.risk, d.coaching];
+      const d = {};
+      Object.keys(savingsPerVehicle).forEach(k => d[k] = fleetSize * savingsPerVehicle[k]);
+      strategiesChart.data.datasets[0].data = [d.retention, d.workflow, d.incident, d.maintenance, d.risk, d.coaching, d.cargo, d.compliance, d.proof, d.askone, d.benchmark];
       strategiesChart.update();
     }
 
