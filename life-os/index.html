@@ -1,0 +1,2676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monique · Life OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #F5F0E8;
+  --warm-white: #FAF7F2;
+  --ink: #1A1714;
+  --ink-60: rgba(26,23,20,0.6);
+  --ink-30: rgba(26,23,20,0.3);
+  --ink-10: rgba(26,23,20,0.1);
+  --ink-05: rgba(26,23,20,0.05);
+  --gold: #B8975A;
+  --gold-light: #D4B278;
+  --gold-pale: rgba(184,151,90,0.12);
+  --rust: #8B4A2F;
+  --sage: #4A6650;
+  --plum: #5C3D5E;
+  --blue-ink: #2C3E6B;
+  --sacral: #B8975A;
+  --career: #2C3E6B;
+  --emotion: #8B4A2F;
+  --north: #4A6650;
+  --r: 6px;
+  --rl: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ── SIDEBAR ── */
+.layout { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--ink);
+  color: var(--warm-white);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+}
+
+.sidebar-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: .04em;
+  color: var(--gold-light);
+  margin-bottom: 4px;
+}
+
+.sidebar-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 2.5rem;
+}
+
+.nav-section {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  margin-bottom: .6rem;
+  margin-top: 1.25rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--r);
+  cursor: pointer;
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  transition: all .18s;
+  border: 1px solid transparent;
+  margin-bottom: 2px;
+  user-select: none;
+}
+
+.nav-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,.9); }
+.nav-item.active { background: var(--gold-pale); color: var(--gold-light); border-color: rgba(184,151,90,0.25); }
+
+.nav-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor; flex-shrink: 0; opacity: .6;
+}
+.nav-item.active .nav-dot { opacity: 1; }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.streak-pill {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.streak-pill .label { font-size: 11px; color: rgba(255,255,255,0.45); }
+.streak-pill .val { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--gold-light); font-weight: 500; }
+
+/* ── MAIN ── */
+.main {
+  margin-left: 220px;
+  flex: 1;
+  padding: 2.5rem 3rem;
+  max-width: 900px;
+}
+
+.page-head {
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px;
+  font-weight: 300;
+  letter-spacing: .01em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.page-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-60);
+  margin-top: 4px;
+  letter-spacing: .06em;
+}
+
+/* ── PANELS ── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── STATS ROW ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--warm-white);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 14px 16px;
+}
+
+.stat-card .n {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.stat-card .l {
+  font-size: 11px;
+  color: var(--ink-60);
+  margin-top: 4px;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-30);
+  margin-bottom: 10px;
+  margin-top: 1.75rem;
+}
+.section-label:first-child { margin-top: 0; }
+
+/* ── PRACTICE CARDS ── */
+.practice-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 1rem; }
+
+.pcard {
+  background: var(--warm-white);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color .18s, background .18s, transform .1s;
+  user-select: none;
+}
+
+.pcard:hover { border-color: var(--ink-30); transform: translateY(-1px); }
+.pcard:active { transform: translateY(0); }
+
+.pcard.done {
+  border-color: rgba(74,102,80,0.35);
+  background: rgba(74,102,80,0.04);
+}
+
+.pcard-row { display: flex; align-items: flex-start; gap: 12px; }
+
+.pcheck {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-30);
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .18s;
+}
+
+.pcard.done .pcheck {
+  background: var(--sage);
+  border-color: var(--sage);
+}
+
+.pcheck svg { display: none; }
+.pcard.done .pcheck svg { display: block; }
+
+.pcard-body { flex: 1; }
+
+.pcard-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+
+.pcard.done .pcard-title { color: var(--sage); }
+
+.pcard-desc {
+  font-size: 12px;
+  color: var(--ink-60);
+  line-height: 1.55;
+}
+
+.pcard-tags { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
+
+.tag {
+  font-size: 9px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: .08em;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.tag-sacral { background: rgba(184,151,90,0.12); color: var(--gold); }
+.tag-career { background: rgba(44,62,107,0.1); color: var(--blue-ink); }
+.tag-emotion { background: rgba(139,74,47,0.1); color: var(--rust); }
+.tag-north { background: rgba(74,102,80,0.1); color: var(--sage); }
+
+/* ── BUTTONS ── */
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1.5rem; }
+
+.btn {
+  padding: 9px 18px;
+  border-radius: var(--r);
+  font-size: 12px;
+  font-family: 'Instrument Sans', sans-serif;
+  cursor: pointer;
+  border: 1px solid var(--ink-30);
+  background: transparent;
+  color: var(--ink);
+  transition: all .15s;
+  letter-spacing: .01em;
+}
+
+.btn:hover { background: var(--ink-05); border-color: var(--ink-60); }
+
+.btn-gold {
+  background: var(--ink);
+  color: var(--gold-light);
+  border-color: var(--ink);
+}
+
+.btn-gold:hover { background: #2e2a25; border-color: #2e2a25; color: var(--gold-light); }
+
+/* ── WEEK DOTS ── */
+.week-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 1.75rem;
+}
+
+.week-day { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.week-day .dl { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--ink-30); letter-spacing: .08em; }
+.week-day .dc {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--ink-10);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--ink-60); cursor: pointer;
+  transition: all .15s;
+}
+.week-day .dc.today { border-color: var(--ink-60); color: var(--ink); font-weight: 500; }
+.week-day .dc.full { background: var(--sage); border-color: var(--sage); color: white; }
+.week-day .dc.partial { background: rgba(184,151,90,0.2); border-color: var(--gold); color: var(--gold); }
+
+/* ── REVIEW QUESTIONS ── */
+.review-list { display: flex; flex-direction: column; gap: 10px; }
+
+.review-q {
+  background: var(--warm-white);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 14px 16px;
+}
+
+.review-q label {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-60);
+  margin-bottom: 8px;
+  line-height: 1.5;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-style: italic;
+  color: var(--ink);
+}
+
+.review-q textarea {
+  width: 100%;
+  border: 1px solid var(--ink-10);
+  border-radius: var(--r);
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: 'Instrument Sans', sans-serif;
+  color: var(--ink);
+  background: var(--cream);
+  resize: none;
+  min-height: 60px;
+  line-height: 1.5;
+  transition: border-color .15s;
+}
+
+.review-q textarea:focus { outline: none; border-color: var(--ink-60); }
+
+/* ── DECISION TOOL ── */
+.quote-block {
+  border-left: 2px solid var(--gold);
+  padding: 14px 18px;
+  margin-bottom: 1.75rem;
+  background: var(--gold-pale);
+  border-radius: 0 var(--r) var(--r) 0;
+}
+
+.quote-block p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1.55;
+}
+
+.quote-block .attr {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  margin-top: 8px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.decision-steps { display: flex; flex-direction: column; gap: 8px; }
+
+.ds {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--warm-white);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--r);
+}
+
+.ds-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-30);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-60);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ds-text { font-size: 13px; color: var(--ink); line-height: 1.5; }
+
+.decision-input {
+  width: 100%;
+  border: 1px solid var(--ink-30);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--ink);
+  background: var(--warm-white);
+  resize: vertical;
+  min-height: 70px;
+  line-height: 1.5;
+  transition: border-color .15s;
+}
+.decision-input:focus { outline: none; border-color: var(--gold); }
+
+/* ── PILLARS ── */
+.pillar-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 1.75rem;
+}
+
+.pillar-card {
+  background: var(--warm-white);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pillar-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.pillar-card.sacral::before { background: var(--gold); }
+.pillar-card.career::before { background: var(--blue-ink); }
+.pillar-card.emotion::before { background: var(--rust); }
+.pillar-card.north::before { background: var(--sage); }
+
+.pillar-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.pillar-card p {
+  font-size: 12px;
+  color: var(--ink-60);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.pillar-target {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-30);
+  margin-bottom: 6px;
+  letter-spacing: .04em;
+}
+
+.progress-track {
+  height: 3px;
+  background: var(--ink-10);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width .5s ease;
+}
+
+.pf-sacral { background: var(--gold); }
+.pf-career { background: var(--blue-ink); }
+.pf-emotion { background: var(--rust); }
+.pf-north { background: var(--sage); }
+
+/* ── JOURNAL ── */
+.journal-prompt {
+  background: var(--ink);
+  border-radius: var(--rl);
+  padding: 24px 28px;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.journal-prompt .qmark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 72px;
+  color: rgba(255,255,255,0.06);
+  position: absolute;
+  top: 10px; left: 20px;
+  line-height: 1;
+}
+
+.journal-prompt p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--warm-white);
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+}
+
+.journal-prompt .attr {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  margin-top: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.journal-textarea {
+  width: 100%;
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 16px 18px;
+  font-size: 14px;
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--ink);
+  background: var(--warm-white);
+  resize: vertical;
+  min-height: 180px;
+  line-height: 1.7;
+  transition: border-color .15s;
+}
+.journal-textarea:focus { outline: none; border-color: var(--ink-30); }
+
+/* ── AFFIRMATIONS ── */
+.affirmation {
+  background: var(--warm-white);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 16px 18px;
+  margin-bottom: 8px;
+}
+
+.affirmation .aff-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.45;
+  margin-bottom: 6px;
+}
+
+.affirmation .aff-attr {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-30);
+  letter-spacing: .04em;
+}
+
+/* ── MANTRA ── */
+.mantra-block {
+  background: var(--ink);
+  border-radius: var(--rl);
+  padding: 28px 32px;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.mantra-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold);
+}
+
+.mantra-source {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+.mantra-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--warm-white);
+  line-height: 1.6;
+  letter-spacing: .01em;
+}
+
+/* ── GRATITUDE ── */
+.gratitude-wrap {
+  background: var(--warm-white);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 18px 20px;
+  margin-bottom: 1.5rem;
+}
+
+.gratitude-intro {
+  font-size: 12px;
+  color: var(--ink-60);
+  font-style: italic;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  line-height: 1.55;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--ink-10);
+}
+
+.gratitude-inputs { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+
+.grat-row { display: flex; align-items: center; gap: 10px; }
+
+.grat-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: .08em;
+  flex-shrink: 0;
+  width: 14px;
+  text-align: right;
+}
+
+.grat-input {
+  flex: 1;
+  border: 1px solid var(--ink-10);
+  border-radius: var(--r);
+  padding: 9px 12px;
+  font-size: 13px;
+  font-family: 'Instrument Sans', sans-serif;
+  color: var(--ink);
+  background: var(--cream);
+  transition: border-color .15s;
+}
+
+.grat-input:focus { outline: none; border-color: var(--gold); }
+.grat-input::placeholder { color: var(--ink-30); }
+
+.gratitude-prompt-wrap {
+  background: var(--ink);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+
+.grat-prompt-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.grat-prompt-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--warm-white);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.grat-prompt-instruction {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.grat-btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ── EMOTIONS ── */
+.emotion-mantra {
+  background: var(--ink);
+  border-radius: var(--rl);
+  padding: 22px 26px;
+  margin-bottom: 2rem;
+}
+
+.em-line {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--warm-white);
+  line-height: 1.8;
+  opacity: .85;
+}
+
+.em-line:first-child { opacity: 1; font-size: 20px; }
+
+.emo-step {
+  background: var(--warm-white);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 18px 20px;
+  margin-bottom: 10px;
+}
+
+.emo-step-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.emo-step-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: .1em;
+  padding-top: 3px;
+  flex-shrink: 0;
+}
+
+.emo-step-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.emo-step-sub {
+  font-size: 12px;
+  color: var(--ink-60);
+  line-height: 1.6;
+  margin-bottom: 12px;
+  padding-left: 22px;
+}
+
+.emo-textarea {
+  width: 100%;
+  border: 1px solid var(--ink-10);
+  border-radius: var(--r);
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: 'Instrument Sans', sans-serif;
+  color: var(--ink);
+  background: var(--cream);
+  resize: none;
+  min-height: 72px;
+  line-height: 1.55;
+  transition: border-color .15s;
+}
+
+.emo-textarea:focus { outline: none; border-color: var(--ink-30); }
+
+.feeling-wheel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.fw-group { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+
+.fw-core {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--c) 15%, transparent);
+  color: var(--c);
+  border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.fw-subs { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.fw-sub {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--ink-10);
+  background: var(--cream);
+  color: var(--ink-60);
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+
+.fw-sub:hover { border-color: var(--ink-30); color: var(--ink); }
+.fw-sub.selected { background: var(--ink); color: var(--warm-white); border-color: var(--ink); }
+
+.fw-selected-wrap { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--ink-10); }
+.fw-selected-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-30); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+.fw-selected-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.fw-selected-tag { font-size: 12px; padding: 3px 10px; border-radius: 20px; background: var(--ink); color: var(--warm-white); }
+
+.emo-radio-group { display: flex; flex-direction: column; gap: 7px; }
+
+.emo-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--r);
+  border: 1px solid var(--ink-10);
+  background: var(--cream);
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+
+.emo-radio:hover { border-color: var(--ink-30); }
+.emo-radio.selected { border-color: var(--ink); background: var(--ink-05); }
+
+.emo-radio-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-30);
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all .15s;
+}
+
+.emo-radio.selected .emo-radio-dot {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.emo-radio-text { font-size: 13px; color: var(--ink); line-height: 1.4; }
+
+.emo-needs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.emo-need {
+  padding: 9px 12px;
+  border-radius: var(--r);
+  border: 1px solid var(--ink-10);
+  background: var(--cream);
+  font-size: 12px;
+  color: var(--ink-60);
+  cursor: pointer;
+  transition: all .15s;
+  line-height: 1.4;
+  user-select: none;
+}
+
+.emo-need:hover { border-color: var(--ink-30); color: var(--ink); }
+.emo-need.selected { background: var(--sage); color: white; border-color: var(--sage); }
+
+.emo-pattern-note {
+  font-size: 12px;
+  color: var(--ink-60);
+  margin-bottom: 12px;
+  font-style: italic;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+}
+
+.emo-log { display: flex; flex-direction: column; gap: 7px; }
+
+.emo-log-entry {
+  background: var(--warm-white);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 12px 16px;
+}
+
+.elo-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.elo-date { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-30); }
+.elo-feels { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+.elo-feel { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--ink-05); color: var(--ink-60); }
+.elo-what { font-size: 12px; color: var(--ink-60); line-height: 1.5; font-style: italic; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.elo-origin { font-family: 'DM Mono', monospace; font-size: 10px; margin-top: 6px; }
+.elo-origin.now { color: var(--sage); }
+.elo-origin.mixed { color: var(--gold); }
+.elo-origin.old { color: var(--rust); }
+
+.emo-log-empty { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-30); text-align: center; padding: 2rem; letter-spacing: .06em; }
+
+/* ── VISION ── */
+.vision-progress-wrap {
+  background: var(--warm-white);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 18px 20px;
+  margin-bottom: 1.75rem;
+}
+
+.vision-progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.vision-day-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--ink);
+}
+
+.vision-pct {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: .06em;
+}
+
+.vision-track {
+  height: 3px;
+  background: var(--ink-10);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.vision-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 2px;
+  transition: width .5s ease;
+}
+
+.vision-dots {
+  display: grid;
+  grid-template-columns: repeat(40, 1fr);
+  gap: 3px;
+}
+
+.vdot {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--ink-10);
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.vdot.done { background: var(--gold); }
+.vdot.today { background: var(--ink-30); }
+
+.vision-instructions {
+  font-size: 13px;
+  color: var(--ink-60);
+  line-height: 1.65;
+  margin-bottom: 12px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 15px;
+  border-left: 2px solid var(--ink-10);
+  padding-left: 14px;
+}
+
+.vision-textarea {
+  width: 100%;
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 18px 20px;
+  font-size: 15px;
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--ink);
+  background: var(--warm-white);
+  resize: vertical;
+  min-height: 200px;
+  line-height: 1.75;
+  transition: border-color .15s;
+}
+
+.vision-textarea:focus { outline: none; border-color: var(--ink-30); }
+
+.reflection-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.ref-card {
+  background: var(--warm-white);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 16px 18px;
+  position: relative;
+}
+
+.ref-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+}
+
+.ref-1::before { background: var(--sage); }
+.ref-2::before { background: var(--rust); }
+.ref-3::before { background: var(--gold); }
+
+.ref-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-30);
+  letter-spacing: .1em;
+  margin-bottom: 5px;
+}
+
+.ref-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.ref-textarea {
+  width: 100%;
+  border: 1px solid var(--ink-10);
+  border-radius: var(--r);
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: 'Instrument Sans', sans-serif;
+  color: var(--ink);
+  background: var(--cream);
+  resize: none;
+  min-height: 68px;
+  line-height: 1.55;
+  transition: border-color .15s;
+}
+
+.ref-textarea:focus { outline: none; border-color: var(--ink-30); }
+
+.vision-log {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vlog-entry {
+  background: var(--warm-white);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+
+.vlog-entry:hover { border-color: var(--ink-30); }
+
+.vlog-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.vlog-day {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: .06em;
+}
+
+.vlog-date {
+  font-size: 11px;
+  color: var(--ink-30);
+}
+
+.vlog-preview {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--ink-60);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.vlog-empty {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-30);
+  text-align: center;
+  padding: 2rem;
+  letter-spacing: .06em;
+}
+
+/* ── JOURNAL LOG ── */
+.journal-log { display: flex; flex-direction: column; gap: 8px; margin-top: 1rem; }
+
+.jlog-entry {
+  background: var(--warm-white);
+  border: 1px solid var(--ink-10);
+  border-radius: var(--rl);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+
+.jlog-entry:hover { border-color: var(--ink-30); }
+
+.jlog-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.jlog-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: .06em;
+}
+
+.jlog-prompt {
+  font-size: 11px;
+  color: var(--ink-30);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jlog-preview {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--ink-60);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.jlog-empty {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-30);
+  text-align: center;
+  padding: 2rem;
+  letter-spacing: .06em;
+}
+
+/* ── SAVE INDICATOR ── */
+.save-indicator {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--sage);
+  letter-spacing: .04em;
+  opacity: 0;
+  transition: opacity .3s;
+  margin-left: 8px;
+}
+.save-indicator.show { opacity: 1; }
+
+/* ── TOAST ── */
+.toast {
+  display: none;
+  background: var(--sage);
+  color: white;
+  border-radius: var(--r);
+  padding: 9px 16px;
+  font-size: 12px;
+  margin-bottom: 14px;
+  text-align: center;
+  animation: fadeIn .2s ease;
+}
+
+.toast.show { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── DIVIDER ── */
+.divider { border: none; border-top: 1px solid var(--ink-10); margin: 1.5rem 0; }
+
+/* ── MOBILE ── */
+.mobile-nav {
+  display: none;
+  background: var(--ink);
+  padding: .75rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mobile-nav-btn {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-family: 'Instrument Sans', sans-serif;
+  transition: all .15s;
+}
+
+.mobile-nav-btn.active { background: var(--gold-pale); color: var(--gold-light); border-color: rgba(184,151,90,0.3); }
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 1.25rem 1rem; }
+  .mobile-nav { display: flex; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .pillar-grid { grid-template-columns: 1fr; }
+  .layout { flex-direction: column; }
+  .page-title { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<div class="mobile-nav" id="mobile-nav">
+  <button class="mobile-nav-btn active" onclick="switchTab('daily',this)">Daily</button>
+  <button class="mobile-nav-btn" onclick="switchTab('weekly',this)">Weekly</button>
+  <button class="mobile-nav-btn" onclick="switchTab('decide',this)">Decision</button>
+  <button class="mobile-nav-btn" onclick="switchTab('pillars',this)">Pillars</button>
+  <button class="mobile-nav-btn" onclick="switchTab('vision',this)">40-Day Vision</button>
+  <button class="mobile-nav-btn" onclick="switchTab('emotions',this)">Feel It</button>
+  <button class="mobile-nav-btn" onclick="switchTab('journal',this)">Journal</button>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">Monique</div>
+    <div class="sidebar-sub">Life Operating System</div>
+
+    <div class="nav-section">Practice</div>
+    <div class="nav-item active" onclick="switchTab('daily',this)" data-tab="daily">
+      <div class="nav-dot"></div> Daily check-in
+    </div>
+    <div class="nav-item" onclick="switchTab('weekly',this)" data-tab="weekly">
+      <div class="nav-dot"></div> Weekly review
+    </div>
+
+    <div class="nav-section">Tools</div>
+    <div class="nav-item" onclick="switchTab('decide',this)" data-tab="decide">
+      <div class="nav-dot"></div> Decision tool
+    </div>
+    <div class="nav-item" onclick="switchTab('pillars',this)" data-tab="pillars">
+      <div class="nav-dot"></div> Growth pillars
+    </div>
+    <div class="nav-item" onclick="switchTab('vision',this)" data-tab="vision">
+      <div class="nav-dot"></div> 40-day vision
+    </div>
+    <div class="nav-item" onclick="switchTab('emotions',this)" data-tab="emotions">
+      <div class="nav-dot"></div> Feel it first
+    </div>
+    <div class="nav-item" onclick="switchTab('journal',this)" data-tab="journal">
+      <div class="nav-dot"></div> Journal
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="streak-pill">
+        <span class="label">Day streak</span>
+        <span class="val" id="sidebar-streak">0</span>
+      </div>
+      <div style="margin-top:10px; font-family:'DM Mono',monospace; font-size:9px; color:rgba(255,255,255,0.2); letter-spacing:.06em; text-align:center;">
+        Generator · 6/2 · Sacral authority
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <div id="toast" class="toast"></div>
+
+    <!-- ── DAILY ── -->
+    <div id="panel-daily" class="panel active">
+      <div class="page-head">
+        <div class="page-title">Today's practice</div>
+        <div class="page-date" id="today-date"></div>
+      </div>
+
+      <div class="mantra-block">
+        <div class="mantra-source">Aries in the 6th house</div>
+        <div class="mantra-text">Stop waiting to be picked. Build self-trust. Lean into independence and decisive action. Your path is through the details and the daily work — not around it. Diligence is your unlock.</div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="n" id="s-done">0</div><div class="l">Done today</div></div>
+        <div class="stat-card"><div class="n" id="s-total">10</div><div class="l">Practices</div></div>
+        <div class="stat-card"><div class="n" id="s-streak">0</div><div class="l">Streak</div></div>
+        <div class="stat-card"><div class="n" id="s-pct">0%</div><div class="l">Complete</div></div>
+      </div>
+
+      <div class="section-label">Morning · 5 min</div>
+      <div class="practice-list" id="list-morning"></div>
+
+      <div class="section-label">Throughout the day</div>
+      <div class="practice-list" id="list-day"></div>
+
+      <div class="section-label">Evening · 5 min</div>
+      <div class="practice-list" id="list-evening"></div>
+
+      <div class="section-label">Gratitude · daily</div>
+      <div class="gratitude-wrap">
+        <div class="gratitude-intro">Five things. Specific — not "my health." What actually happened today, or what quietly exists that you'd miss if it were gone.</div>
+        <div class="gratitude-inputs" id="gratitude-inputs">
+          <div class="grat-row"><span class="grat-num">1</span><input class="grat-input" id="g1" type="text" placeholder="I am grateful for..."></div>
+          <div class="grat-row"><span class="grat-num">2</span><input class="grat-input" id="g2" type="text" placeholder="I am grateful for..."></div>
+          <div class="grat-row"><span class="grat-num">3</span><input class="grat-input" id="g3" type="text" placeholder="I am grateful for..."></div>
+          <div class="grat-row"><span class="grat-num">4</span><input class="grat-input" id="g4" type="text" placeholder="I am grateful for..."></div>
+          <div class="grat-row"><span class="grat-num">5</span><input class="grat-input" id="g5" type="text" placeholder="I am grateful for..."></div>
+        </div>
+        <div class="gratitude-prompt-wrap" id="grat-prompt-wrap" style="display:none">
+          <div class="grat-prompt-label">Today's meditation prompt</div>
+          <div class="grat-prompt-text" id="grat-prompt-text"></div>
+          <div class="grat-prompt-instruction">Sit with this for two minutes. Close your eyes. Let the feeling of gratitude settle in your chest — not just your mind.</div>
+        </div>
+        <div class="grat-btn-row">
+          <button class="btn" onclick="saveGratitude()">Save &amp; get meditation prompt</button>
+          <button class="btn" onclick="newGratPrompt()">New prompt</button>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="resetDay()">Reset day</button>
+        <button class="btn btn-gold" onclick="openCoaching()">Get today's reflection &#8599;</button>
+      </div>
+    </div>
+
+    <!-- ── WEEKLY ── -->
+    <div id="panel-weekly" class="panel">
+      <div class="page-head">
+        <div class="page-title">Weekly review</div>
+        <div class="page-date">Take 15 minutes. Be honest. <span class="save-indicator" id="review-saved">saved</span></div>
+      </div>
+
+      <div class="section-label">This week</div>
+      <div class="week-row" id="week-dots"></div>
+
+      <div class="section-label">Review questions</div>
+      <div class="review-list" id="review-list"></div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="clearReviews()">Clear all</button>
+        <button class="btn btn-gold" onclick="openWeeklySynth()">Synthesize my week &#8599;</button>
+      </div>
+    </div>
+
+    <!-- ── DECISION ── -->
+    <div id="panel-decide" class="panel">
+      <div class="page-head">
+        <div class="page-title">Decision tool</div>
+        <div class="page-date">For when you're stuck, spinning, or seeking approval before acting. <span class="save-indicator" id="decision-saved">saved</span></div>
+      </div>
+
+      <div class="quote-block">
+        <p>Your Sacral is not answering "Should I do this?" — it is answering "Do I have energy for this?" Drop below your belly button. What happens physically?</p>
+        <div class="attr">Human Design · Generator Sacral authority</div>
+      </div>
+
+      <div class="section-label">The 5-step Generator protocol</div>
+      <div class="decision-steps">
+        <div class="ds"><div class="ds-num">1</div><div class="ds-text">Write the decision in one clear sentence below. No pros and cons yet — just state it.</div></div>
+        <div class="ds"><div class="ds-num">2</div><div class="ds-text">Read it out loud. Notice your body first — expansion or contraction? That answer comes before the mental one.</div></div>
+        <div class="ds"><div class="ds-num">3</div><div class="ds-text">Ask: "Is this a response to something that came toward me, or am I initiating from anxiety or pressure?" Generators drain when they force.</div></div>
+        <div class="ds"><div class="ds-num">4</div><div class="ds-text">Moon-Saturn check: "Am I saying no because I'm scared of needing someone, or because it's a genuine no?" Fear of dependence is not discernment.</div></div>
+        <div class="ds"><div class="ds-num">5</div><div class="ds-text">North Node check: "What would the more independent, self-trusting version of me do here?" That version is who you are becoming.</div></div>
+      </div>
+
+      <div class="section-label" style="margin-top:1.5rem">What are you deciding?</div>
+      <textarea class="decision-input" id="decision-text" placeholder="State the decision in one sentence..."></textarea>
+
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="runProtocol()">Run the protocol &#8599;</button>
+      </div>
+
+      <hr class="divider">
+
+      <div class="section-label">Decision history</div>
+      <div class="journal-log" id="decision-log"></div>
+
+      <hr class="divider">
+
+      <div class="section-label">Patterns to catch before you decide</div>
+      <div class="practice-list">
+        <div class="pcard" style="cursor:default">
+          <div class="pcard-row">
+            <div class="pcard-body">
+              <div class="pcard-title">Am I seeking approval before I act?</div>
+              <div class="pcard-desc">Moon square Venus — the need for others to validate before you move. Notice it. Name it. You don't need permission.</div>
+              <div class="pcard-tags"><span class="tag tag-emotion">emotional pattern</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="pcard" style="cursor:default">
+          <div class="pcard-row">
+            <div class="pcard-body">
+              <div class="pcard-title">Is this a mind decision or a body decision?</div>
+              <div class="pcard-desc">Taurus Sun trusts the physical and tangible. If your body has already answered, your mind is catching up — not leading.</div>
+              <div class="pcard-tags"><span class="tag tag-sacral">sacral</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="pcard" style="cursor:default">
+          <div class="pcard-row">
+            <div class="pcard-body">
+              <div class="pcard-title">Is this fear of losing control, or a real no?</div>
+              <div class="pcard-desc">Sun opposition Pluto — you can mistake fear of change for wisdom. Sit with it an extra day before closing the door on something.</div>
+              <div class="pcard-tags"><span class="tag tag-emotion">emotional pattern</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PILLARS ── -->
+    <div id="panel-pillars" class="panel">
+      <div class="page-head">
+        <div class="page-title">Growth pillars</div>
+        <div class="page-date">Four areas. Daily reps. Long-term change.</div>
+      </div>
+
+      <div class="pillar-grid">
+        <div class="pillar-card sacral">
+          <h3>Sacral trust</h3>
+          <p>Learning to lead with your body's yes/no before your mind rationalizes it away. The Generator's core practice and the foundation of everything else.</p>
+          <div class="pillar-target">Weekly target — 7 body check-ins</div>
+          <div class="progress-track"><div class="progress-fill pf-sacral" id="pf-sacral" style="width:0%"></div></div>
+        </div>
+        <div class="pillar-card career">
+          <h3>Career clarity</h3>
+          <p>Building the advisory practice one concrete daily action. Leo MC means you build in public — not in private forever, waiting until it's perfect.</p>
+          <div class="pillar-target">Weekly target — 5 career actions</div>
+          <div class="progress-track"><div class="progress-fill pf-career" id="pf-career" style="width:0%"></div></div>
+        </div>
+        <div class="pillar-card emotion">
+          <h3>Emotional patterns</h3>
+          <p>Catching Moon-Saturn and Moon-Venus dynamics in real time. Naming the pattern is how you break it. The log is the practice.</p>
+          <div class="pillar-target">Weekly target — 5 pattern catches</div>
+          <div class="progress-track"><div class="progress-fill pf-emotion" id="pf-emotion" style="width:0%"></div></div>
+        </div>
+        <div class="pillar-card north">
+          <h3>North Node growth</h3>
+          <p>One act of independence or assertiveness per day. North Node in Aries: you are here to stop deferring and start leading from your own center.</p>
+          <div class="pillar-target">Weekly target — 7 brave acts</div>
+          <div class="progress-track"><div class="progress-fill pf-north" id="pf-north" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="section-label">Monthly milestones</div>
+      <div class="practice-list">
+        <div class="pcard" style="cursor:default">
+          <div class="pcard-row">
+            <div class="pcard-body">
+              <div class="pcard-title">Define your advisory offer in one paragraph</div>
+              <div class="pcard-desc">Who you help, what problem you solve, what they walk away with. No caveats, no "I'm still figuring it out." Write the version you'd be proud to send.</div>
+              <div class="pcard-tags"><span class="tag tag-career">career</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="pcard" style="cursor:default">
+          <div class="pcard-row">
+            <div class="pcard-body">
+              <div class="pcard-title">Make one ask you have been delaying</div>
+              <div class="pcard-desc">Send the email. Name your rate. Make the pitch. One visible act of leadership that you've been holding back.</div>
+              <div class="pcard-tags"><span class="tag tag-north">north node</span><span class="tag tag-career">career</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="pcard" style="cursor:default">
+          <div class="pcard-row">
+            <div class="pcard-body">
+              <div class="pcard-title">Complete 20 sacral check-ins</div>
+              <div class="pcard-desc">Track them on your daily tab. By 20 you start to recognize the difference between a body yes and a mind yes. That distinction changes everything.</div>
+              <div class="pcard-tags"><span class="tag tag-sacral">sacral</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="pcard" style="cursor:default">
+          <div class="pcard-row">
+            <div class="pcard-body">
+              <div class="pcard-title">Catch and name 10 approval loops</div>
+              <div class="pcard-desc">Log each one in your journal. By the tenth catch, you'll start catching them before they run you. That's the shift.</div>
+              <div class="pcard-tags"><span class="tag tag-emotion">emotional pattern</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="openMilestones()">Generate this month's milestones &#8599;</button>
+      </div>
+    </div>
+
+    <!-- ── VISION ── -->
+    <div id="panel-vision" class="panel">
+      <div class="page-head">
+        <div class="page-title">40-day vision practice</div>
+        <div class="page-date">Write your life. Then measure yourself against it.</div>
+      </div>
+
+      <div class="vision-progress-wrap">
+        <div class="vision-progress-top">
+          <span class="vision-day-label" id="vision-day-label">Day 1 of 40</span>
+          <span class="vision-pct" id="vision-pct">0%</span>
+        </div>
+        <div class="vision-track">
+          <div class="vision-fill" id="vision-fill" style="width:0%"></div>
+        </div>
+        <div class="vision-dots" id="vision-dots"></div>
+      </div>
+
+      <div class="section-label">Your life vision — write it out in full, present tense</div>
+      <div class="vision-instructions">
+        Write as if you are already living it. Not "I want" — "I am." Describe who you are, how you work, how you feel, what you've built, how you move through the world. Every day you write it again from memory. The repetition rewires the belief.
+      </div>
+      <textarea class="vision-textarea" id="vision-text" placeholder="I am a woman who leads from her own center. I have built an advisory practice that..."></textarea>
+
+      <hr class="divider">
+
+      <div class="section-label">Today's reflection</div>
+
+      <div class="reflection-cards">
+        <div class="ref-card ref-1">
+          <div class="ref-num">01</div>
+          <div class="ref-label">Did I show up this way today?</div>
+          <textarea class="ref-textarea" id="ref-1" placeholder="Be honest. Not harsh — just true."></textarea>
+        </div>
+        <div class="ref-card ref-2">
+          <div class="ref-num">02</div>
+          <div class="ref-label">What could I have done better?</div>
+          <textarea class="ref-textarea" id="ref-2" placeholder="Name one specific moment. One is enough."></textarea>
+        </div>
+        <div class="ref-card ref-3">
+          <div class="ref-num">03</div>
+          <div class="ref-label">How was I in alignment?</div>
+          <textarea class="ref-textarea" id="ref-3" placeholder="Where did you act like the person in your vision?"></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="saveVisionDay()">Save today's entry</button>
+        <button class="btn" onclick="loadPrevVision()">View yesterday</button>
+        <button class="btn btn-gold" onclick="openVisionReflect()">Reflect with Claude &#8599;</button>
+      </div>
+
+      <div id="vision-saved-msg" style="display:none; margin-top:12px; font-family:'DM Mono',monospace; font-size:11px; color:var(--sage); letter-spacing:.04em;">Entry saved for today.</div>
+
+      <hr class="divider">
+      <div class="section-label">Your 40-day log</div>
+      <div class="vision-log" id="vision-log"></div>
+    </div>
+
+    <!-- ── EMOTIONS ── -->
+    <div id="panel-emotions" class="panel">
+      <div class="page-head">
+        <div class="page-title">Feel it first</div>
+        <div class="page-date">You are your own witness. You don't need anyone to confirm this.</div>
+      </div>
+
+      <div class="emotion-mantra">
+        <div class="em-line">This feeling belongs to me.</div>
+        <div class="em-line">It is not an emergency.</div>
+        <div class="em-line">I do not need to involve anyone else to make it real.</div>
+      </div>
+
+      <div class="emo-step" id="estep-1">
+        <div class="emo-step-header">
+          <div class="emo-step-num">01</div>
+          <div class="emo-step-title">What just happened?</div>
+        </div>
+        <div class="emo-step-sub">Facts only. No interpretation yet. Just what occurred — what was said, what was done, what you observed.</div>
+        <textarea class="emo-textarea" id="emo-what" placeholder="E.g. She didn't respond to my message. He interrupted me in the meeting. The plan changed without telling me."></textarea>
+      </div>
+
+      <div class="emo-step" id="estep-2">
+        <div class="emo-step-header">
+          <div class="emo-step-num">02</div>
+          <div class="emo-step-title">What am I actually feeling?</div>
+        </div>
+        <div class="emo-step-sub">Don't skip to "hurt" or "mad" — go deeper. Pick everything that applies. More than one thing can be true.</div>
+        <div class="feeling-wheel">
+          <div class="fw-group">
+            <div class="fw-core" style="--c:#8B4A2F">Angry</div>
+            <div class="fw-subs">
+              <span class="fw-sub" onclick="toggleFeel(this)">Dismissed</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Disrespected</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Powerless</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Resentful</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Frustrated</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Irritated</span>
+            </div>
+          </div>
+          <div class="fw-group">
+            <div class="fw-core" style="--c:#5C3D5E">Hurt</div>
+            <div class="fw-subs">
+              <span class="fw-sub" onclick="toggleFeel(this)">Betrayed</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Abandoned</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Invisible</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Unloved</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Rejected</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Unappreciated</span>
+            </div>
+          </div>
+          <div class="fw-group">
+            <div class="fw-core" style="--c:#2C3E6B">Scared</div>
+            <div class="fw-subs">
+              <span class="fw-sub" onclick="toggleFeel(this)">Unsafe</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Out of control</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Anxious</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Overwhelmed</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Exposed</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Not enough</span>
+            </div>
+          </div>
+          <div class="fw-group">
+            <div class="fw-core" style="--c:#4A6650">Sad</div>
+            <div class="fw-subs">
+              <span class="fw-sub" onclick="toggleFeel(this)">Disappointed</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Grieving</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Lonely</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Empty</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Hopeless</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Left out</span>
+            </div>
+          </div>
+          <div class="fw-group">
+            <div class="fw-core" style="--c:#B8975A">Confused</div>
+            <div class="fw-subs">
+              <span class="fw-sub" onclick="toggleFeel(this)">Unsure</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Conflicted</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Blindsided</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Mistrustful</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Lost</span>
+              <span class="fw-sub" onclick="toggleFeel(this)">Uncertain</span>
+            </div>
+          </div>
+        </div>
+        <div class="fw-selected-wrap" id="fw-selected-wrap" style="display:none">
+          <div class="fw-selected-label">You're feeling:</div>
+          <div class="fw-selected-tags" id="fw-selected-tags"></div>
+        </div>
+      </div>
+
+      <div class="emo-step" id="estep-3">
+        <div class="emo-step-header">
+          <div class="emo-step-num">03</div>
+          <div class="emo-step-title">Is this about now — or is this familiar?</div>
+        </div>
+        <div class="emo-step-sub">Moon-Saturn and Pisces Moon often reach back. Big feelings about small things usually mean the small thing touched something older. No judgment — just notice.</div>
+        <div class="emo-radio-group">
+          <div class="emo-radio" onclick="selectEmoRadio(this,'now')">
+            <div class="emo-radio-dot"></div>
+            <div class="emo-radio-text">This is about exactly what just happened — it's proportionate.</div>
+          </div>
+          <div class="emo-radio" onclick="selectEmoRadio(this,'mixed')">
+            <div class="emo-radio-dot"></div>
+            <div class="emo-radio-text">This situation triggered something older — it feels bigger than it should.</div>
+          </div>
+          <div class="emo-radio" onclick="selectEmoRadio(this,'old')">
+            <div class="emo-radio-dot"></div>
+            <div class="emo-radio-text">This is mostly an old wound. This person just touched it.</div>
+          </div>
+        </div>
+        <textarea class="emo-textarea" id="emo-familiar" placeholder="If it's familiar — what does it remind you of? You don't have to fix it, just name it." style="margin-top:10px; min-height:60px;"></textarea>
+      </div>
+
+      <div class="emo-step" id="estep-4">
+        <div class="emo-step-header">
+          <div class="emo-step-num">04</div>
+          <div class="emo-step-title">What does this feeling need from me?</div>
+        </div>
+        <div class="emo-step-sub">Not from the other person. From you. This is how you become your own witness.</div>
+        <div class="emo-needs-grid">
+          <div class="emo-need" onclick="toggleNeed(this)">To be named and acknowledged</div>
+          <div class="emo-need" onclick="toggleNeed(this)">A few minutes to just sit with it</div>
+          <div class="emo-need" onclick="toggleNeed(this)">To move my body — walk, shake it out</div>
+          <div class="emo-need" onclick="toggleNeed(this)">To write it out fully</div>
+          <div class="emo-need" onclick="toggleNeed(this)">To remind myself I am safe</div>
+          <div class="emo-need" onclick="toggleNeed(this)">To be told this makes sense</div>
+          <div class="emo-need" onclick="toggleNeed(this)">To sleep on it before doing anything</div>
+          <div class="emo-need" onclick="toggleNeed(this)">To breathe and come back to my body</div>
+        </div>
+      </div>
+
+      <div class="emo-step" id="estep-5">
+        <div class="emo-step-header">
+          <div class="emo-step-num">05</div>
+          <div class="emo-step-title">Does anything actually need to be said to someone else?</div>
+        </div>
+        <div class="emo-step-sub">This is the gate. Most of the time the answer is "not right now" or "no." Be honest.</div>
+        <div class="emo-radio-group">
+          <div class="emo-radio" onclick="selectEmoRadio2(this,'no')">
+            <div class="emo-radio-dot"></div>
+            <div class="emo-radio-text">No — I processed it. I'm good.</div>
+          </div>
+          <div class="emo-radio" onclick="selectEmoRadio2(this,'later')">
+            <div class="emo-radio-dot"></div>
+            <div class="emo-radio-text">Maybe — but not right now. I'll wait 24 hours.</div>
+          </div>
+          <div class="emo-radio" onclick="selectEmoRadio2(this,'yes')">
+            <div class="emo-radio-dot"></div>
+            <div class="emo-radio-text">Yes — something real needs to be addressed.</div>
+          </div>
+        </div>
+        <div id="emo-yes-block" style="display:none; margin-top:12px;">
+          <div class="emo-step-sub" style="margin-bottom:8px">If yes — what is the one thing you want them to understand? Keep it to a single sentence, about your experience, not their behavior.</div>
+          <textarea class="emo-textarea" id="emo-tosay" placeholder='E.g. "I felt dismissed when the plan changed without including me." Not: "You always do this."' style="min-height:60px;"></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="saveEmoEntry()">Log this entry</button>
+        <button class="btn" onclick="resetEmoTool()">Start over</button>
+        <button class="btn btn-gold" onclick="openEmoReflect()">Process with Claude &#8599;</button>
+      </div>
+
+      <hr class="divider">
+
+      <div class="section-label">Trigger pattern log</div>
+      <div class="emo-pattern-note">Over time this shows you what keeps coming up. That's the real information.</div>
+      <div class="emo-log" id="emo-log"></div>
+    </div>
+
+    <!-- ── JOURNAL ── -->
+    <div id="panel-journal" class="panel">
+      <div class="page-head">
+        <div class="page-title">Journal</div>
+        <div class="page-date">Uncensored. Unperfected. Real. <span class="save-indicator" id="journal-saved">saved</span></div>
+      </div>
+
+      <div class="journal-prompt" id="journal-prompt">
+        <div class="qmark">"</div>
+        <p id="prompt-text"></p>
+        <div class="attr" id="prompt-attr"></div>
+      </div>
+
+      <div class="btn-row" style="margin-top:0; margin-bottom:1rem;">
+        <button class="btn" onclick="newPrompt()">New prompt</button>
+      </div>
+
+      <textarea class="journal-textarea" id="journal-text" placeholder="Write here — follow the thought wherever it goes..."></textarea>
+
+      <div class="btn-row">
+        <button class="btn" onclick="saveJournalEntry()">Save entry</button>
+        <button class="btn" onclick="clearJournal()">New entry</button>
+        <button class="btn btn-gold" onclick="openJournalReflect()">Reflect with Claude &#8599;</button>
+      </div>
+
+      <hr class="divider">
+
+      <div class="section-label">Journal history</div>
+      <div class="journal-log" id="journal-log"></div>
+
+      <hr class="divider">
+      <div class="section-label">Affirmations for your chart</div>
+
+      <div class="affirmation">
+        <div class="aff-text">"My body knows before my mind does. I trust it."</div>
+        <div class="aff-attr">Generator · Sacral authority</div>
+      </div>
+      <div class="affirmation">
+        <div class="aff-text">"I do not need permission to lead."</div>
+        <div class="aff-attr">Leo MC · North Node in Aries</div>
+      </div>
+      <div class="affirmation">
+        <div class="aff-text">"My value is not determined by how useful I am to others."</div>
+        <div class="aff-attr">Moon square Venus — breaking the approval loop</div>
+      </div>
+      <div class="affirmation">
+        <div class="aff-text">"I am building something real. Slow and steady is not failure."</div>
+        <div class="aff-attr">Taurus Sun · Mars in Capricorn</div>
+      </div>
+      <div class="affirmation">
+        <div class="aff-text">"The right opportunities come to me. I respond — I don't chase."</div>
+        <div class="aff-attr">Generator strategy · Wait to respond</div>
+      </div>
+      <div class="affirmation">
+        <div class="aff-text">"I am allowed to take up space. That is not arrogance — it is my North Node."</div>
+        <div class="aff-attr">North Node Aries · 6th house growth path</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── DATA ──
+const practices = {
+  morning: [
+    { id:'m1', title:'Sacral body check-in', desc:'Before you open your phone: sit, place a hand on your belly, and ask "What does my body want today?" Just notice — no judgment, no forcing.', tags:['sacral'] },
+    { id:'m2', title:'One career intention', desc:'Name one concrete thing you will move forward today in your advisory practice. Write it, say it out loud, commit to it.', tags:['career'] },
+    { id:'m3', title:'North Node activation', desc:'Ask: "Where might I defer or shrink today?" Set an intention to hold your ground in exactly that spot.', tags:['north'] },
+  ],
+  day: [
+    { id:'d1', title:'Pattern catch — approval seeking', desc:'When you feel the urge to check how someone received you before acting, pause. Name it: "This is Moon-Saturn. I see you." Then act anyway.', tags:['emotion'] },
+    { id:'d2', title:'Respond, don\'t initiate', desc:'When you feel the pull to force something into existence — a pitch, a plan, a conversation — ask "Is something calling me, or am I pushing from anxiety?" Initiating drains the Generator.', tags:['sacral'] },
+    { id:'d3', title:'One visible career action', desc:'Post something. Reach out to someone. Write one paragraph of your offer. Update your positioning. Leo MC builds in public — not in private forever.', tags:['career'] },
+    { id:'d4', title:'One assertiveness rep', desc:'One moment today: state your opinion clearly, hold a boundary, or claim credit for your work. Just one rep. That\'s all it takes to build the muscle.', tags:['north'] },
+  ],
+  evening: [
+    { id:'e1', title:'Satisfaction scan', desc:'Ask your Sacral: "What gave me energy today? What drained me?" Your frustrated Generator is data, not failure. Write one line.', tags:['sacral'] },
+    { id:'e2', title:'Pattern log', desc:'Did you catch yourself seeking approval, shrinking, or over-giving? Log it in one sentence. No self-attack — just the record.', tags:['emotion'] },
+    { id:'e3', title:'Tomorrow\'s one thing', desc:'Choose the single most important career or growth action for tomorrow. Write it now so your subconscious can work on it overnight.', tags:['career','north'] },
+  ]
+};
+
+const reviewQs = [
+  { q:'Where did I initiate instead of respond this week? What was I afraid would not come if I waited?', label:'Generator pattern' },
+  { q:'What decision did I make from fear of disapproval rather than my actual gut response?', label:'Moon-Saturn / Moon-Venus' },
+  { q:'One moment I was assertive and took up space. What made that possible?', label:'North Node Aries' },
+  { q:'What career or business move am I still avoiding? What is my body actually saying about it?', label:'Career clarity' },
+  { q:'What am I most proud of this week — even if no one else noticed?', label:'Self-validation practice' },
+];
+
+const prompts = [
+  { text:'Where in my life am I waiting for permission that only I can give myself?', attr:'North Node in Aries · 6th house' },
+  { text:'What did my body say yes to today that my mind tried to talk me out of?', attr:'Generator Sacral authority' },
+  { text:'Who do I most want to serve in my work, and what is still stopping me from reaching them?', attr:'Jupiter in Pisces · Coaching interest' },
+  { text:'When did I last feel genuinely satisfied — not just productive? What was different about that?', attr:'Taurus Sun · Generator life force' },
+  { text:'What am I building that I have not told anyone about yet? Why am I keeping it private?', attr:'Scorpio rising · Leo MC tension' },
+  { text:'What would I do differently if the people closest to me could not be disappointed by my choices?', attr:'Moon square Venus — approval pattern' },
+  { text:'Name a decision you have been deferring. What is your body actually saying about it?', attr:'Sacral authority · decisiveness gap' },
+  { text:'Where have I been the expert in the room but stayed quiet? What stopped me from speaking?', attr:'6/2 profile — role model energy' },
+  { text:'What does my most successful, independent self look like in three years? Describe a Tuesday.', attr:'North Node Aries · career vision' },
+  { text:'What am I tolerating that a more self-trusting version of me would have already changed?', attr:'Sun opposition Pluto · self-reclamation' },
+  { text:'Where did I over-give this week? What was I hoping to get in return?', attr:'Moon square Venus' },
+  { text:'If I had to charge five times what I currently charge, what would I need to believe about my own value?', attr:'Saturn in 2nd house · self-worth and money' },
+];
+
+const tagMap = { sacral:'tag-sacral', career:'tag-career', emotion:'tag-emotion', north:'tag-north' };
+const tagLabel = { sacral:'sacral', career:'career', emotion:'emotion', north:'north node' };
+
+// ── PERSISTENCE HELPERS ──
+// All data stored in localStorage with prefix 'los-' (Life OS)
+const STORE = {
+  get(key, fallback) {
+    try { const v = localStorage.getItem('los-' + key); return v ? JSON.parse(v) : fallback; }
+    catch { return fallback; }
+  },
+  set(key, val) {
+    localStorage.setItem('los-' + key, JSON.stringify(val));
+  }
+};
+
+// Debounce for auto-save
+function debounce(fn, ms) {
+  let t;
+  return function(...args) { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), ms); };
+}
+
+function flashSaved(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+// ── STATE ──
+function todayKey() {
+  const d = new Date();
+  return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+}
+
+function weekKey() {
+  const d = new Date();
+  const jan1 = new Date(d.getFullYear(), 0, 1);
+  const weekNum = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+  return d.getFullYear() + '-W' + weekNum;
+}
+
+let done = STORE.get('done-'+todayKey(), {});
+let streak = STORE.get('streak', 0);
+let promptIdx = STORE.get('journal-prompt-idx-'+todayKey(), Math.floor(Math.random() * prompts.length));
+
+// Check if it's a new day and update streak
+const lastDay = STORE.get('last-day', null);
+const today = todayKey();
+if (lastDay && lastDay !== today) {
+  const all = [...practices.morning, ...practices.day, ...practices.evening];
+  const prevDone = STORE.get('done-'+lastDay, {});
+  const prevCount = all.filter(p => prevDone[p.id]).length;
+  if (prevCount >= Math.floor(all.length * 0.7)) {
+    streak = (streak || 0) + 1;
+  } else {
+    streak = 0;
+  }
+  STORE.set('streak', streak);
+}
+STORE.set('last-day', today);
+
+// ── RENDER ──
+function renderPCard(p) {
+  const isDone = done[p.id];
+  const tags = p.tags.map(t => `<span class="tag ${tagMap[t]}">${tagLabel[t]}</span>`).join('');
+  return `<div class="pcard${isDone?' done':''}" id="pc-${p.id}" onclick="toggle('${p.id}')">
+    <div class="pcard-row">
+      <div class="pcheck">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-title">${p.title}</div>
+        <div class="pcard-desc">${p.desc}</div>
+        <div class="pcard-tags">${tags}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderAll() {
+  document.getElementById('list-morning').innerHTML = practices.morning.map(renderPCard).join('');
+  document.getElementById('list-day').innerHTML = practices.day.map(renderPCard).join('');
+  document.getElementById('list-evening').innerHTML = practices.evening.map(renderPCard).join('');
+  updateStats();
+  updatePillars();
+}
+
+function toggle(id) {
+  done[id] = !done[id];
+  STORE.set('done-'+todayKey(), done);
+  const all = [...practices.morning, ...practices.day, ...practices.evening];
+  const p = all.find(x => x.id === id);
+  const el = document.getElementById('pc-'+id);
+  if (done[id]) {
+    el.classList.add('done');
+    showToast('"' + p.title + '" done.');
+  } else {
+    el.classList.remove('done');
+  }
+  updateStats();
+  updatePillars();
+  updateWeekDots();
+}
+
+function updateStats() {
+  const all = [...practices.morning, ...practices.day, ...practices.evening];
+  const n = all.filter(p => done[p.id]).length;
+  document.getElementById('s-done').textContent = n;
+  document.getElementById('s-total').textContent = all.length;
+  document.getElementById('s-streak').textContent = streak;
+  document.getElementById('s-pct').textContent = Math.round(n / all.length * 100) + '%';
+  document.getElementById('sidebar-streak').textContent = streak;
+}
+
+function updatePillars() {
+  const sacralIds = ['m1','d2','e1'];
+  const careerIds = ['m2','d3','e3'];
+  const emotionIds = ['d1','e2'];
+  const northIds = ['m3','d4'];
+  const pct = ids => Math.round(ids.filter(i => done[i]).length / ids.length * 100);
+  document.getElementById('pf-sacral').style.width = pct(sacralIds) + '%';
+  document.getElementById('pf-career').style.width = pct(careerIds) + '%';
+  document.getElementById('pf-emotion').style.width = pct(emotionIds) + '%';
+  document.getElementById('pf-north').style.width = pct(northIds) + '%';
+}
+
+function resetDay() {
+  done = {};
+  STORE.set('done-'+todayKey(), done);
+  renderAll();
+  updateWeekDots();
+}
+
+// ── WEEK DOTS ──
+function buildWeekDots() {
+  const dayLabels = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const now = new Date();
+  const todayDow = now.getDay();
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - todayDow + i);
+    const key = d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    const isToday = i === todayDow;
+    const dayDone = STORE.get('done-'+key, {});
+    const all = [...practices.morning, ...practices.day, ...practices.evening];
+    const n = all.filter(p => dayDone[p.id]).length;
+    let cls = isToday ? 'dc today' : 'dc';
+    if (n === all.length && n > 0) cls += ' full';
+    else if (n > 0) cls += ' partial';
+    html += `<div class="week-day">
+      <div class="dl">${dayLabels[i]}</div>
+      <div class="${cls}">${d.getDate()}</div>
+    </div>`;
+  }
+  document.getElementById('week-dots').innerHTML = html;
+}
+
+function updateWeekDots() { buildWeekDots(); }
+
+// ── REVIEW (now with persistence) ──
+function buildReview() {
+  const saved = STORE.get('review-'+weekKey(), {});
+  document.getElementById('review-list').innerHTML = reviewQs.map((q,i) => `
+    <div class="review-q">
+      <label>${q.q} <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-30);font-style:normal;margin-left:6px">${q.label}</span></label>
+      <textarea placeholder="Write freely..." rows="2" data-review-idx="${i}" oninput="autoSaveReview()">${saved[i] || ''}</textarea>
+    </div>
+  `).join('');
+}
+
+const autoSaveReview = debounce(function() {
+  const answers = {};
+  document.querySelectorAll('#review-list textarea').forEach(t => {
+    const idx = t.dataset.reviewIdx;
+    if (t.value.trim()) answers[idx] = t.value;
+  });
+  STORE.set('review-'+weekKey(), answers);
+  flashSaved('review-saved');
+}, 800);
+
+function clearReviews() {
+  document.querySelectorAll('#review-list textarea').forEach(t => t.value = '');
+  STORE.set('review-'+weekKey(), {});
+}
+
+function openWeeklySynth() {
+  const answers = [...document.querySelectorAll('#review-list textarea')].map((t,i) => reviewQs[i].q + ': ' + (t.value.trim() || '(no response)')).join('\n\n');
+  const url = `https://claude.ai/new?q=${encodeURIComponent('Here is my weekly review for my life OS practice as a Taurus Sun, Scorpio rising, Generator 6/2 with North Node in Aries building toward an advisory practice:\n\n' + answers + '\n\nPlease synthesize my week and give me one clear focus for next week. Be honest, not just validating.')}`;
+  window.open(url, '_blank');
+}
+
+// ── JOURNAL (now with persistence + history) ──
+const JOURNAL_LOG_KEY = 'journal-entries';
+
+function renderPrompt() {
+  const p = prompts[promptIdx];
+  document.getElementById('prompt-text').textContent = p.text;
+  document.getElementById('prompt-attr').textContent = p.attr;
+}
+
+function newPrompt() {
+  promptIdx = (promptIdx + 1) % prompts.length;
+  STORE.set('journal-prompt-idx-'+todayKey(), promptIdx);
+  renderPrompt();
+}
+
+// Auto-save journal text as you type
+const autoSaveJournal = debounce(function() {
+  const text = document.getElementById('journal-text').value;
+  STORE.set('journal-draft-'+todayKey(), { text, promptIdx });
+  flashSaved('journal-saved');
+}, 800);
+
+function loadTodayJournal() {
+  const draft = STORE.get('journal-draft-'+todayKey(), null);
+  if (draft) {
+    document.getElementById('journal-text').value = draft.text || '';
+    if (draft.promptIdx !== undefined) {
+      promptIdx = draft.promptIdx;
+    }
+  }
+}
+
+function saveJournalEntry() {
+  const text = document.getElementById('journal-text').value.trim();
+  if (!text) { showToast('Write something first.'); return; }
+
+  const entries = STORE.get(JOURNAL_LOG_KEY, []);
+  const p = prompts[promptIdx];
+  entries.unshift({
+    date: new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}),
+    dateKey: todayKey(),
+    prompt: p.text,
+    text,
+    timestamp: Date.now()
+  });
+  // Keep up to 200 entries (well beyond 40 days)
+  if (entries.length > 200) entries.pop();
+  STORE.set(JOURNAL_LOG_KEY, entries);
+  renderJournalLog();
+  showToast('Journal entry saved.');
+}
+
+function clearJournal() {
+  document.getElementById('journal-text').value = '';
+  STORE.set('journal-draft-'+todayKey(), { text: '', promptIdx });
+}
+
+function renderJournalLog() {
+  const entries = STORE.get(JOURNAL_LOG_KEY, []);
+  const el = document.getElementById('journal-log');
+  if (entries.length === 0) {
+    el.innerHTML = '<div class="jlog-empty">No entries yet — write something today.</div>';
+    return;
+  }
+  el.innerHTML = entries.slice(0, 50).map((e, i) => {
+    const preview = e.text.substring(0, 120) + (e.text.length > 120 ? '...' : '');
+    const promptSnippet = e.prompt ? e.prompt.substring(0, 40) + '...' : '';
+    return `<div class="jlog-entry" onclick="loadJournalEntry(${i})">
+      <div class="jlog-top">
+        <span class="jlog-date">${e.date}</span>
+        <span class="jlog-prompt">${promptSnippet}</span>
+      </div>
+      <div class="jlog-preview">${preview}</div>
+    </div>`;
+  }).join('');
+}
+
+function loadJournalEntry(idx) {
+  const entries = STORE.get(JOURNAL_LOG_KEY, []);
+  const e = entries[idx];
+  if (e) {
+    document.getElementById('journal-text').value = e.text;
+    // Find matching prompt
+    const pIdx = prompts.findIndex(p => p.text === e.prompt);
+    if (pIdx >= 0) {
+      promptIdx = pIdx;
+      renderPrompt();
+    }
+    showToast('Loaded entry from ' + e.date);
+  }
+}
+
+function openJournalReflect() {
+  const txt = document.getElementById('journal-text').value.trim();
+  const p = prompts[promptIdx];
+  const q = txt
+    ? 'Here is my journal entry in response to the prompt "' + p.text + '":\n\n' + txt + '\n\nPlease give me a short, honest coaching reflection based on my chart (Taurus Sun, Scorpio rising, Pisces Moon, Leo MC, North Node Aries) and Human Design (Generator 6/2, Sacral authority). Don\'t just validate — point to what actually matters.'
+    : 'Give me a deep journal prompt for my growth work as a Taurus Sun, Scorpio rising, Generator 6/2 with North Node in Aries building toward an AI advisory practice.';
+  window.open('https://claude.ai/new?q=' + encodeURIComponent(q), '_blank');
+}
+
+// ── GRATITUDE ──
+const GRAT_KEY = 'gratitude-entries';
+
+const gratMeditationPrompts = [
+  'Choose one of your five. Close your eyes and picture the moment it gave you something — warmth, relief, joy, steadiness. Stay there. Let it be real.',
+  'Feel the weight of what you wrote. Gratitude is not a thought — it is a sensation. Where do you feel it in your body? Let it expand for two minutes.',
+  'Pick the one that surprised you most. Why is it in your life? What had to happen for it to exist? Sit with that chain of grace.',
+  'Imagine your life without one of these five things. Hold that absence for a moment — then let it go and feel what it is to have it back.',
+  'Which of these five came from your own work? Let yourself receive credit for it. You created this. Sit with that for two minutes.',
+  'Which of these is the quietest — the one most easily taken for granted? Give it your full attention for two minutes.',
+  'Breathe in through your nose for four counts. Hold for four. Out for six. On each exhale, let one of your five things settle deeper into your body.',
+  'Who is connected to one of your five things? Send them silent gratitude. Picture their face. No words — just the feeling of appreciation moving toward them.',
+  'Pick the one that feels smallest. Hold it as if it were rare and fragile — because one day it will be. That is why it matters now.',
+  'Let all five exist in your awareness at once. You do not need to think about them — just let the feeling of a full life rest in your chest for two minutes.',
+];
+
+let currentGratPromptIdx = Math.floor(Math.random() * gratMeditationPrompts.length);
+
+// Auto-save gratitude inputs as you type
+const autoSaveGratInputs = debounce(function() {
+  const items = [1,2,3,4,5].map(i => document.getElementById('g'+i).value);
+  STORE.set('grat-draft-'+todayKey(), items);
+}, 600);
+
+function saveGratitude() {
+  const items = [1,2,3,4,5].map(i => document.getElementById('g'+i).value.trim()).filter(Boolean);
+  if (items.length < 3) { showToast('Add at least 3 things first.'); return; }
+
+  const entries = STORE.get(GRAT_KEY, {});
+  entries[todayKey()] = { items, date: new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) };
+  STORE.set(GRAT_KEY, entries);
+
+  showGratPrompt(items);
+  showToast('Saved. Now sit with the prompt.');
+}
+
+function showGratPrompt(items) {
+  const wrap = document.getElementById('grat-prompt-wrap');
+  const txt = document.getElementById('grat-prompt-text');
+  txt.textContent = gratMeditationPrompts[currentGratPromptIdx];
+  wrap.style.display = 'block';
+}
+
+function newGratPrompt() {
+  currentGratPromptIdx = (currentGratPromptIdx + 1) % gratMeditationPrompts.length;
+  const items = [1,2,3,4,5].map(i => document.getElementById('g'+i).value.trim()).filter(Boolean);
+  if (items.length > 0) showGratPrompt(items);
+  else {
+    const wrap = document.getElementById('grat-prompt-wrap');
+    const txt = document.getElementById('grat-prompt-text');
+    txt.textContent = gratMeditationPrompts[currentGratPromptIdx];
+    wrap.style.display = 'block';
+  }
+}
+
+function loadTodayGratitude() {
+  // First try saved entries, then drafts
+  const entries = STORE.get(GRAT_KEY, {});
+  const todayEntry = entries[todayKey()];
+  if (todayEntry && todayEntry.items) {
+    todayEntry.items.forEach((val, i) => {
+      const el = document.getElementById('g'+(i+1));
+      if (el) el.value = val;
+    });
+    showGratPrompt(todayEntry.items);
+    return;
+  }
+  // Load draft
+  const draft = STORE.get('grat-draft-'+todayKey(), null);
+  if (draft) {
+    draft.forEach((val, i) => {
+      const el = document.getElementById('g'+(i+1));
+      if (el) el.value = val;
+    });
+  }
+}
+
+// ── EMOTIONS ──
+const EMO_LOG_KEY = 'emo-log-entries';
+let emoRadio1 = null;
+let emoRadio2 = null;
+
+function toggleFeel(el) {
+  el.classList.toggle('selected');
+  updateSelectedFeelings();
+}
+
+function updateSelectedFeelings() {
+  const selected = [...document.querySelectorAll('.fw-sub.selected')].map(el => el.textContent);
+  const wrap = document.getElementById('fw-selected-wrap');
+  const tags = document.getElementById('fw-selected-tags');
+  if (selected.length > 0) {
+    wrap.style.display = 'block';
+    tags.innerHTML = selected.map(s => `<span class="fw-selected-tag">${s}</span>`).join('');
+  } else {
+    wrap.style.display = 'none';
+    tags.innerHTML = '';
+  }
+}
+
+function selectEmoRadio(el, val) {
+  document.querySelectorAll('#estep-3 .emo-radio').forEach(r => r.classList.remove('selected'));
+  el.classList.add('selected');
+  emoRadio1 = val;
+}
+
+function selectEmoRadio2(el, val) {
+  document.querySelectorAll('#estep-5 .emo-radio').forEach(r => r.classList.remove('selected'));
+  el.classList.add('selected');
+  emoRadio2 = val;
+  document.getElementById('emo-yes-block').style.display = val === 'yes' ? 'block' : 'none';
+}
+
+function toggleNeed(el) {
+  el.classList.toggle('selected');
+}
+
+function getSelectedFeelings() {
+  return [...document.querySelectorAll('.fw-sub.selected')].map(el => el.textContent);
+}
+
+function getSelectedNeeds() {
+  return [...document.querySelectorAll('.emo-need.selected')].map(el => el.textContent);
+}
+
+function saveEmoEntry() {
+  const what = document.getElementById('emo-what').value.trim();
+  const feelings = getSelectedFeelings();
+  if (!what || feelings.length === 0) {
+    showToast('Write what happened and select at least one feeling.');
+    return;
+  }
+  const entries = STORE.get(EMO_LOG_KEY, []);
+  const entry = {
+    date: new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}),
+    dateKey: todayKey(),
+    what,
+    feelings,
+    origin: emoRadio1 || 'now',
+    familiar: document.getElementById('emo-familiar').value.trim(),
+    needs: getSelectedNeeds(),
+    action: emoRadio2 || 'no',
+    tosay: document.getElementById('emo-tosay').value.trim(),
+    timestamp: Date.now()
+  };
+  entries.unshift(entry);
+  if (entries.length > 200) entries.pop();
+  STORE.set(EMO_LOG_KEY, entries);
+  renderEmoLog();
+  showToast('Entry logged. Well done for staying with it.');
+}
+
+function resetEmoTool() {
+  document.getElementById('emo-what').value = '';
+  document.getElementById('emo-familiar').value = '';
+  document.getElementById('emo-tosay').value = '';
+  document.querySelectorAll('.fw-sub.selected').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.emo-radio.selected').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.emo-need.selected').forEach(el => el.classList.remove('selected'));
+  document.getElementById('fw-selected-wrap').style.display = 'none';
+  document.getElementById('emo-yes-block').style.display = 'none';
+  emoRadio1 = null; emoRadio2 = null;
+}
+
+function renderEmoLog() {
+  const entries = STORE.get(EMO_LOG_KEY, []);
+  const el = document.getElementById('emo-log');
+  if (entries.length === 0) {
+    el.innerHTML = '<div class="emo-log-empty">No entries yet. Use the tool above — the log is how patterns become visible.</div>';
+    return;
+  }
+  const originLabel = { now:'Proportionate to the moment', mixed:'Touched something older', old:'Mostly an old wound' };
+  el.innerHTML = entries.map(e => `
+    <div class="emo-log-entry">
+      <div class="elo-top">
+        <div class="elo-feels">${e.feelings.map(f=>`<span class="elo-feel">${f}</span>`).join('')}</div>
+        <div class="elo-date">${e.date}</div>
+      </div>
+      <div class="elo-what">"${e.what}"</div>
+      <div class="elo-origin ${e.origin}">${originLabel[e.origin] || ''}</div>
+    </div>
+  `).join('');
+}
+
+function openEmoReflect() {
+  const what = document.getElementById('emo-what').value.trim();
+  const feelings = getSelectedFeelings();
+  const familiar = document.getElementById('emo-familiar').value.trim();
+  const needs = getSelectedNeeds();
+  const action = emoRadio2;
+  const tosay = document.getElementById('emo-tosay').value.trim();
+  if (!what) { showToast('Complete the tool first.'); return; }
+  const q = `I just worked through my emotional regulation tool. Here is what came up:
+
+WHAT HAPPENED: ${what}
+
+FEELINGS NAMED: ${feelings.join(', ') || 'not selected'}
+
+IS THIS OLD OR NEW: ${emoRadio1 === 'now' ? 'Proportionate to the moment' : emoRadio1 === 'mixed' ? 'Touched something older' : 'Mostly an old wound'}
+${familiar ? `\nFAMILIAR PATTERN: ${familiar}` : ''}
+
+WHAT THE FEELING NEEDS: ${needs.join(', ') || 'not selected'}
+
+DOES SOMETHING NEED TO BE SAID: ${action === 'no' ? 'No' : action === 'later' ? 'Maybe — waiting 24 hours' : 'Yes'}
+${tosay ? `\nWHAT I WANT THEM TO UNDERSTAND: ${tosay}` : ''}
+
+Please give me a grounded, non-judgmental reflection. Help me see clearly — what is mine to hold, what is real, and what I should do with this. I have Pisces Moon (I feel deeply and can lose myself in others' emotions), Moon square Saturn (I expect withdrawal), and Moon square Venus (I seek external validation). I am working on becoming my own witness and not externalizing my emotions by venting to others. Be honest and kind.`;
+  window.open('https://claude.ai/new?q=' + encodeURIComponent(q), '_blank');
+}
+
+// ── DECISION (now with persistence + history) ──
+const DECISION_LOG_KEY = 'decision-entries';
+
+// Auto-save decision text
+const autoSaveDecision = debounce(function() {
+  STORE.set('decision-draft-'+todayKey(), document.getElementById('decision-text').value);
+  flashSaved('decision-saved');
+}, 800);
+
+function loadTodayDecision() {
+  const draft = STORE.get('decision-draft-'+todayKey(), '');
+  if (draft) document.getElementById('decision-text').value = draft;
+}
+
+function runProtocol() {
+  const txt = document.getElementById('decision-text').value.trim();
+  if (!txt) { showToast('Write your decision first.'); return; }
+
+  // Save to decision history
+  const entries = STORE.get(DECISION_LOG_KEY, []);
+  entries.unshift({
+    date: new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}),
+    text: txt,
+    timestamp: Date.now()
+  });
+  if (entries.length > 100) entries.pop();
+  STORE.set(DECISION_LOG_KEY, entries);
+  renderDecisionLog();
+
+  const q = 'I need to run my Generator decision protocol on this decision: "' + txt + '"\n\nPlease walk me through:\n1. What my body response likely indicates\n2. Whether this looks like a response or an initiation from anxiety\n3. The Moon-Saturn fear check — am I avoiding dependence or vulnerability?\n4. The North Node check — what would my more assertive, independent self do?\n5. Your honest overall read.\n\nBe direct. I have Taurus Sun, Scorpio rising, Pisces Moon, Generator 6/2 Human Design with Sacral authority and North Node in Aries.';
+  window.open('https://claude.ai/new?q=' + encodeURIComponent(q), '_blank');
+}
+
+function renderDecisionLog() {
+  const entries = STORE.get(DECISION_LOG_KEY, []);
+  const el = document.getElementById('decision-log');
+  if (entries.length === 0) {
+    el.innerHTML = '<div class="jlog-empty">No decisions logged yet.</div>';
+    return;
+  }
+  el.innerHTML = entries.slice(0, 20).map((e, i) => {
+    const preview = e.text.substring(0, 120) + (e.text.length > 120 ? '...' : '');
+    return `<div class="jlog-entry" onclick="loadDecision(${i})">
+      <div class="jlog-top">
+        <span class="jlog-date">${e.date}</span>
+      </div>
+      <div class="jlog-preview">${preview}</div>
+    </div>`;
+  }).join('');
+}
+
+function loadDecision(idx) {
+  const entries = STORE.get(DECISION_LOG_KEY, []);
+  const e = entries[idx];
+  if (e) {
+    document.getElementById('decision-text').value = e.text;
+    showToast('Loaded decision from ' + e.date);
+  }
+}
+
+// ── VISION ──
+const VISION_START_KEY = 'vision-start-date';
+const VISION_ENTRIES_KEY = 'vision-entries';
+
+function getVisionStartDate() {
+  let start = STORE.get(VISION_START_KEY, null);
+  if (!start) {
+    start = todayKey();
+    STORE.set(VISION_START_KEY, start);
+  }
+  return start;
+}
+
+function getVisionEntries() {
+  return STORE.get(VISION_ENTRIES_KEY, {});
+}
+
+function saveVisionEntries(entries) {
+  STORE.set(VISION_ENTRIES_KEY, entries);
+}
+
+function getVisionDayNumber() {
+  const start = getVisionStartDate();
+  const startParts = start.split('-').map(Number);
+  const startDate = new Date(startParts[0], startParts[1]-1, startParts[2]);
+  const now = new Date();
+  const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diff = Math.floor((todayDate - startDate) / 86400000);
+  return Math.min(diff + 1, 40);
+}
+
+function buildVisionDots() {
+  const entries = getVisionEntries();
+  const dayNum = getVisionDayNumber();
+  const start = getVisionStartDate();
+  const startParts = start.split('-').map(Number);
+  const startDate = new Date(startParts[0], startParts[1]-1, startParts[2]);
+  let html = '';
+  for (let i = 1; i <= 40; i++) {
+    const d = new Date(startDate);
+    d.setDate(startDate.getDate() + i - 1);
+    const key = d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    const isDone = entries[key] && entries[key].vision;
+    const isToday = i === dayNum;
+    let cls = 'vdot';
+    if (isDone) cls += ' done';
+    else if (isToday) cls += ' today';
+    html += `<div class="${cls}" title="Day ${i}" onclick="jumpToVisionDay('${key}', ${i})"></div>`;
+  }
+  document.getElementById('vision-dots').innerHTML = html;
+  const completed = Object.values(getVisionEntries()).filter(e => e.vision).length;
+  const pct = Math.round(completed / 40 * 100);
+  document.getElementById('vision-fill').style.width = pct + '%';
+  document.getElementById('vision-pct').textContent = pct + '%';
+  document.getElementById('vision-day-label').textContent = 'Day ' + dayNum + ' of 40';
+}
+
+function saveVisionDay() {
+  const vision = document.getElementById('vision-text').value.trim();
+  const r1 = document.getElementById('ref-1').value.trim();
+  const r2 = document.getElementById('ref-2').value.trim();
+  const r3 = document.getElementById('ref-3').value.trim();
+  if (!vision) { showToast('Write your vision first.'); return; }
+  const entries = getVisionEntries();
+  const key = todayKey();
+  entries[key] = { vision, r1, r2, r3, date: new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) };
+  saveVisionEntries(entries);
+  buildVisionDots();
+  renderVisionLog();
+  const msg = document.getElementById('vision-saved-msg');
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 3000);
+  showToast('Day ' + getVisionDayNumber() + ' saved.');
+}
+
+function loadTodayVision() {
+  const entries = getVisionEntries();
+  const key = todayKey();
+  const entry = entries[key];
+  if (entry) {
+    document.getElementById('vision-text').value = entry.vision || '';
+    document.getElementById('ref-1').value = entry.r1 || '';
+    document.getElementById('ref-2').value = entry.r2 || '';
+    document.getElementById('ref-3').value = entry.r3 || '';
+  }
+}
+
+function loadPrevVision() {
+  const entries = getVisionEntries();
+  const start = getVisionStartDate();
+  const startParts = start.split('-').map(Number);
+  const startDate = new Date(startParts[0], startParts[1]-1, startParts[2]);
+  const dayNum = getVisionDayNumber();
+  for (let i = dayNum - 1; i >= 1; i--) {
+    const d = new Date(startDate);
+    d.setDate(startDate.getDate() + i - 1);
+    const key = d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    if (entries[key]) {
+      const e = entries[key];
+      document.getElementById('vision-text').value = e.vision || '';
+      document.getElementById('ref-1').value = e.r1 || '';
+      document.getElementById('ref-2').value = e.r2 || '';
+      document.getElementById('ref-3').value = e.r3 || '';
+      showToast('Loaded Day ' + i + ' — ' + e.date);
+      return;
+    }
+  }
+  showToast('No previous entries yet.');
+}
+
+function jumpToVisionDay(key, dayNum) {
+  const entries = getVisionEntries();
+  const entry = entries[key];
+  if (entry) {
+    document.getElementById('vision-text').value = entry.vision || '';
+    document.getElementById('ref-1').value = entry.r1 || '';
+    document.getElementById('ref-2').value = entry.r2 || '';
+    document.getElementById('ref-3').value = entry.r3 || '';
+    showToast('Viewing Day ' + dayNum);
+  } else {
+    showToast('No entry for Day ' + dayNum + ' yet.');
+  }
+}
+
+function renderVisionLog() {
+  const entries = getVisionEntries();
+  const start = getVisionStartDate();
+  const startParts = start.split('-').map(Number);
+  const startDate = new Date(startParts[0], startParts[1]-1, startParts[2]);
+  const dayNum = getVisionDayNumber();
+  let html = '';
+  for (let i = dayNum; i >= 1; i--) {
+    const d = new Date(startDate);
+    d.setDate(startDate.getDate() + i - 1);
+    const key = d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    const entry = entries[key];
+    if (entry && entry.vision) {
+      const preview = entry.vision.substring(0, 120) + (entry.vision.length > 120 ? '...' : '');
+      html += `<div class="vlog-entry" onclick="jumpToVisionDay('${key}', ${i})">
+        <div class="vlog-top">
+          <span class="vlog-day">Day ${i}</span>
+          <span class="vlog-date">${entry.date}</span>
+        </div>
+        <div class="vlog-preview">${preview}</div>
+      </div>`;
+    }
+  }
+  document.getElementById('vision-log').innerHTML = html || '<div class="vlog-empty">No entries yet — start today.</div>';
+}
+
+function openVisionReflect() {
+  const vision = document.getElementById('vision-text').value.trim();
+  const r1 = document.getElementById('ref-1').value.trim();
+  const r2 = document.getElementById('ref-2').value.trim();
+  const r3 = document.getElementById('ref-3').value.trim();
+  const dayNum = getVisionDayNumber();
+  if (!vision) { showToast('Write your vision first.'); return; }
+  const q = 'I am on Day ' + dayNum + ' of my 40-day life vision practice. Here is what I wrote:\n\nMY LIFE VISION:\n' + vision + '\n\n01 — Did I show up this way today?\n' + (r1 || '(not answered)') + '\n\n02 — What could I have done better?\n' + (r2 || '(not answered)') + '\n\n03 — How was I in alignment?\n' + (r3 || '(not answered)') + '\n\nPlease give me a short, direct coaching reflection. Point to where I am growing, where the gap between my vision and my behavior is largest right now, and one thing to carry into tomorrow. I am a Taurus Sun, Scorpio rising, Generator 6/2, North Node in Aries. Do not just validate — be a real coach.';
+  window.open('https://claude.ai/new?q=' + encodeURIComponent(q), '_blank');
+}
+
+// ── COACHING ──
+function openCoaching() {
+  const all = [...practices.morning, ...practices.day, ...practices.evening];
+  const doneList = all.filter(p => done[p.id]).map(p => p.title).join(', ') || 'none yet';
+  const q = 'I just finished my daily check-in in my life OS. Completed practices today: ' + doneList + '. Please give me a short, grounded coaching reflection — what to carry into the rest of my day or tomorrow. Base it on my Taurus Sun, Scorpio rising, Pisces Moon, Generator 6/2 Human Design, Sacral authority, and North Node in Aries in the 6th house.';
+  window.open('https://claude.ai/new?q=' + encodeURIComponent(q), '_blank');
+}
+
+function openMilestones() {
+  const q = 'Based on my four growth pillars — Sacral trust, career clarity (building an AI advisory practice), emotional patterns (Moon-Saturn and Moon-Venus), and North Node growth (Aries assertiveness) — give me three specific, concrete monthly milestones I should work toward this month. Make them real and slightly uncomfortable. I am a Generator 6/2 with Sacral authority, Taurus Sun, Scorpio rising, Leo MC, North Node in Aries.';
+  window.open('https://claude.ai/new?q=' + encodeURIComponent(q), '_blank');
+}
+
+// ── NAV ──
+function switchTab(name, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
+  if (el) {
+    el.classList.add('active');
+    const tabs = ['daily','weekly','decide','pillars','vision','emotions','journal'];
+    if (el.classList.contains('nav-item')) {
+      document.querySelectorAll('.mobile-nav-btn').forEach((b,i) => {
+        if (tabs[i] === name) b.classList.add('active');
+      });
+    } else {
+      document.querySelectorAll('.nav-item').forEach(n => {
+        if (n.dataset.tab === name) n.classList.add('active');
+      });
+    }
+  }
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── INIT ──
+function setDate() {
+  const d = new Date();
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  document.getElementById('today-date').textContent = d.toLocaleDateString('en-US', opts);
+}
+
+// Wire up auto-save on all input fields
+function wireAutoSave() {
+  // Journal textarea
+  const journalText = document.getElementById('journal-text');
+  if (journalText) journalText.addEventListener('input', autoSaveJournal);
+
+  // Decision textarea
+  const decisionText = document.getElementById('decision-text');
+  if (decisionText) decisionText.addEventListener('input', autoSaveDecision);
+
+  // Gratitude inputs
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('g'+i);
+    if (el) el.addEventListener('input', autoSaveGratInputs);
+  }
+}
+
+setDate();
+renderAll();
+buildWeekDots();
+buildReview();
+renderPrompt();
+updateStats();
+getVisionStartDate();
+buildVisionDots();
+loadTodayVision();
+renderVisionLog();
+renderEmoLog();
+loadTodayGratitude();
+loadTodayJournal();
+loadTodayDecision();
+renderJournalLog();
+renderDecisionLog();
+wireAutoSave();
+</script>
+</body>
+</html>
