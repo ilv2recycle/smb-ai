@@ -1,12 +1,12 @@
 {
-  "version": "v260409.13 11:24a",
-  "release": 14,
-  "sha": "80d6998",
-  "fullSha": "80d6998bc62d1398d4f8754f59e8b38b57dcc82c",
+  "version": "v260409.14 3:52p",
+  "release": 15,
+  "sha": "e1ddbb9",
+  "fullSha": "e1ddbb9087ad7f58437bf93ae300f7d1958f90be",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
   "machine": "runnervm35a4x",
-  "pushedAt": "2026-04-09 16:24:18+00",
-  "commits": [{"sha":"f64fe0c","message":"Add Supabase-backed shared voting tally system","author":"Monique Mason"},{"sha":"80d6998","message":"Merge pull request #14 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
+  "pushedAt": "2026-04-09 20:52:16+00",
+  "commits": [{"sha":"e1ddbb9","message":"Add Life OS personal dashboard with persistent form storage (#15)","author":"ilv2recycle"}]
 }
