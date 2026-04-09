@@ -1,12 +1,12 @@
 {
-  "version": "v260409.09 1:18a",
-  "release": 10,
-  "sha": "9e83428",
-  "fullSha": "9e834284a993ae05b9fba7d945af5c67424b32df",
+  "version": "v260409.10 1:29a",
+  "release": 11,
+  "sha": "b2b0d4b",
+  "fullSha": "b2b0d4bffdf07a774fa1aaf042c4e2badfab3531",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
-  "machine": "runnervm35a4x",
-  "pushedAt": "2026-04-09 06:18:39+00",
-  "commits": [{"sha":"5e4ddf8","message":"Expand methodology disclaimer with explicit assumptions and credibility criteria","author":"Monique Mason"},{"sha":"9e83428","message":"Merge pull request #10 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
+  "machine": "runnervm727z3",
+  "pushedAt": "2026-04-09 06:29:31+00",
+  "commits": [{"sha":"53c1575","message":"Add 5 high-impact comparison charts to portfolio","author":"Monique Mason"},{"sha":"b2b0d4b","message":"Merge pull request #11 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
 }
