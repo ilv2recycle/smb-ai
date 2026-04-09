@@ -1,12 +1,12 @@
 {
-  "version": "v260409.18 4:20p",
-  "release": 19,
-  "sha": "a18e7bf",
-  "fullSha": "a18e7bfa3e440bfc812fc589c78bdcba6a1617ec",
+  "version": "v260409.19 4:32p",
+  "release": 20,
+  "sha": "c6656a3",
+  "fullSha": "c6656a38240301f3ccac088600a8e2b8a3b22c7f",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
   "machine": "runnervm35a4x",
-  "pushedAt": "2026-04-09 21:20:25+00",
-  "commits": [{"sha":"6723f94","message":"Premium visual overhaul for LytxOne AI Lab","author":"Monique Mason"},{"sha":"a18e7bf","message":"Merge pull request #19 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
+  "pushedAt": "2026-04-09 21:32:28+00",
+  "commits": [{"sha":"5fadbb8","message":"Dramatic visual overhaul: dark hero, colored preview cards, orbs","author":"Monique Mason"},{"sha":"c6656a3","message":"Merge pull request #20 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
 }
