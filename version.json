@@ -1,12 +1,12 @@
 {
-  "version": "v260409.11 1:36a",
-  "release": 12,
-  "sha": "e598edb",
-  "fullSha": "e598edbf634b6a9e8b5c37a05b833af7f2ba892e",
+  "version": "v260409.12 1:54a",
+  "release": 13,
+  "sha": "1da0747",
+  "fullSha": "1da0747e2db5ac3537a6cd69e7d9952ad7edad51",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
-  "machine": "runnervm35a4x",
-  "pushedAt": "2026-04-09 06:36:41+00",
-  "commits": [{"sha":"781dec7","message":"Add Lytx ROI metrics, clarify break-even labels, add author credit","author":"Monique Mason"},{"sha":"e598edb","message":"Merge pull request #12 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
+  "machine": "runnervm727z3",
+  "pushedAt": "2026-04-09 06:54:27+00",
+  "commits": [{"sha":"7af4fff","message":"Add emoji reaction voting system with live leaderboard","author":"Monique Mason"},{"sha":"1da0747","message":"Merge pull request #13 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
 }
