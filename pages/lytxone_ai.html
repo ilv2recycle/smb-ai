@@ -619,6 +619,12 @@
       background: var(--bg-glass);
       border: 1px solid var(--bg-glass-border);
       box-shadow: var(--shadow-sm);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .strategy-card:hover .rank-badge {
+      transform: scale(1.08) rotate(3deg);
+      box-shadow: var(--shadow-md);
     }
 
     .strategy-header {
@@ -1193,6 +1199,197 @@
       align-self: center;
     }
 
+    /* ===== STRATEGY ICON GRAPHICS ===== */
+    .strategy-icon {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .strategy-icon svg {
+      width: 28px; height: 28px;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.3s ease;
+    }
+
+    .strategy-icon::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .strategy-card:hover .strategy-icon {
+      transform: scale(1.08);
+    }
+
+    .strategy-card:hover .strategy-icon svg {
+      transform: scale(1.1);
+    }
+
+    .strategy-card:hover .strategy-icon::before {
+      opacity: 1;
+    }
+
+    .icon-indigo { background: rgba(99, 102, 241, 0.08); }
+    .icon-indigo svg { color: #6366F1; }
+    .icon-indigo::before { background: radial-gradient(circle, rgba(99, 102, 241, 0.12), transparent); }
+
+    .icon-emerald { background: rgba(5, 150, 105, 0.08); }
+    .icon-emerald svg { color: #059669; }
+    .icon-emerald::before { background: radial-gradient(circle, rgba(5, 150, 105, 0.12), transparent); }
+
+    .icon-violet { background: rgba(139, 92, 246, 0.08); }
+    .icon-violet svg { color: #8B5CF6; }
+    .icon-violet::before { background: radial-gradient(circle, rgba(139, 92, 246, 0.12), transparent); }
+
+    .icon-amber { background: rgba(245, 158, 11, 0.08); }
+    .icon-amber svg { color: #F59E0B; }
+    .icon-amber::before { background: radial-gradient(circle, rgba(245, 158, 11, 0.12), transparent); }
+
+    .icon-cyan { background: rgba(6, 182, 212, 0.08); }
+    .icon-cyan svg { color: #06B6D4; }
+    .icon-cyan::before { background: radial-gradient(circle, rgba(6, 182, 212, 0.12), transparent); }
+
+    .icon-rose { background: rgba(244, 63, 94, 0.08); }
+    .icon-rose svg { color: #F43F5E; }
+    .icon-rose::before { background: radial-gradient(circle, rgba(244, 63, 94, 0.12), transparent); }
+
+    .icon-blue { background: rgba(59, 130, 246, 0.08); }
+    .icon-blue svg { color: #3B82F6; }
+    .icon-blue::before { background: radial-gradient(circle, rgba(59, 130, 246, 0.12), transparent); }
+
+    /* ===== ANIMATED STAT RINGS ===== */
+    .stat-ring {
+      width: 80px; height: 80px;
+      margin: 0 auto 16px;
+      position: relative;
+    }
+
+    .stat-ring svg {
+      width: 80px; height: 80px;
+      transform: rotate(-90deg);
+    }
+
+    .stat-ring-bg {
+      fill: none;
+      stroke: rgba(0, 0, 0, 0.04);
+      stroke-width: 4;
+    }
+
+    .stat-ring-fill {
+      fill: none;
+      stroke-width: 4;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .stat-ring-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6875rem;
+      font-weight: 800;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+    }
+
+    /* ===== HOVER RIPPLE EFFECT ===== */
+    .ripple-hover {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple-hover::after {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.04), transparent 70%);
+      top: var(--mouse-y, 50%);
+      left: var(--mouse-x, 50%);
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .ripple-hover:hover::after {
+      opacity: 1;
+    }
+
+    /* ===== STAGGERED REVEAL ANIMATIONS ===== */
+    .stagger-1 { transition-delay: 0.05s; }
+    .stagger-2 { transition-delay: 0.1s; }
+    .stagger-3 { transition-delay: 0.15s; }
+    .stagger-4 { transition-delay: 0.2s; }
+
+    .reveal.visible .stat-card { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .reveal.visible .stat-card:nth-child(1) { animation-delay: 0s; }
+    .reveal.visible .stat-card:nth-child(2) { animation-delay: 0.08s; }
+    .reveal.visible .stat-card:nth-child(3) { animation-delay: 0.16s; }
+    .reveal.visible .stat-card:nth-child(4) { animation-delay: 0.24s; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== METRIC VALUE HOVER ===== */
+    .metric-value {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .metric-card:hover .metric-value {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+
+    /* ===== VISUAL DIVIDERS ===== */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.08), transparent);
+      margin: 48px 0;
+    }
+
+    /* ===== ANIMATED COUNTER UNDERLINE ===== */
+    .stat-value::after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 2px;
+      margin: 8px auto 0;
+      border-radius: 1px;
+      background: linear-gradient(90deg, var(--stat-accent-1, var(--accent-indigo)), var(--stat-accent-2, var(--accent-violet)));
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .stat-card:hover .stat-value::after {
+      width: 40px;
+    }
+
+    /* ===== FLEET BUTTON ICONS ===== */
+    .fleet-btn-icon {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .fleet-btn:hover .fleet-btn-icon {
+      transform: scale(1.15);
+    }
+
     /* ===== SELECTION COLOR ===== */
     ::selection {
       background: rgba(99, 102, 241, 0.15);
@@ -1290,27 +1487,45 @@
 
       <div class="stats-grid">
         <div class="stat-card">
+          <div class="stat-ring">
+            <svg viewBox="0 0 80 80"><circle class="stat-ring-bg" cx="40" cy="40" r="34"/><circle class="stat-ring-fill" cx="40" cy="40" r="34" stroke="#6366F1" data-percent="8"/></svg>
+            <div class="stat-ring-label">COST</div>
+          </div>
           <div class="stat-label">Annual Cost</div>
           <div class="stat-value" id="annualCost">$10,800</div>
           <div class="stat-note">What customer pays</div>
         </div>
         <div class="stat-card">
+          <div class="stat-ring">
+            <svg viewBox="0 0 80 80"><circle class="stat-ring-bg" cx="40" cy="40" r="34"/><circle class="stat-ring-fill" cx="40" cy="40" r="34" stroke="#F59E0B" data-percent="85"/></svg>
+            <div class="stat-ring-label">SAVE</div>
+          </div>
           <div class="stat-label">Total Savings</div>
           <div class="stat-value" id="totalSavings">$258,800</div>
           <div class="stat-note">All AI features combined</div>
         </div>
         <div class="stat-card">
+          <div class="stat-ring">
+            <svg viewBox="0 0 80 80"><circle class="stat-ring-bg" cx="40" cy="40" r="34"/><circle class="stat-ring-fill" cx="40" cy="40" r="34" stroke="#059669" data-percent="92"/></svg>
+            <div class="stat-ring-label">NET</div>
+          </div>
           <div class="stat-label">Net Profit</div>
           <div class="stat-value" id="netProfit">$248,000</div>
           <div class="stat-note">Bottom-line impact</div>
         </div>
         <div class="stat-card">
+          <div class="stat-ring">
+            <svg viewBox="0 0 80 80"><circle class="stat-ring-bg" cx="40" cy="40" r="34"/><circle class="stat-ring-fill" cx="40" cy="40" r="34" stroke="#8B5CF6" data-percent="96"/></svg>
+            <div class="stat-ring-label">ROI</div>
+          </div>
           <div class="stat-label">Customer ROI</div>
           <div class="stat-value" id="customerROI">24x</div>
           <div class="stat-note">Return on investment</div>
         </div>
       </div>
     </div>
+
+    <div class="section-divider"></div>
 
     <!-- Fleet Selector -->
     <div class="card fleet-section reveal">
@@ -1319,14 +1534,17 @@
 
       <div class="fleet-buttons">
         <div class="fleet-btn active" onclick="updateFleetSize(20, this)">
+          <span class="fleet-btn-icon">&#x1F69A;</span>
           <div class="fleet-btn-title">Small Fleet</div>
           <div class="fleet-btn-subtitle">20 vehicles</div>
         </div>
         <div class="fleet-btn" onclick="updateFleetSize(50, this)">
+          <span class="fleet-btn-icon">&#x1F69B;</span>
           <div class="fleet-btn-title">Mid-Market</div>
           <div class="fleet-btn-subtitle">50 vehicles</div>
         </div>
         <div class="fleet-btn" onclick="updateFleetSize(200, this)">
+          <span class="fleet-btn-icon">&#x1F3ED;</span>
           <div class="fleet-btn-title">Regional Fleet</div>
           <div class="fleet-btn-subtitle">200 vehicles</div>
         </div>
@@ -1336,6 +1554,8 @@
         <strong>Why 20 vehicles as baseline:</strong> LytxOne targets SMB fleets (5-100 vehicles). A 20-vehicle fleet represents the median of this market&mdash;large enough for compelling ROI, small enough to avoid enterprise complexity. Common examples: HVAC contractors, plumbing companies, delivery services, electrical contractors.
       </div>
     </div>
+
+    <div class="section-divider"></div>
 
     <!-- Tabs -->
     <div class="tabs reveal">
@@ -2453,6 +2673,38 @@
       document.getElementById('calcSavings').textContent = '$' + totalSavings.toLocaleString();
       document.getElementById('calcProfit').textContent = '$' + netProfit.toLocaleString();
     }
+
+    // ===== RIPPLE HOVER TRACKING =====
+    document.querySelectorAll('.strategy-card, .metric-card, .stat-card, .fleet-btn').forEach(el => {
+      el.classList.add('ripple-hover');
+      el.addEventListener('mousemove', e => {
+        const rect = el.getBoundingClientRect();
+        el.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+        el.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
+      });
+    });
+
+    // ===== ANIMATED STAT RINGS =====
+    function animateRings() {
+      document.querySelectorAll('.stat-ring-fill').forEach(ring => {
+        const target = ring.dataset.percent || 0;
+        const circumference = 2 * Math.PI * 34;
+        ring.style.strokeDasharray = circumference;
+        ring.style.strokeDashoffset = circumference;
+        setTimeout(() => {
+          ring.style.strokeDashoffset = circumference - (circumference * target / 100);
+        }, 300);
+      });
+    }
+
+    // Re-animate rings when stats section becomes visible
+    const ringObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) animateRings();
+      });
+    }, { threshold: 0.3 });
+    const statsEl = document.querySelector('.stats-container');
+    if (statsEl) ringObserver.observe(statsEl);
 
     // ===== KEYBOARD SHORTCUTS =====
     document.addEventListener('keydown', e => {
