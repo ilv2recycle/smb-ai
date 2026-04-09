@@ -1390,6 +1390,187 @@
       transform: scale(1.15);
     }
 
+    /* ===== VOTING SYSTEM ===== */
+    .vote-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .vote-bar-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-right: 4px;
+      white-space: nowrap;
+    }
+
+    .vote-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg-glass);
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .vote-btn:hover {
+      border-color: rgba(99, 102, 241, 0.2);
+      background: rgba(99, 102, 241, 0.04);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .vote-btn.voted {
+      border-color: rgba(99, 102, 241, 0.3);
+      background: rgba(99, 102, 241, 0.08);
+      color: var(--accent-indigo);
+    }
+
+    .vote-btn .vote-emoji {
+      font-size: 1rem;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .vote-btn:hover .vote-emoji {
+      transform: scale(1.2);
+    }
+
+    .vote-btn.voted .vote-emoji {
+      animation: votePopIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .vote-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      min-width: 14px;
+      text-align: center;
+    }
+
+    @keyframes votePopIn {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.5) rotate(10deg); }
+      70% { transform: scale(0.9) rotate(-5deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+
+    /* Floating confetti on vote */
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-40px) scale(0.5); }
+    }
+
+    .vote-confetti {
+      position: absolute;
+      pointer-events: none;
+      font-size: 0.875rem;
+      animation: floatUp 0.8s ease-out forwards;
+    }
+
+    /* Leaderboard */
+    .leaderboard {
+      margin-top: 32px;
+      padding: 36px;
+    }
+
+    .leaderboard-title {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .leaderboard-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      font-weight: 500;
+    }
+
+    .leaderboard-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+      transition: all 0.3s ease;
+    }
+
+    .leaderboard-row:hover {
+      background: rgba(99, 102, 241, 0.02);
+      padding-left: 8px;
+      padding-right: 8px;
+      margin: 0 -8px;
+      border-radius: 8px;
+    }
+
+    .leaderboard-row:last-child { border-bottom: none; }
+
+    .leaderboard-rank {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      flex-shrink: 0;
+    }
+
+    .leaderboard-rank.gold { background: rgba(251, 191, 36, 0.12); color: #B45309; }
+    .leaderboard-rank.silver { background: rgba(148, 163, 184, 0.12); color: #475569; }
+    .leaderboard-rank.bronze { background: rgba(251, 146, 60, 0.12); color: #C2410C; }
+    .leaderboard-rank.normal { background: rgba(0, 0, 0, 0.03); color: var(--text-muted); }
+
+    .leaderboard-name {
+      flex: 1;
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .leaderboard-votes {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--accent-indigo);
+    }
+
+    .leaderboard-bar-track {
+      width: 120px;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.04);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .leaderboard-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-indigo), var(--accent-violet));
+      border-radius: 3px;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
     /* ===== SELECTION COLOR ===== */
     ::selection {
       background: rgba(99, 102, 241, 0.15);
@@ -2494,6 +2675,15 @@
     <!-- ===== COMPARISON TAB ===== -->
     <div id="comparison" class="tab-content">
 
+      <!-- Voting Leaderboard -->
+      <div class="card leaderboard reveal">
+        <div class="leaderboard-title">&#x1F3C6; Strategy Popularity</div>
+        <div class="leaderboard-subtitle">Vote on strategies using the reaction buttons on each card. Rankings update live. Votes are saved per device.</div>
+        <div id="leaderboard-rows"></div>
+      </div>
+
+      <div class="section-divider"></div>
+
       <!-- Chart 1: Annual Customer Savings -->
       <div class="card chart-section reveal">
         <div class="chart-title">Annual Customer Savings: All 11 Strategies</div>
@@ -3128,6 +3318,127 @@
     }, { threshold: 0.3 });
     const statsEl = document.querySelector('.stats-container');
     if (statsEl) ringObserver.observe(statsEl);
+
+    // ===== VOTING SYSTEM =====
+    const strategyIds = [
+      { id: 'incident', name: 'Incident Response' },
+      { id: 'maintenance', name: 'Predictive Maintenance' },
+      { id: 'coaching', name: 'AI Coaching' },
+      { id: 'retention', name: 'Driver Retention' },
+      { id: 'risk', name: 'Route Risk Scoring' },
+      { id: 'workflow', name: 'Autonomous Workflow' },
+      { id: 'askone', name: 'Ask LytxOne' },
+      { id: 'cargo', name: 'Cargo Verification' },
+      { id: 'benchmark', name: 'Benchmarking' },
+      { id: 'proof', name: 'Proof of Service' },
+      { id: 'compliance', name: 'Compliance Autopilot' }
+    ];
+
+    const reactions = [
+      { emoji: '🔥', label: 'Fire' },
+      { emoji: '🎯', label: 'Bullseye' },
+      { emoji: '💰', label: 'Money' },
+      { emoji: '🚀', label: 'Rocket' }
+    ];
+
+    // Load votes from localStorage
+    function getVotes() {
+      try { return JSON.parse(localStorage.getItem('lytxone-votes') || '{}'); }
+      catch { return {}; }
+    }
+    function saveVotes(votes) {
+      localStorage.setItem('lytxone-votes', JSON.stringify(votes));
+    }
+
+    // Inject vote bars into each strategy card
+    function initVoting() {
+      const cards = document.querySelectorAll('.strategy-card');
+      cards.forEach((card, i) => {
+        if (i >= strategyIds.length) return;
+        const sid = strategyIds[i].id;
+        const votes = getVotes();
+
+        const bar = document.createElement('div');
+        bar.className = 'vote-bar';
+        bar.innerHTML = '<span class="vote-bar-label">Vote</span>' +
+          reactions.map(r => {
+            const key = sid + '-' + r.emoji;
+            const count = (votes[key] || 0);
+            const voted = votes[key + '-voted'] ? 'voted' : '';
+            return `<button class="vote-btn ${voted}" data-key="${key}" onclick="castVote(this, '${key}', '${r.emoji}')">
+              <span class="vote-emoji">${r.emoji}</span>
+              <span class="vote-count">${count || ''}</span>
+            </button>`;
+          }).join('');
+
+        card.appendChild(bar);
+      });
+    }
+
+    function castVote(btn, key, emoji) {
+      const votes = getVotes();
+      const votedKey = key + '-voted';
+
+      if (votes[votedKey]) {
+        // Un-vote
+        votes[key] = Math.max(0, (votes[key] || 0) - 1);
+        delete votes[votedKey];
+        btn.classList.remove('voted');
+      } else {
+        // Vote
+        votes[key] = (votes[key] || 0) + 1;
+        votes[votedKey] = true;
+        btn.classList.add('voted');
+
+        // Confetti burst
+        for (let i = 0; i < 3; i++) {
+          const confetti = document.createElement('span');
+          confetti.className = 'vote-confetti';
+          confetti.textContent = emoji;
+          confetti.style.left = (Math.random() * 30 + 10) + 'px';
+          confetti.style.top = '-5px';
+          confetti.style.animationDelay = (i * 0.1) + 's';
+          btn.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 900);
+        }
+      }
+
+      saveVotes(votes);
+      btn.querySelector('.vote-count').textContent = votes[key] || '';
+      updateLeaderboard();
+    }
+
+    // Leaderboard
+    function getTotalVotes(sid) {
+      const votes = getVotes();
+      return reactions.reduce((sum, r) => sum + (votes[sid + '-' + r.emoji] || 0), 0);
+    }
+
+    function updateLeaderboard() {
+      const container = document.getElementById('leaderboard-rows');
+      if (!container) return;
+
+      const ranked = strategyIds
+        .map(s => ({ ...s, total: getTotalVotes(s.id) }))
+        .sort((a, b) => b.total - a.total);
+
+      const maxVotes = Math.max(1, ranked[0].total);
+
+      container.innerHTML = ranked.map((s, i) => {
+        const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : 'normal';
+        const medal = i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+        const pct = Math.round((s.total / maxVotes) * 100);
+        return `<div class="leaderboard-row">
+          <div class="leaderboard-rank ${rankClass}">${medal}</div>
+          <div class="leaderboard-name">${s.name}</div>
+          <div class="leaderboard-bar-track"><div class="leaderboard-bar-fill" style="width: ${pct}%"></div></div>
+          <div class="leaderboard-votes">${s.total} <span style="color: var(--text-muted); font-weight: 500;">votes</span></div>
+        </div>`;
+      }).join('');
+    }
+
+    initVoting();
+    updateLeaderboard();
 
     // ===== KEYBOARD SHORTCUTS =====
     document.addEventListener('keydown', e => {
