@@ -2359,8 +2359,10 @@
 
     <!-- ===== COMPARISON TAB ===== -->
     <div id="comparison" class="tab-content">
-      <div class="card chart-section">
-        <div class="chart-title">Annual Customer Savings: All Strategies</div>
+
+      <!-- Chart 1: Annual Customer Savings -->
+      <div class="card chart-section reveal">
+        <div class="chart-title">Annual Customer Savings: All 11 Strategies</div>
         <div class="chart-subtitle">Based on 20-vehicle fleet baseline. Adjust fleet size above to see how numbers scale.</div>
 
         <div class="chart-stats">
@@ -2380,6 +2382,103 @@
 
         <div class="chart-wrapper">
           <canvas id="strategiesChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 2: Lytx Revenue Opportunity -->
+      <div class="card chart-section reveal">
+        <div class="chart-title">Lytx Revenue Opportunity</div>
+        <div class="chart-subtitle">Projected annual recurring revenue at different customer adoption levels. AI features drive higher retention and expansion revenue.</div>
+
+        <div class="chart-stats">
+          <div class="chart-stat">
+            <div class="chart-stat-label">Revenue per Fleet (20 veh)</div>
+            <div class="chart-stat-value">$10,800</div>
+          </div>
+          <div class="chart-stat">
+            <div class="chart-stat-label">At 5,000 Fleets</div>
+            <div class="chart-stat-value">$54M</div>
+          </div>
+          <div class="chart-stat">
+            <div class="chart-stat-label">At 20,000 Fleets</div>
+            <div class="chart-stat-value">$216M</div>
+          </div>
+        </div>
+
+        <div class="chart-wrapper" style="height: 400px;">
+          <canvas id="revenueChart"></canvas>
+        </div>
+
+        <div class="fleet-note" style="margin-top: 24px;">
+          <strong>Key insight:</strong> AI features don't just generate direct subscription revenue &mdash; they reduce churn. If AI features reduce annual churn from 15% to 8%, a 10,000-fleet base retains 700 additional fleets/year worth $7.6M in saved revenue. The real Lytx ROI is retention, not just acquisition.
+        </div>
+      </div>
+
+      <!-- Chart 3: Competitive Feature Matrix -->
+      <div class="card chart-section reveal">
+        <div class="chart-title">Competitive Feature Matrix</div>
+        <div class="chart-subtitle">Capability comparison across 8 key AI dimensions. Scores represent feature depth (0 = none, 10 = best-in-class).</div>
+
+        <div class="chart-stats">
+          <div class="chart-stat">
+            <div class="chart-stat-label">Lytx (with AI portfolio)</div>
+            <div class="chart-stat-value" style="color: #6366F1;">78/80</div>
+          </div>
+          <div class="chart-stat">
+            <div class="chart-stat-label">Samsara (current)</div>
+            <div class="chart-stat-value" style="color: #F59E0B;">52/80</div>
+          </div>
+          <div class="chart-stat">
+            <div class="chart-stat-label">Geotab (current)</div>
+            <div class="chart-stat-value" style="color: #059669;">38/80</div>
+          </div>
+        </div>
+
+        <div class="chart-wrapper" style="height: 440px;">
+          <canvas id="radarChart"></canvas>
+        </div>
+
+        <div class="fleet-note" style="margin-top: 24px;">
+          <strong>Methodology note:</strong> Scores are subjective assessments based on publicly available product information, press releases, and feature documentation as of April 2026. "Lytx" scores assume all 11 AI strategies in this portfolio are fully built. Samsara and Geotab scores reflect their current shipping features. These are not validated by any third party.
+        </div>
+      </div>
+
+      <!-- Chart 4: 5-Year Cumulative Value -->
+      <div class="card chart-section reveal">
+        <div class="chart-title">5-Year Cumulative Customer Value</div>
+        <div class="chart-subtitle">Total savings a 20-vehicle fleet accumulates over time. Assumes 10% year-over-year improvement as AI models learn from fleet data.</div>
+
+        <div class="chart-stats">
+          <div class="chart-stat">
+            <div class="chart-stat-label">Year 1 Savings</div>
+            <div class="chart-stat-value" id="year1Value">$357,800</div>
+          </div>
+          <div class="chart-stat">
+            <div class="chart-stat-label">5-Year Cumulative</div>
+            <div class="chart-stat-value" id="year5Value">$2.18M</div>
+          </div>
+          <div class="chart-stat">
+            <div class="chart-stat-label">5-Year ROI</div>
+            <div class="chart-stat-value" id="year5ROI">40x</div>
+          </div>
+        </div>
+
+        <div class="chart-wrapper" style="height: 400px;">
+          <canvas id="cumulativeChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 5: Development Investment vs Customer Value -->
+      <div class="card chart-section reveal">
+        <div class="chart-title">Lytx Investment vs. Customer Value (Per Strategy)</div>
+        <div class="chart-subtitle">Bubble size = annual customer savings. X-axis = Lytx development cost. Y-axis = customer break-even speed. Best strategies are top-left with large bubbles.</div>
+
+        <div class="chart-wrapper" style="height: 440px;">
+          <canvas id="bubbleChart"></canvas>
+        </div>
+
+        <div class="fleet-note" style="margin-top: 24px;">
+          <strong>Reading this chart:</strong> Top-left = low cost to build, fast customer payback. Bottom-right = expensive to build, slower payback. Bubble size = how much the customer saves annually. The best investments for Lytx are large bubbles in the top-left quadrant.
         </div>
       </div>
     </div>
@@ -2503,6 +2602,10 @@
     };
 
     let strategiesChart = null;
+    let revenueChart = null;
+    let radarChart = null;
+    let cumulativeChart = null;
+    let bubbleChart = null;
 
     function animateCounter(element, target, duration = 1200, prefix = '$', suffix = '', decimals = 0) {
       if (!element) return;
@@ -2593,95 +2696,242 @@
       }
     }
 
-    function initCharts() {
-      const ctx = document.getElementById('strategiesChart');
-      if (!ctx || strategiesChart) return;
+    const tooltipStyle = {
+      backgroundColor: '#FFFFFF',
+      titleColor: '#0F172A',
+      bodyColor: '#475569',
+      borderColor: 'rgba(0, 0, 0, 0.08)',
+      borderWidth: 1,
+      padding: 16,
+      cornerRadius: 10,
+      titleFont: { size: 13, weight: '700', family: 'Plus Jakarta Sans' },
+      bodyFont: { size: 12, weight: '600', family: 'Plus Jakarta Sans' },
+      displayColors: true,
+      boxPadding: 4
+    };
 
-      strategiesChart = new Chart(ctx.getContext('2d'), {
-        type: 'bar',
-        data: {
-          labels: ['Driver Retention', 'Autonomous Workflow', 'Incident Response', 'Maintenance', 'Route Risk', 'AI Coaching', 'Cargo Verification', 'Compliance Autopilot', 'Proof of Service', 'Ask LytxOne', 'Benchmarking'],
-          datasets: [{
-            label: 'Annual Savings',
-            data: [60000, 50000, 48000, 36000, 36000, 28800, 24000, 22000, 20000, 18000, 15000],
-            backgroundColor: [
-              'rgba(167, 139, 250, 0.8)',
-              'rgba(129, 140, 248, 0.8)',
-              'rgba(251, 191, 36, 0.8)',
-              'rgba(52, 211, 153, 0.8)',
-              'rgba(34, 211, 238, 0.8)',
-              'rgba(192, 132, 252, 0.8)',
-              'rgba(244, 114, 182, 0.8)',
-              'rgba(251, 146, 60, 0.8)',
-              'rgba(74, 222, 128, 0.8)',
-              'rgba(96, 165, 250, 0.8)',
-              'rgba(148, 163, 184, 0.8)'
-            ],
-            borderColor: [
-              'rgba(167, 139, 250, 1)',
-              'rgba(129, 140, 248, 1)',
-              'rgba(251, 191, 36, 1)',
-              'rgba(52, 211, 153, 1)',
-              'rgba(34, 211, 238, 1)',
-              'rgba(192, 132, 252, 1)',
-              'rgba(244, 114, 182, 1)',
-              'rgba(251, 146, 60, 1)',
-              'rgba(74, 222, 128, 1)',
-              'rgba(96, 165, 250, 1)',
-              'rgba(148, 163, 184, 1)'
-            ],
-            borderWidth: 1,
-            borderRadius: 8,
-            borderSkipped: false
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: '#FFFFFF',
-              titleColor: '#0F172A',
-              bodyColor: '#475569',
-              borderColor: 'rgba(0, 0, 0, 0.08)',
-              borderWidth: 1,
-              padding: 16,
-              cornerRadius: 10,
-              titleFont: { size: 14, weight: '700', family: 'Plus Jakarta Sans' },
-              bodyFont: { size: 13, weight: '600', family: 'Plus Jakarta Sans' },
-              displayColors: false,
-              callbacks: {
-                label: ctx => '$' + ctx.parsed.x.toLocaleString() + ' per year'
-              }
-            }
+    const strategyLabels = ['Driver Retention', 'Autonomous Workflow', 'Incident Response', 'Maintenance', 'Route Risk', 'AI Coaching', 'Cargo Verification', 'Compliance Autopilot', 'Proof of Service', 'Ask LytxOne', 'Benchmarking'];
+    const strategyColors = [
+      'rgba(167, 139, 250, 0.8)', 'rgba(129, 140, 248, 0.8)', 'rgba(251, 191, 36, 0.8)',
+      'rgba(52, 211, 153, 0.8)', 'rgba(34, 211, 238, 0.8)', 'rgba(192, 132, 252, 0.8)',
+      'rgba(244, 114, 182, 0.8)', 'rgba(251, 146, 60, 0.8)', 'rgba(74, 222, 128, 0.8)',
+      'rgba(96, 165, 250, 0.8)', 'rgba(148, 163, 184, 0.8)'
+    ];
+    const strategyBorders = strategyColors.map(c => c.replace('0.8)', '1)'));
+
+    function initCharts() {
+      // === Chart 1: Annual Customer Savings (horizontal bar) ===
+      const ctx1 = document.getElementById('strategiesChart');
+      if (ctx1 && !strategiesChart) {
+        strategiesChart = new Chart(ctx1.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: strategyLabels,
+            datasets: [{ label: 'Annual Savings', data: [60000,50000,48000,36000,36000,28800,24000,22000,20000,18000,15000], backgroundColor: strategyColors, borderColor: strategyBorders, borderWidth: 1, borderRadius: 8, borderSkipped: false }]
           },
-          scales: {
-            x: {
-              beginAtZero: true,
-              ticks: {
-                callback: v => '$' + (v / 1000) + 'K',
-                color: '#94A3B8',
-                font: { size: 12, weight: '600', family: 'JetBrains Mono' }
-              },
-              grid: { color: 'rgba(0, 0, 0, 0.05)', drawBorder: false }
-            },
-            y: {
-              ticks: { color: '#475569', font: { size: 13, weight: '700', family: 'Plus Jakarta Sans' } },
-              grid: { display: false, drawBorder: false }
+          options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, displayColors: false, callbacks: { label: c => '$' + c.parsed.x.toLocaleString() + ' per year' } } },
+            scales: {
+              x: { beginAtZero: true, ticks: { callback: v => '$' + (v/1000) + 'K', color: '#94A3B8', font: { size: 12, weight: '600', family: 'JetBrains Mono' } }, grid: { color: 'rgba(0,0,0,0.05)', drawBorder: false } },
+              y: { ticks: { color: '#475569', font: { size: 12, weight: '700', family: 'Plus Jakarta Sans' } }, grid: { display: false, drawBorder: false } }
             }
           }
+        });
+      }
+
+      // === Chart 2: Lytx Revenue Opportunity (line) ===
+      const ctx2 = document.getElementById('revenueChart');
+      if (ctx2 && !revenueChart) {
+        const fleetCounts = [500, 1000, 2000, 5000, 10000, 15000, 20000];
+        const revenuePerFleet = 10800; // 20 vehicles * $45 * 12
+        const churnSavingsPerFleet = 756; // 7% churn reduction * $10,800
+        revenueChart = new Chart(ctx2.getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: fleetCounts.map(f => f.toLocaleString() + ' fleets'),
+            datasets: [
+              {
+                label: 'Subscription Revenue',
+                data: fleetCounts.map(f => f * revenuePerFleet),
+                borderColor: '#6366F1', backgroundColor: 'rgba(99, 102, 241, 0.08)',
+                fill: true, tension: 0.4, borderWidth: 3, pointRadius: 5, pointBackgroundColor: '#6366F1'
+              },
+              {
+                label: 'Retained Revenue (saved churn)',
+                data: fleetCounts.map(f => f * churnSavingsPerFleet),
+                borderColor: '#059669', backgroundColor: 'rgba(5, 150, 105, 0.08)',
+                fill: true, tension: 0.4, borderWidth: 3, pointRadius: 5, pointBackgroundColor: '#059669'
+              }
+            ]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 20, font: { size: 12, weight: '700', family: 'Plus Jakarta Sans' }, color: '#475569' } }, tooltip: { ...tooltipStyle, callbacks: { label: c => c.dataset.label + ': $' + (c.parsed.y / 1000000).toFixed(1) + 'M' } } },
+            scales: {
+              y: { beginAtZero: true, ticks: { callback: v => '$' + (v/1000000).toFixed(0) + 'M', color: '#94A3B8', font: { size: 12, weight: '600', family: 'JetBrains Mono' } }, grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false } },
+              x: { ticks: { color: '#475569', font: { size: 11, weight: '600', family: 'Plus Jakarta Sans' } }, grid: { display: false, drawBorder: false } }
+            }
+          }
+        });
+      }
+
+      // === Chart 3: Competitive Radar ===
+      const ctx3 = document.getElementById('radarChart');
+      if (ctx3 && !radarChart) {
+        radarChart = new Chart(ctx3.getContext('2d'), {
+          type: 'radar',
+          data: {
+            labels: ['Video Safety AI', 'AI Coaching', 'Predictive Maintenance', 'Driver Retention AI', 'Route Risk Scoring', 'Autonomous Workflows', 'Cargo Verification', 'Compliance Automation'],
+            datasets: [
+              { label: 'Lytx (with AI portfolio)', data: [10, 9, 9, 10, 10, 10, 10, 10], borderColor: '#6366F1', backgroundColor: 'rgba(99, 102, 241, 0.12)', borderWidth: 3, pointRadius: 5, pointBackgroundColor: '#6366F1' },
+              { label: 'Samsara (current)', data: [9, 8, 6, 2, 3, 5, 2, 5], borderColor: '#F59E0B', backgroundColor: 'rgba(245, 158, 11, 0.08)', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#F59E0B', borderDash: [5, 5] },
+              { label: 'Geotab (current)', data: [6, 4, 7, 1, 2, 3, 1, 4], borderColor: '#059669', backgroundColor: 'rgba(5, 150, 105, 0.06)', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#059669', borderDash: [3, 3] }
+            ]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 20, font: { size: 12, weight: '700', family: 'Plus Jakarta Sans' }, color: '#475569' } }, tooltip: tooltipStyle },
+            scales: {
+              r: {
+                beginAtZero: true, max: 10,
+                ticks: { stepSize: 2, display: true, color: '#94A3B8', backdropColor: 'transparent', font: { size: 10, family: 'JetBrains Mono' } },
+                pointLabels: { font: { size: 11, weight: '700', family: 'Plus Jakarta Sans' }, color: '#475569' },
+                grid: { color: 'rgba(0,0,0,0.06)' },
+                angleLines: { color: 'rgba(0,0,0,0.06)' }
+              }
+            }
+          }
+        });
+      }
+
+      // === Chart 4: 5-Year Cumulative Value (stacked area) ===
+      const ctx4 = document.getElementById('cumulativeChart');
+      if (ctx4 && !cumulativeChart) {
+        const years = ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'];
+        const annualBase = currentFleetSize * Object.values(savingsPerVehicle).reduce((a, b) => a + b, 0);
+        const annualCost = currentFleetSize * baseMonthlyPrice * 12;
+        const growthRate = 0.10;
+        let cumSavings = 0, cumCost = 0;
+        const savingsData = [], costData = [], netData = [];
+        for (let i = 0; i < 5; i++) {
+          const yearSavings = annualBase * Math.pow(1 + growthRate, i);
+          cumSavings += yearSavings;
+          cumCost += annualCost;
+          savingsData.push(Math.round(cumSavings));
+          costData.push(Math.round(cumCost));
+          netData.push(Math.round(cumSavings - cumCost));
         }
-      });
+
+        cumulativeChart = new Chart(ctx4.getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: years,
+            datasets: [
+              { label: 'Cumulative Savings', data: savingsData, borderColor: '#6366F1', backgroundColor: 'rgba(99, 102, 241, 0.1)', fill: true, tension: 0.4, borderWidth: 3, pointRadius: 6, pointBackgroundColor: '#6366F1' },
+              { label: 'Cumulative Net Profit', data: netData, borderColor: '#059669', backgroundColor: 'rgba(5, 150, 105, 0.08)', fill: true, tension: 0.4, borderWidth: 3, pointRadius: 6, pointBackgroundColor: '#059669' },
+              { label: 'Cumulative Cost', data: costData, borderColor: '#F43F5E', backgroundColor: 'rgba(244, 63, 94, 0.06)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#F43F5E', borderDash: [6, 4] }
+            ]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 20, font: { size: 12, weight: '700', family: 'Plus Jakarta Sans' }, color: '#475569' } }, tooltip: { ...tooltipStyle, callbacks: { label: c => c.dataset.label + ': $' + (c.parsed.y / 1000).toFixed(0) + 'K' } } },
+            scales: {
+              y: { beginAtZero: true, ticks: { callback: v => '$' + (v/1000000 >= 1 ? (v/1000000).toFixed(1) + 'M' : (v/1000).toFixed(0) + 'K'), color: '#94A3B8', font: { size: 12, weight: '600', family: 'JetBrains Mono' } }, grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false } },
+              x: { ticks: { color: '#475569', font: { size: 13, weight: '700', family: 'Plus Jakarta Sans' } }, grid: { display: false, drawBorder: false } }
+            }
+          }
+        });
+
+        // Update 5-year stat values
+        const y1El = document.getElementById('year1Value');
+        const y5El = document.getElementById('year5Value');
+        const y5roi = document.getElementById('year5ROI');
+        if (y1El) y1El.textContent = '$' + (savingsData[0] / 1000).toFixed(0) + 'K';
+        if (y5El) y5El.textContent = '$' + (savingsData[4] / 1000000).toFixed(2) + 'M';
+        if (y5roi) y5roi.textContent = Math.round(savingsData[4] / costData[4]) + 'x';
+      }
+
+      // === Chart 5: Investment vs Value Bubble ===
+      const ctx5 = document.getElementById('bubbleChart');
+      if (ctx5 && !bubbleChart) {
+        const strategies = [
+          { label: 'Incident Response', x: 450, y: 1, r: 48, color: 'rgba(251, 191, 36, 0.7)' },
+          { label: 'Maintenance', x: 750, y: 3, r: 36, color: 'rgba(52, 211, 153, 0.7)' },
+          { label: 'AI Coaching', x: 800, y: 2, r: 29, color: 'rgba(192, 132, 252, 0.7)' },
+          { label: 'Driver Retention', x: 1200, y: 1, r: 60, color: 'rgba(167, 139, 250, 0.7)' },
+          { label: 'Route Risk', x: 1500, y: 3, r: 36, color: 'rgba(34, 211, 238, 0.7)' },
+          { label: 'Autonomous Workflow', x: 2000, y: 0.25, r: 50, color: 'rgba(129, 140, 248, 0.7)' },
+          { label: 'Ask LytxOne', x: 600, y: 0, r: 18, color: 'rgba(96, 165, 250, 0.7)' },
+          { label: 'Cargo Verification', x: 900, y: 2, r: 24, color: 'rgba(244, 114, 182, 0.7)' },
+          { label: 'Benchmarking', x: 500, y: 1, r: 15, color: 'rgba(148, 163, 184, 0.7)' },
+          { label: 'Proof of Service', x: 700, y: 0.5, r: 20, color: 'rgba(74, 222, 128, 0.7)' },
+          { label: 'Compliance', x: 850, y: 1, r: 22, color: 'rgba(251, 146, 60, 0.7)' }
+        ];
+
+        bubbleChart = new Chart(ctx5.getContext('2d'), {
+          type: 'bubble',
+          data: {
+            datasets: strategies.map(s => ({
+              label: s.label,
+              data: [{ x: s.x, y: s.y, r: s.r / 3 }],
+              backgroundColor: s.color,
+              borderColor: s.color.replace('0.7)', '1)'),
+              borderWidth: 2
+            }))
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'circle', padding: 12, font: { size: 10, weight: '600', family: 'Plus Jakarta Sans' }, color: '#475569' } },
+              tooltip: { ...tooltipStyle, callbacks: {
+                title: c => c[0].dataset.label,
+                label: c => ['Dev cost: $' + (c.parsed.x / 1000).toFixed(0) + 'K', 'Break-even: ' + (c.parsed.y < 1 ? (c.parsed.y < 0.25 ? 'Week 1' : c.parsed.y.toFixed(0) + ' weeks') : c.parsed.y.toFixed(0) + ' month' + (c.parsed.y > 1 ? 's' : '')), 'Bubble size = annual savings']
+              }}
+            },
+            scales: {
+              x: { title: { display: true, text: 'Lytx Development Cost ($K)', font: { size: 12, weight: '700', family: 'Plus Jakarta Sans' }, color: '#64748B' }, ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K', color: '#94A3B8', font: { size: 11, weight: '600', family: 'JetBrains Mono' } }, grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false } },
+              y: { title: { display: true, text: 'Customer Break-Even (months)', font: { size: 12, weight: '700', family: 'Plus Jakarta Sans' }, color: '#64748B' }, reverse: true, min: -0.5, max: 4, ticks: { callback: v => v <= 0 ? 'Instant' : v + 'mo', color: '#94A3B8', font: { size: 11, weight: '600', family: 'JetBrains Mono' } }, grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false } }
+            }
+          }
+        });
+      }
     }
 
     function updateCharts(fleetSize) {
-      if (!strategiesChart || !strategiesChart.data || !strategiesChart.data.datasets) return;
-      const d = {};
-      Object.keys(savingsPerVehicle).forEach(k => d[k] = fleetSize * savingsPerVehicle[k]);
-      strategiesChart.data.datasets[0].data = [d.retention, d.workflow, d.incident, d.maintenance, d.risk, d.coaching, d.cargo, d.compliance, d.proof, d.askone, d.benchmark];
-      strategiesChart.update();
+      // Update bar chart
+      if (strategiesChart && strategiesChart.data && strategiesChart.data.datasets) {
+        const d = {};
+        Object.keys(savingsPerVehicle).forEach(k => d[k] = fleetSize * savingsPerVehicle[k]);
+        strategiesChart.data.datasets[0].data = [d.retention, d.workflow, d.incident, d.maintenance, d.risk, d.coaching, d.cargo, d.compliance, d.proof, d.askone, d.benchmark];
+        strategiesChart.update();
+      }
+
+      // Update cumulative chart
+      if (cumulativeChart) {
+        const annualBase = fleetSize * Object.values(savingsPerVehicle).reduce((a, b) => a + b, 0);
+        const annualCost = fleetSize * baseMonthlyPrice * 12;
+        let cumSavings = 0, cumCost = 0;
+        const savingsData = [], costData = [], netData = [];
+        for (let i = 0; i < 5; i++) {
+          cumSavings += annualBase * Math.pow(1.10, i);
+          cumCost += annualCost;
+          savingsData.push(Math.round(cumSavings));
+          costData.push(Math.round(cumCost));
+          netData.push(Math.round(cumSavings - cumCost));
+        }
+        cumulativeChart.data.datasets[0].data = savingsData;
+        cumulativeChart.data.datasets[1].data = netData;
+        cumulativeChart.data.datasets[2].data = costData;
+        cumulativeChart.update();
+
+        const y1El = document.getElementById('year1Value');
+        const y5El = document.getElementById('year5Value');
+        const y5roi = document.getElementById('year5ROI');
+        if (y1El) animateCounter(y1El, savingsData[0]);
+        if (y5El) y5El.textContent = '$' + (savingsData[4] / 1000000).toFixed(2) + 'M';
+        if (y5roi) y5roi.textContent = Math.round(savingsData[4] / costData[4]) + 'x';
+      }
     }
 
     // Init
