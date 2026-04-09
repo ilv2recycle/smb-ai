@@ -38,59 +38,64 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Grain texture */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      opacity: 0.015;
-      pointer-events: none;
-      z-index: 9998;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      background-repeat: repeat;
-      background-size: 256px;
-    }
-
     ::selection { background: rgba(99,102,241,0.15); }
 
-    /* Hero */
+    /* Hero - Dark dramatic header */
     .hero {
-      padding: 100px 48px 80px;
+      padding: 100px 48px 120px;
       text-align: center;
       position: relative;
       overflow: hidden;
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 40%, #1a1a3e 70%, #0F172A 100%);
     }
     .hero::before {
       content: '';
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 70% 50% at 30% 20%, rgba(99,102,241,0.07), transparent 60%),
-        radial-gradient(ellipse 60% 40% at 70% 30%, rgba(139,92,246,0.05), transparent 50%),
-        radial-gradient(ellipse 40% 30% at 50% 80%, rgba(6,182,212,0.04), transparent 40%);
-      animation: heroBreath 15s ease-in-out infinite;
+        radial-gradient(ellipse 60% 50% at 25% 40%, rgba(99,102,241,0.2), transparent 60%),
+        radial-gradient(ellipse 50% 40% at 75% 30%, rgba(139,92,246,0.15), transparent 50%),
+        radial-gradient(ellipse 40% 30% at 50% 80%, rgba(6,182,212,0.1), transparent 40%);
+      animation: heroBreath 12s ease-in-out infinite;
     }
     .hero::after {
       content: '';
       position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 120px;
+      bottom: -1px; left: 0; right: 0;
+      height: 160px;
       background: linear-gradient(to top, var(--bg), transparent);
     }
     @keyframes heroBreath {
-      0%, 100% { opacity: 0.7; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.03); }
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    /* Floating orbs */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.25;
+      animation: orbFloat 20s ease-in-out infinite;
+    }
+    .hero-orb-1 { width: 300px; height: 300px; background: #6366F1; top: -80px; left: -50px; }
+    .hero-orb-2 { width: 200px; height: 200px; background: #8B5CF6; top: 40px; right: 10%; animation-delay: -7s; }
+    .hero-orb-3 { width: 150px; height: 150px; background: #06B6D4; bottom: 20px; left: 40%; animation-delay: -14s; }
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0); }
+      33% { transform: translate(20px, -15px); }
+      66% { transform: translate(-15px, 10px); }
     }
     .hero-eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 8px 20px;
-      background: rgba(99,102,241,0.06);
-      border: 1px solid rgba(99,102,241,0.12);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 100px;
       font-size: 0.75rem;
       font-weight: 700;
-      color: var(--accent);
+      color: rgba(255,255,255,0.8);
       text-transform: uppercase;
       letter-spacing: 0.1em;
       margin-bottom: 28px;
@@ -100,31 +105,32 @@
     .hero-eyebrow::before {
       content: '';
       width: 8px; height: 8px;
-      background: var(--accent-e);
+      background: #34D399;
       border-radius: 50%;
       animation: pulse-dot 2s ease-in-out infinite;
     }
     @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
     .hero h1 {
-      font-size: clamp(2.75rem, 5.5vw, 4.5rem);
+      font-size: clamp(3rem, 6vw, 5rem);
       font-weight: 900;
       letter-spacing: -0.04em;
       line-height: 1.05;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       position: relative;
       z-index: 1;
+      color: #FFFFFF;
     }
     .hero h1 span {
-      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 40%, #0891B2 100%);
+      background: linear-gradient(135deg, #818CF8 0%, #A78BFA 35%, #22D3EE 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
     .hero p {
       font-size: 1.3125rem;
-      color: var(--text-2);
+      color: rgba(255,255,255,0.65);
       max-width: 640px;
-      margin: 0 auto 36px;
+      margin: 0 auto 40px;
       position: relative;
       z-index: 1;
       line-height: 1.7;
@@ -133,22 +139,22 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      color: var(--accent);
+      color: rgba(255,255,255,0.85);
       font-weight: 700;
       font-size: 0.9375rem;
       text-decoration: none;
       position: relative;
       z-index: 1;
-      padding: 10px 22px;
+      padding: 12px 24px;
       border-radius: 100px;
-      border: 1px solid rgba(99,102,241,0.2);
-      background: rgba(99,102,241,0.04);
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06);
       transition: all 0.25s ease;
     }
     .hero-link:hover {
-      background: rgba(99,102,241,0.08);
-      border-color: rgba(99,102,241,0.3);
-      transform: translateY(-1px);
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.25);
+      transform: translateY(-2px);
     }
 
     /* Demo Grid */
@@ -176,50 +182,70 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 36px 30px;
+      padding: 0;
       cursor: pointer;
       transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
       position: relative;
       overflow: hidden;
     }
+    .tile-preview {
+      height: 140px;
+      background: var(--tile-bg, linear-gradient(135deg, #EEF2FF, #E0E7FF));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .tile-preview::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 60%, var(--bg-card));
+    }
+    .tile-preview-graphic {
+      font-size: 3.5rem;
+      opacity: 0.7;
+      transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+    }
+    .demo-tile:hover .tile-preview-graphic {
+      transform: scale(1.15) translateY(-4px);
+      opacity: 1;
+    }
+    .tile-body {
+      padding: 24px 28px 28px;
+      position: relative;
+    }
     .demo-tile::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
+      bottom: 0; left: 0; right: 0;
       height: 3px;
       background: linear-gradient(90deg, var(--tile-c1, var(--accent)), var(--tile-c2, var(--accent-v)));
       transform: scaleX(0);
       transform-origin: left;
       transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
-    }
-    .demo-tile::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at 50% 0%, var(--tile-glow, rgba(99,102,241,0.04)), transparent 70%);
-      opacity: 0;
-      transition: opacity 0.4s ease;
+      z-index: 2;
     }
     .demo-tile:hover::before { transform: scaleX(1); }
-    .demo-tile:hover::after { opacity: 1; }
     .demo-tile:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-lg), var(--shadow-glow);
-      border-color: rgba(99,102,241,0.12);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 0 40px rgba(99,102,241,0.06);
+      border-color: rgba(99,102,241,0.15);
     }
     .tile-icon {
-      width: 52px; height: 52px;
-      border-radius: 14px;
+      width: 44px; height: 44px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 20px;
+      font-size: 1.25rem;
+      margin-bottom: 14px;
       position: relative;
       z-index: 1;
-      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
     }
-    .demo-tile:hover .tile-icon { transform: scale(1.1); }
+    .demo-tile:hover .tile-icon { transform: scale(1.05); }
     .tile-title {
       font-size: 1.125rem;
       font-weight: 800;
@@ -689,6 +715,9 @@
 
   <!-- Hero -->
   <div class="hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
     <div class="hero-eyebrow">Interactive Prototypes</div>
     <h1><span>LytxOne</span> AI Lab</h1>
     <p>Experience the future of fleet intelligence. Click any strategy below to see what the product could feel like.</p>
@@ -699,47 +728,77 @@
   <div class="grid-container" id="demoGrid">
     <div class="grid-label">Choose a demo to explore</div>
     <div class="demo-grid">
-      <div class="demo-tile" onclick="showDemo('incident')" style="--tile-c1: #F59E0B; --tile-c2: #F97316;">
-        <div class="tile-icon" style="background: rgba(245,158,11,0.08);">&#x1F6A8;</div>
-        <div class="tile-title">Incident Response AI</div>
-        <div class="tile-desc">Click a dashcam event and watch AI generate a structured accident report in real-time.</div>
-        <span class="tile-tag" style="background: rgba(5,150,105,0.08); color: #059669;">Fastest ROI</span>
-        <div class="tile-arrow">&rarr;</div>
+      <div class="demo-tile" onclick="showDemo('incident')" style="--tile-c1: #F59E0B; --tile-c2: #F97316; --tile-bg: linear-gradient(135deg, #FFF7ED, #FFEDD5, #FEF3C7);">
+        <div class="tile-preview">
+          <div class="tile-preview-graphic">&#x1F4CB;&#x1F6A8;</div>
+        </div>
+        <div class="tile-body">
+          <div class="tile-icon" style="background: rgba(245,158,11,0.1);">&#x1F6A8;</div>
+          <div class="tile-title">Incident Response AI</div>
+          <div class="tile-desc">Click a dashcam event and watch AI generate a structured accident report in real-time.</div>
+          <span class="tile-tag" style="background: rgba(5,150,105,0.08); color: #059669;">Fastest ROI</span>
+          <div class="tile-arrow">&rarr;</div>
+        </div>
       </div>
-      <div class="demo-tile" onclick="showDemo('coaching')" style="--tile-c1: #8B5CF6; --tile-c2: #A855F7;">
-        <div class="tile-icon" style="background: rgba(139,92,246,0.08);">&#x1F4DD;</div>
-        <div class="tile-title">AI Coaching Report</div>
-        <div class="tile-desc">See a personalized coaching report build itself for a driver — section by section.</div>
-        <span class="tile-tag" style="background: rgba(244,63,94,0.08); color: #F43F5E;">Competitive Gap</span>
-        <div class="tile-arrow">&rarr;</div>
+      <div class="demo-tile" onclick="showDemo('coaching')" style="--tile-c1: #8B5CF6; --tile-c2: #A855F7; --tile-bg: linear-gradient(135deg, #F5F3FF, #EDE9FE, #DDD6FE);">
+        <div class="tile-preview">
+          <div class="tile-preview-graphic">&#x1F4DD;&#x1F3AF;</div>
+        </div>
+        <div class="tile-body">
+          <div class="tile-icon" style="background: rgba(139,92,246,0.1);">&#x1F4DD;</div>
+          <div class="tile-title">AI Coaching Report</div>
+          <div class="tile-desc">See a personalized coaching report build itself for a driver — section by section.</div>
+          <span class="tile-tag" style="background: rgba(244,63,94,0.08); color: #F43F5E;">Competitive Gap</span>
+          <div class="tile-arrow">&rarr;</div>
+        </div>
       </div>
-      <div class="demo-tile" onclick="showDemo('retention')" style="--tile-c1: #6366F1; --tile-c2: #8B5CF6;">
-        <div class="tile-icon" style="background: rgba(99,102,241,0.08);">&#x1F4CA;</div>
-        <div class="tile-title">Driver Retention Predictor</div>
-        <div class="tile-desc">Dashboard of drivers with live churn risk scores. Click to see AI-recommended actions.</div>
-        <span class="tile-tag" style="background: rgba(59,130,246,0.08); color: #3B82F6;">Blue Ocean</span>
-        <div class="tile-arrow">&rarr;</div>
+      <div class="demo-tile" onclick="showDemo('retention')" style="--tile-c1: #6366F1; --tile-c2: #8B5CF6; --tile-bg: linear-gradient(135deg, #EEF2FF, #E0E7FF, #C7D2FE);">
+        <div class="tile-preview">
+          <div class="tile-preview-graphic">&#x1F4CA;&#x1F6A9;</div>
+        </div>
+        <div class="tile-body">
+          <div class="tile-icon" style="background: rgba(99,102,241,0.1);">&#x1F4CA;</div>
+          <div class="tile-title">Driver Retention Predictor</div>
+          <div class="tile-desc">Dashboard of drivers with live churn risk scores. Click to see AI-recommended actions.</div>
+          <span class="tile-tag" style="background: rgba(59,130,246,0.08); color: #3B82F6;">Blue Ocean</span>
+          <div class="tile-arrow">&rarr;</div>
+        </div>
       </div>
-      <div class="demo-tile" onclick="showDemo('risk')" style="--tile-c1: #06B6D4; --tile-c2: #0891B2;">
-        <div class="tile-icon" style="background: rgba(6,182,212,0.08);">&#x1F6E3;&#xFE0F;</div>
-        <div class="tile-title">Route Risk Scoring</div>
-        <div class="tile-desc">Toggle weather, time, and cargo to see route risk scores update in real-time.</div>
-        <span class="tile-tag" style="background: rgba(59,130,246,0.08); color: #3B82F6;">Blue Ocean</span>
-        <div class="tile-arrow">&rarr;</div>
+      <div class="demo-tile" onclick="showDemo('risk')" style="--tile-c1: #06B6D4; --tile-c2: #0891B2; --tile-bg: linear-gradient(135deg, #ECFEFF, #CFFAFE, #A5F3FC);">
+        <div class="tile-preview">
+          <div class="tile-preview-graphic">&#x1F6E3;&#xFE0F;&#x26A0;&#xFE0F;</div>
+        </div>
+        <div class="tile-body">
+          <div class="tile-icon" style="background: rgba(6,182,212,0.1);">&#x1F6E3;&#xFE0F;</div>
+          <div class="tile-title">Route Risk Scoring</div>
+          <div class="tile-desc">Toggle weather, time, and cargo to see route risk scores update in real-time.</div>
+          <span class="tile-tag" style="background: rgba(59,130,246,0.08); color: #3B82F6;">Blue Ocean</span>
+          <div class="tile-arrow">&rarr;</div>
+        </div>
       </div>
-      <div class="demo-tile" onclick="showDemo('chat')" style="--tile-c1: #059669; --tile-c2: #10B981;">
-        <div class="tile-icon" style="background: rgba(5,150,105,0.08);">&#x1F4AC;</div>
-        <div class="tile-title">Ask LytxOne</div>
-        <div class="tile-desc">Chat with your fleet data using natural language. Try asking about drivers, fuel, or maintenance.</div>
-        <span class="tile-tag" style="background: rgba(59,130,246,0.08); color: #3B82F6;">Blue Ocean</span>
-        <div class="tile-arrow">&rarr;</div>
+      <div class="demo-tile" onclick="showDemo('chat')" style="--tile-c1: #059669; --tile-c2: #10B981; --tile-bg: linear-gradient(135deg, #ECFDF5, #D1FAE5, #A7F3D0);">
+        <div class="tile-preview">
+          <div class="tile-preview-graphic">&#x1F4AC;&#x1F9E0;</div>
+        </div>
+        <div class="tile-body">
+          <div class="tile-icon" style="background: rgba(5,150,105,0.1);">&#x1F4AC;</div>
+          <div class="tile-title">Ask LytxOne</div>
+          <div class="tile-desc">Chat with your fleet data using natural language. Try asking about drivers, fuel, or maintenance.</div>
+          <span class="tile-tag" style="background: rgba(59,130,246,0.08); color: #3B82F6;">Blue Ocean</span>
+          <div class="tile-arrow">&rarr;</div>
+        </div>
       </div>
-      <div class="demo-tile" onclick="showDemo('workflow')" style="--tile-c1: #F43F5E; --tile-c2: #FB7185;">
-        <div class="tile-icon" style="background: rgba(244,63,94,0.08);">&#x1F916;</div>
-        <div class="tile-title">Autonomous Workflow</div>
-        <div class="tile-desc">Watch AI auto-resolve a safety event end-to-end — no human intervention needed.</div>
-        <span class="tile-tag" style="background: rgba(139,92,246,0.08); color: #8B5CF6;">Agentic AI</span>
-        <div class="tile-arrow">&rarr;</div>
+      <div class="demo-tile" onclick="showDemo('workflow')" style="--tile-c1: #F43F5E; --tile-c2: #FB7185; --tile-bg: linear-gradient(135deg, #FFF1F2, #FFE4E6, #FECDD3);">
+        <div class="tile-preview">
+          <div class="tile-preview-graphic">&#x1F916;&#x26A1;</div>
+        </div>
+        <div class="tile-body">
+          <div class="tile-icon" style="background: rgba(244,63,94,0.1);">&#x1F916;</div>
+          <div class="tile-title">Autonomous Workflow</div>
+          <div class="tile-desc">Watch AI auto-resolve a safety event end-to-end — no human intervention needed.</div>
+          <span class="tile-tag" style="background: rgba(139,92,246,0.08); color: #8B5CF6;">Agentic AI</span>
+          <div class="tile-arrow">&rarr;</div>
+        </div>
       </div>
     </div>
   </div>
