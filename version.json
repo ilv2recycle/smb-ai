@@ -1,12 +1,12 @@
 {
-  "version": "v260409.05 12:43a",
-  "release": 6,
-  "sha": "70a930f",
-  "fullSha": "70a930fe6e2dc87224a05d73ee0ae0563c2d2f67",
+  "version": "v260409.06 1:00a",
+  "release": 7,
+  "sha": "4ff5f26",
+  "fullSha": "4ff5f26d1b1cc3f25b276f26082bd309b96d2e9f",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
   "machine": "runnervm727z3",
-  "pushedAt": "2026-04-09 05:43:41+00",
-  "commits": [{"sha":"5b6a087","message":"Revise AI strategies with accurate competitive positioning","author":"Monique Mason"},{"sha":"70a930f","message":"Merge pull request #6 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
+  "pushedAt": "2026-04-09 06:00:38+00",
+  "commits": [{"sha":"81636f5","message":"Add 5 expansion strategies + premium visual polish","author":"Monique Mason"},{"sha":"4ff5f26","message":"Merge pull request #7 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
 }
