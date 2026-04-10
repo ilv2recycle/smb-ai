@@ -1,12 +1,12 @@
 {
-  "version": "v260409.20 4:43p",
-  "release": 21,
-  "sha": "b412b6e",
-  "fullSha": "b412b6ef2bec843f5043a6ac1c3c67dd6cbf56d9",
+  "version": "v260409.21 9:10p",
+  "release": 22,
+  "sha": "5d56702",
+  "fullSha": "5d567020f6e9fc2202776f0afc36e58c33a41a68",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
   "machine": "runnervm35a4x",
-  "pushedAt": "2026-04-09 21:43:20+00",
-  "commits": [{"sha":"0a6ee12","message":"Complete visual rebuild of AI Lab to Stripe/Linear quality","author":"Monique Mason"},{"sha":"b412b6e","message":"Merge pull request #21 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
+  "pushedAt": "2026-04-10 02:10:47+00",
+  "commits": [{"sha":"fdac7a7","message":"Move assumptions/methodology disclaimer to bottom of page","author":"Monique Mason"},{"sha":"5d56702","message":"Merge pull request #22 from ilv2recycle/claude/modest-rosalind","author":"ilv2recycle"}]
 }
