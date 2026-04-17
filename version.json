@@ -1,12 +1,12 @@
 {
-  "version": "v260417.02 5:50a",
-  "release": 25,
-  "sha": "f4ff50f",
-  "fullSha": "f4ff50f0cb9faff239dbaedd5c812e535af93ffe",
+  "version": "v260417.03 10:50a",
+  "release": 26,
+  "sha": "4de55e2",
+  "fullSha": "4de55e224ef8b3d13eee85a19d03bd8c98161f61",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
-  "machine": "runnervm35a4x",
-  "pushedAt": "2026-04-17 10:50:05+00",
-  "commits": [{"sha":"f4ff50f","message":"Bert: delete Quick Catch + Bert Daily = jam band lyrics (#47)","author":"ilv2recycle"}]
+  "machine": "runnervmeorf1",
+  "pushedAt": "2026-04-17 15:50:15+00",
+  "commits": [{"sha":"4de55e2","message":"Bert: Siri + voice dictation (URL quick-add, mic, shortcut guide) (#48)","author":"ilv2recycle"}]
 }
