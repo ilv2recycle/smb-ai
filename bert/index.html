@@ -604,6 +604,29 @@ body {
 @media (max-width: 860px) { .bert-daily { grid-template-columns: 1fr; } }
 
 /* ────── feature request bubble (bottom-left floater) ────── */
+/* Mic button (Web Speech API + Siri entry point) */
+.mic-btn {
+  position: fixed; bottom: 20px; left: 20px; z-index: 250;
+  width: 58px; height: 58px; border-radius: 50%;
+  background: var(--pink); color: white; border: 3px solid var(--ink);
+  font-size: 26px; cursor: pointer; line-height: 1; padding: 0;
+  box-shadow: 0 4px 0 rgba(43,33,24,0.2); transition: all .15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.mic-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(43,33,24,0.22); }
+.mic-btn:active { transform: translateY(0); box-shadow: 0 2px 0 rgba(43,33,24,0.2); }
+.mic-btn.listening {
+  background: var(--rust);
+  animation: micPulse 1.2s ease-in-out infinite;
+}
+@keyframes micPulse {
+  0%, 100% { box-shadow: 0 4px 0 rgba(43,33,24,0.2), 0 0 0 0 rgba(224,107,74,0.7); }
+  50%      { box-shadow: 0 4px 0 rgba(43,33,24,0.2), 0 0 0 14px rgba(224,107,74,0); }
+}
+@media (max-width: 860px) {
+  .mic-btn { bottom: 14px; left: 12px; width: 52px; height: 52px; font-size: 22px; }
+}
+
 .feature-req {
   position: fixed; bottom: 20px; right: 20px; z-index: 250;
   background: var(--paper); border: 2px solid rgba(43,33,24,0.15); border-radius: 999px;
@@ -1148,6 +1171,8 @@ body {
 
 <div id="toast" class="toast"></div>
 
+<button class="mic-btn" onclick="startDictation()" title="Talk to Bert (or use Siri Shortcut)">🎤</button>
+
 <button class="feature-req" onclick="openFeatureReq()" title="Tell the maker what's missing">
   <span class="spark">✨</span> Feature request
 </button>
@@ -1634,6 +1659,38 @@ body {
         <textarea class="ta" id="note-new" placeholder="Type something. Anything. Bert won't judge." style="min-height:100px"></textarea>
         <div class="btn-row">
           <button class="btn btn-pink" onclick="addNote()">+ Stick it</button>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:2rem"><span class="emoji">🎤</span> Talk to Bert with Siri <span class="hint">— dictate a note, Siri opens Bert and saves it</span></div>
+      <div class="card">
+        <p style="font-size: 14px; color: var(--ink-60); margin-bottom: 10px">Set this up once on your iPhone — say "Hey Siri, tell Bert" and then dictate. Bert opens and saves it.</p>
+        <details>
+          <summary style="cursor:pointer; font-weight:600; color:var(--plum); font-size:13px">How to set up the Siri Shortcut ↘</summary>
+          <ol style="font-size: 13px; color: var(--ink-60); margin: 10px 0 0 20px; line-height: 1.7">
+            <li>Open the <strong>Shortcuts</strong> app on your iPhone and tap <strong>+</strong></li>
+            <li>Add action: <strong>Dictate Text</strong></li>
+            <li>Add action: <strong>URL Encode</strong> — set input to the <em>Dictated Text</em> variable</li>
+            <li>Add action: <strong>URL</strong> — paste:<br>
+              <code style="background:var(--ink-05); padding:3px 8px; border-radius:6px; font-size:11px; display:inline-block; margin-top:4px; word-break:break-all">https://ilv2recycle.github.io/smb-ai/bert/?add-note=[URL-Encoded Text]</code>
+            </li>
+            <li>Add action: <strong>Open URLs</strong> — input is the URL above</li>
+            <li>Name it <strong>"Tell Bert"</strong> and save</li>
+            <li>Now say <strong>"Hey Siri, tell Bert"</strong> → dictate → Bert opens and saves the note ✨</li>
+          </ol>
+          <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--ink-10)">
+            <strong style="font-size:13px">Power moves</strong> — make more shortcuts with these URL params:
+            <ul style="font-size:12px; color:var(--ink-60); margin: 6px 0 0 20px; line-height: 1.7">
+              <li><code>?add-note=...</code> → saves as brain-dump note</li>
+              <li><code>?add-bubble=...</code> → adds to This Week</li>
+              <li><code>?add-todo=...</code> → same as bubble (sun color)</li>
+              <li><code>?add-grocery=item1,item2</code> → adds to grocery (comma-separated)</li>
+              <li><code>?add-journal=...</code> → saves as a journal entry</li>
+            </ul>
+          </div>
+        </details>
+        <div style="margin-top: 12px; padding: 10px 12px; background: var(--sun-soft); border-radius: 10px; font-size: 13px; color: var(--ink)">
+          💡 On desktop / Android, just hit the <strong>🎤 mic button</strong> in the bottom-left to talk. Say <em>"grocery coffee"</em> or <em>"week fix the shed"</em> or just a thought to save as a note.
         </div>
       </div>
 
@@ -3551,8 +3608,103 @@ async function fetchGEventsQuiet(){
   } catch {}
 }
 
+// ─── SIRI / URL-driven quick add ────────────────────────────────────
+// Siri (via iOS Shortcut) opens Bert with ?add-note=... or ?add-bubble=... etc.
+// Web handler parses the URL, adds the item, cleans the URL, re-renders.
+function handleUrlAdds(){
+  const params = new URLSearchParams(window.location.search);
+  if (![...params.keys()].length) return false;
+  let count = 0; const added = [];
+
+  const note = params.get('add-note') || params.get('note');
+  if (note) {
+    const n = getNotes(); n.unshift({ id: uid('n'), text: note, date: new Date().toISOString() });
+    saveNotes(n); count++; added.push('note');
+  }
+  const bubble = params.get('add-bubble') || params.get('bubble') || params.get('add-week');
+  if (bubble) { addBubbleItem(bubble, 'siri', 'pink'); count++; added.push('week'); }
+
+  const todo = params.get('add-todo') || params.get('todo');
+  if (todo) { addBubbleItem(todo, 'siri', 'sun'); count++; added.push('to-do'); }
+
+  const grocery = params.get('add-grocery') || params.get('grocery');
+  if (grocery) {
+    const items = grocery.split(',').map(s => s.trim()).filter(Boolean);
+    const g = getGrocery();
+    items.forEach(t => g.push({ id: uid('g'), t, cat: 'other', done: false }));
+    saveGrocery(g); count += items.length; added.push(items.length + ' grocery');
+  }
+
+  const journal = params.get('add-journal') || params.get('journal');
+  if (journal) {
+    const j = getJournal();
+    j.unshift({ id: uid('j'), date: new Date().toISOString(), text: journal, prompt: '' });
+    saveJournal(j); count++; added.push('journal');
+  }
+
+  if (count > 0) {
+    const url = new URL(window.location);
+    url.search = '';
+    window.history.replaceState({}, '', url);
+    setTimeout(() => showToast('Siri added ' + added.join(' + ') + ' ✨'), 300);
+    return true;
+  }
+  return false;
+}
+
+// ─── IN-APP MIC (Web Speech API) ────────────────────────────────────
+function startDictation(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { showToast('Speech not supported — use iOS Shortcut instead'); return; }
+  const rec = new SR();
+  rec.lang = 'en-US'; rec.continuous = false; rec.interimResults = false;
+  const btn = document.getElementById('mic-btn');
+  if (btn) btn.classList.add('listening');
+  showToast('Listening… 🎤');
+  rec.onresult = (e) => {
+    if (btn) btn.classList.remove('listening');
+    const text = e.results[0][0].transcript.trim();
+    if (!text) return;
+    routeVoiceInput(text);
+  };
+  rec.onerror = (e) => { if (btn) btn.classList.remove('listening'); showToast('Mic: ' + e.error); };
+  rec.onend = () => { if (btn) btn.classList.remove('listening'); };
+  try { rec.start(); } catch (err) { showToast('Mic busy'); }
+}
+function routeVoiceInput(text){
+  const lower = text.toLowerCase().trim();
+  // quick routing keywords
+  const stripPrefix = (t, prefixes) => {
+    for (const p of prefixes) {
+      const re = new RegExp('^' + p + '\\s*[:,-]?\\s+', 'i');
+      if (re.test(t)) return t.replace(re, '').trim();
+    }
+    return null;
+  };
+  let out = stripPrefix(text, ['add grocery','grocery','grab','buy']);
+  if (out !== null) {
+    const g = getGrocery(); g.push({ id: uid('g'), t: out, cat: 'other', done: false });
+    saveGrocery(g); renderGrocery(); showToast('🛒 Grocery: ' + out); return;
+  }
+  out = stripPrefix(text, ['add to week','add week','this week','week']);
+  if (out !== null) { addBubbleItem(out, 'voice', 'pink'); return; }
+  out = stripPrefix(text, ['todo','to-do','task','add task']);
+  if (out !== null) { addBubbleItem(out, 'voice', 'sun'); return; }
+  out = stripPrefix(text, ['journal','journal entry']);
+  if (out !== null) {
+    const j = getJournal(); j.unshift({ id: uid('j'), date: new Date().toISOString(), text: out, prompt: '' });
+    saveJournal(j); renderJournal(); showToast('📓 Journal saved'); return;
+  }
+  // default → note (Brain Dump)
+  const n = getNotes(); n.unshift({ id: uid('n'), text, date: new Date().toISOString() });
+  saveNotes(n); renderNotes(); renderBrainCount(); renderBrainRecent();
+  showToast('💭 Saved: ' + text.slice(0, 30) + (text.length > 30 ? '…' : ''));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   renderAll();
+  // URL-driven quick add (Siri / Shortcut entry point) — run after first render
+  if (handleUrlAdds()) renderAll();
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(()=>{});
   }
