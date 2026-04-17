@@ -112,40 +112,43 @@ body {
 .sidebar-logo .bert-av { animation: bertBob 5s ease-in-out infinite; transform-origin: bottom center; cursor: pointer; }
 .sidebar-logo .bert-av.bounced { animation: bertBounce 0.7s cubic-bezier(.3,1.6,.5,1); }
 
-/* speech bubble */
+/* speech bubble — floats ABOVE the avatar, tail points down */
 .bert-speech {
-  position: absolute; right: 118px; top: 50%; transform: translateY(-50%) scale(0.6);
+  position: absolute; right: 0; top: -72px;
   background: #FFFBF3; border: 2.5px solid var(--ink); border-radius: 18px;
-  padding: 10px 16px; max-width: 240px; z-index: 10;
+  padding: 10px 16px; max-width: 260px; z-index: 10;
   font-family: 'Caveat', cursive; font-size: 22px; font-weight: 700;
   color: var(--ink); line-height: 1.15; box-shadow: 3px 3px 0 rgba(43,33,24,0.18);
   opacity: 0; pointer-events: none;
-  transition: opacity 0.2s;
+  transform: scale(0.5);
+  transform-origin: bottom right;
+  white-space: normal;
 }
 .bert-speech.show { animation: speechPop 0.45s cubic-bezier(.3,1.6,.5,1) forwards; pointer-events: auto; }
+/* tail — pointing DOWN toward the avatar's head */
 .bert-speech::after {
-  content: ''; position: absolute; right: -11px; top: 50%; transform: translateY(-50%);
+  content: ''; position: absolute; bottom: -11px; right: 36px;
   width: 0; height: 0;
-  border-left: 12px solid #FFFBF3;
-  border-top: 9px solid transparent; border-bottom: 9px solid transparent;
+  border-top: 12px solid #FFFBF3;
+  border-left: 9px solid transparent; border-right: 9px solid transparent;
 }
 .bert-speech::before {
-  content: ''; position: absolute; right: -15px; top: 50%; transform: translateY(-50%);
+  content: ''; position: absolute; bottom: -15px; right: 34px;
   width: 0; height: 0;
-  border-left: 13px solid var(--ink);
-  border-top: 10px solid transparent; border-bottom: 10px solid transparent;
+  border-top: 13px solid var(--ink);
+  border-left: 10px solid transparent; border-right: 10px solid transparent;
 }
 @keyframes speechPop {
-  0%   { opacity: 0; transform: translateY(-50%) scale(0.5) rotate(-8deg); }
-  60%  { opacity: 1; transform: translateY(-50%) scale(1.1) rotate(2deg); }
-  100% { opacity: 1; transform: translateY(-50%) scale(1) rotate(0deg); }
+  0%   { opacity: 0; transform: scale(0.4) rotate(-6deg); }
+  60%  { opacity: 1; transform: scale(1.1) rotate(2deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
 }
 @media (max-width: 600px) {
   .welcome .bert-av-big { width: 66px; height: 80px; top: -8px; right: 8px; }
   .welcome .howdy, .welcome .line { padding-right: 70px; }
-  .bert-speech { right: 82px; font-size: 17px; max-width: 170px; padding: 7px 12px; }
-  .bert-speech::after { right: -9px; border-left-width: 10px; border-top-width: 7px; border-bottom-width: 7px; }
-  .bert-speech::before { right: -12px; border-left-width: 11px; border-top-width: 8px; border-bottom-width: 8px; }
+  .bert-speech { right: 0; top: -60px; font-size: 17px; max-width: 200px; padding: 7px 12px; }
+  .bert-speech::after { right: 24px; border-top-width: 10px; border-left-width: 7px; border-right-width: 7px; }
+  .bert-speech::before { right: 22px; border-top-width: 11px; border-left-width: 8px; border-right-width: 8px; }
 }
 
 /* avatar picker */
@@ -1638,25 +1641,40 @@ body {
         </div>
       </div>
 
-      <div class="section-label" style="margin-top:2rem"><span class="emoji">🔗</span> Connect Google Calendar <span class="hint">— live sync</span></div>
+      <div class="section-label" style="margin-top:2rem"><span class="emoji">🔗</span> Sign in with Google <span class="hint">— calendar sync + cloud backup</span></div>
       <div class="card">
         <div id="g-status" style="font-size:14px; margin-bottom:10px">Loading…</div>
         <details style="margin-bottom:10px">
-          <summary style="cursor:pointer; font-weight:600; color:var(--plum); font-size:13px">How to set this up ↘</summary>
+          <summary style="cursor:pointer; font-weight:600; color:var(--plum); font-size:13px">One-time setup ↘</summary>
           <ol style="font-size:13px; color:var(--ink-60); margin:10px 0 0 20px; line-height:1.7">
             <li>Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:var(--sky)">Google Cloud Console → Credentials</a></li>
             <li>Create an OAuth 2.0 Client ID · type: <strong>Web application</strong></li>
-            <li>Add this page's URL to <em>Authorized JavaScript origins</em> (whatever's in your address bar, minus the path)</li>
-            <li>Enable the <strong>Google Calendar API</strong> in that same project</li>
-            <li>Paste the Client ID below and hit Connect</li>
+            <li>Add <code style="background:var(--ink-05); padding:1px 5px; border-radius:4px">https://ilv2recycle.github.io</code> to <em>Authorized JavaScript origins</em></li>
+            <li>Enable the <strong>Google Calendar API</strong> and <strong>Google Drive API</strong> in that project</li>
+            <li>Paste the Client ID below and hit Sign in</li>
           </ol>
+          <div style="font-size:12px; color:var(--ink-60); margin-top:10px; padding-top:10px; border-top:1px dashed var(--ink-10)">
+            Data backup uses Drive's <em>app data folder</em> — it's private to Bert and doesn't show up in your Drive file list.
+          </div>
         </details>
         <input class="txt" id="g-client-id" placeholder="123-abcdef.apps.googleusercontent.com" style="font-family:'DM Mono',monospace; font-size:12px">
         <div class="btn-row">
           <button class="btn btn-sm" onclick="gSaveClientId()">Save ID</button>
-          <button class="btn btn-sm btn-sky" onclick="gConnect()">🔗 Connect</button>
-          <button class="btn btn-sm btn-danger" onclick="gDisconnect()">Disconnect</button>
+          <button class="btn btn-sm btn-sky" onclick="gConnect()">🔗 Sign in with Google</button>
+          <button class="btn btn-sm btn-danger" onclick="gDisconnect()">Sign out</button>
           <button class="btn btn-sm" onclick="fetchGEvents()">↻ Refresh events</button>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:2rem"><span class="emoji">☁️</span> Cloud save <span class="hint">— back up & sync across devices</span></div>
+      <div class="card">
+        <div id="cloud-status" style="font-size:13px; margin-bottom:12px">Loading…</div>
+        <div class="btn-row">
+          <button class="btn btn-grass" onclick="gDriveSave()">💾 Save to cloud</button>
+          <button class="btn btn-sky" onclick="gDriveLoad()">↓ Load from cloud</button>
+        </div>
+        <div style="font-size:12px; color:var(--ink-60); margin-top:12px; font-style:italic; line-height:1.5">
+          Save on one device, load on another. Loading replaces local data — save first if there's stuff you don't want to lose.
         </div>
       </div>
 
@@ -3410,6 +3428,8 @@ function renderAll(){
   renderBrainCount();
   renderGoogleStatus();
   renderGEvents();
+  renderProfile();
+  renderCloudStatus();
   restoreBert();
   // If connected, silently refresh in background
   if (gIsConnected()) { fetchGEventsQuiet(); }
