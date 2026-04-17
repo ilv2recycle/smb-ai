@@ -1,5 +1,5 @@
-// Minimal offline cache for Life OS
-const CACHE = 'life-os-v1';
+// Minimal offline cache for Throughline
+const CACHE = 'throughline-v1';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', e => {
