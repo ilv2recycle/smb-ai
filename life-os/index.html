@@ -287,8 +287,8 @@ body {
 .season-pill { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--ink-10); background: var(--warm-white); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-60); cursor: pointer; }
 .season-pill.active { background: var(--sage); color: white; border-color: var(--sage); }
 
-/* toast */
-.toast { display: none; background: var(--sage); color: white; border-radius: var(--r); padding: 9px 16px; font-size: 12px; margin-bottom: 14px; text-align: center; animation: fadeIn .2s ease; }
+/* toast — fixed position so it's visible regardless of scroll */
+.toast { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--sage); color: white; border-radius: var(--r); padding: 11px 22px; font-size: 13px; font-weight: 500; text-align: center; animation: fadeIn .2s ease; z-index: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.15); letter-spacing: .02em; }
 .toast.show { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -616,8 +616,9 @@ body {
       <div class="section-label">Gratitude <span class="hint">— 5 specific things from today</span></div>
       <div class="card">
         <div id="grat-rows"></div>
-        <div class="btn-row">
-          <button class="btn btn-sm" onclick="saveGratitude()">Save gratitude</button>
+        <div class="btn-row" style="align-items:center">
+          <button class="btn btn-sm" id="grat-save-btn" onclick="saveGratitude(true)">Save gratitude</button>
+          <span id="grat-saved-msg" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--sage);letter-spacing:.04em"></span>
         </div>
       </div>
 
@@ -1433,17 +1434,53 @@ function renderGratitudeInputs() {
   const today = loadJSON('gratitude', {})[todayKey()] || { items:[] };
   let html = '';
   for (let i = 0; i < 5; i++) {
-    html += `<div class="grat-row"><span class="grat-num">${i+1}</span><input class="txt" id="g${i+1}" type="text" placeholder="I am grateful for…" value="${(today.items[i]||'').replace(/"/g,'&quot;')}"></div>`;
+    html += `<div class="grat-row"><span class="grat-num">${i+1}</span><input class="txt" id="g${i+1}" type="text" placeholder="I am grateful for…" value="${(today.items[i]||'').replace(/"/g,'&quot;')}" onblur="saveGratitude(false)"></div>`;
   }
   wrap.innerHTML = html;
+  updateGratSavedIndicator();
 }
 
-function saveGratitude() {
-  const items = [1,2,3,4,5].map(i => document.getElementById('g'+i).value.trim()).filter(Boolean);
+function updateGratSavedIndicator() {
+  const msg = document.getElementById('grat-saved-msg');
+  if (!msg) return;
+  const today = loadJSON('gratitude', {})[todayKey()];
+  if (today && today.items && today.items.length) {
+    msg.textContent = `Saved · ${today.items.length} ${today.items.length===1?'thing':'things'} today`;
+  } else {
+    msg.textContent = '';
+  }
+}
+
+function saveGratitude(showFeedback) {
+  const items = [1,2,3,4,5].map(i => {
+    const el = document.getElementById('g'+i);
+    return el ? el.value.trim() : '';
+  }).filter(Boolean);
   const all = loadJSON('gratitude', {});
-  all[todayKey()] = { items, date: new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) };
+  if (items.length) {
+    all[todayKey()] = { items, date: new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) };
+  } else {
+    delete all[todayKey()];
+  }
   saveJSON('gratitude', all);
-  showToast('Gratitude saved.');
+  updateGratSavedIndicator();
+  if (showFeedback) {
+    const btn = document.getElementById('grat-save-btn');
+    if (btn) {
+      const orig = btn.textContent;
+      btn.textContent = '✓ Saved';
+      btn.style.background = 'var(--sage)';
+      btn.style.color = 'white';
+      btn.style.borderColor = 'var(--sage)';
+      setTimeout(() => {
+        btn.textContent = orig;
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      }, 1800);
+    }
+    showToast(items.length ? `Saved ${items.length} things.` : 'Cleared.');
+  }
 }
 
 function saveReflection() {
@@ -2808,9 +2845,9 @@ function renderSyncBar(status, extra) {
     return;
   }
   if (status === 'error') {
-    bar.classList.add('error');
-    text.innerHTML = 'Sync unavailable' + (extra ? ' <span class="sb-meta">· '+escapeHtml(extra)+'</span>' : '');
-    actions.innerHTML = '<button onclick="ThroughlineSync.forcePull()">Retry</button>';
+    bar.classList.add('offline');
+    text.innerHTML = 'Sync paused · data is safe on this device';
+    actions.innerHTML = '<button onclick="ThroughlineSync.forcePull()">Try again</button><button onclick="document.getElementById(\'sync-bar\').style.display=\'none\'">Hide</button>';
     return;
   }
   if (status === 'signed-out') {
