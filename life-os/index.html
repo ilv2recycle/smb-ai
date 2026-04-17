@@ -176,6 +176,17 @@ body {
 .phase-guide { font-size: 13px; color: var(--ink-60); line-height: 1.6; margin-bottom: 8px; }
 .seed-pill { display: inline-block; background: var(--gold-pale); color: var(--gold); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-family: 'DM Mono', monospace; letter-spacing: .06em; margin-right: 5px; margin-top: 4px; }
 
+.arch-meta { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--ink-10); font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-60); letter-spacing: .06em; }
+.arch-meta strong { color: var(--ink-30); text-transform: uppercase; font-weight: 500; margin-right: 4px; letter-spacing: .1em; }
+.arch-section { margin-top: 14px; }
+.arch-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-30); margin-bottom: 6px; }
+.arch-text { font-size: 13px; color: var(--ink); line-height: 1.6; }
+.arch-text.shadow { color: var(--rust); font-style: italic; }
+.arch-text.notes { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; line-height: 1.6; color: var(--ink); }
+.arch-prompts { list-style: none; padding: 0; margin-bottom: 12px; }
+.arch-prompts li { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic; color: var(--ink); padding: 6px 0 6px 18px; line-height: 1.4; position: relative; }
+.arch-prompts li::before { content: '·'; position: absolute; left: 0; color: var(--gold); font-size: 22px; line-height: 1; top: 2px; }
+
 .moon-card { background: var(--ink); color: var(--warm-white); border-radius: var(--rl); padding: 18px 22px; margin-bottom: 1rem; }
 .moon-phase-name { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--gold-light); margin-bottom: 4px; }
 .moon-sub { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .08em; color: rgba(255,255,255,0.5); margin-bottom: 10px; }
@@ -1016,10 +1027,54 @@ function cyclePhase(dayOfCycle, len) {
   return 'luteal';
 }
 const PHASE_GUIDE = {
-  menstrual: { name:'Menstrual', desc:'Rest. Shed. Low energy is information, not failure. Gentle movement only.', seeds:['Flax 1 tbsp','Pumpkin 1 tbsp'] },
-  follicular: { name:'Follicular', desc:'Building energy. Estrogen rising. Start new things. This is your forward-leaning phase.', seeds:['Flax 1 tbsp','Pumpkin 1 tbsp'] },
-  ovulation: { name:'Ovulation', desc:'Peak energy, peak expression. Social, bold, visible. Do the things that need you fully in.', seeds:['Sunflower 1 tbsp','Black sesame 1 tbsp'] },
-  luteal: { name:'Luteal', desc:'Slow. Finish what you started. Progesterone supportive. PMS care is not weakness.', seeds:['Sunflower 1 tbsp','Black sesame 1 tbsp'] },
+  menstrual: {
+    name: 'Menstrual · The Crone',
+    archetype: 'Crone',
+    archLower: 'crone',
+    traits: 'Wisdom keeper. Ultimate perspective. Closest to Source and in surrender to Life. Selfless clarity.',
+    shadow: 'Brutal, hermit, unforgiving, judgmental, bitter, jaded, lonely, self-pitying, defeated.',
+    season: 'Winter', element: 'Earth', moon: 'Dark / New moon', rite: 'Menopause',
+    idols: 'Vali Myers, Maya Angelou, Baba Yaga, Morrigan, Cerridwen, Hecate',
+    notes: "This is the best part of your cycle to rest. Don't believe you need to be physically active to be productive. Make a decision. Get clarity on a future project. Be with the energy of what is rising in you.",
+    prompts: ['What does she want you to know?', 'What are you doing that is tripping you up?', 'What action does she want you to take?', 'What is her heart\'s deepest prayer for you?'],
+    seeds: ['Flax 1 tbsp','Pumpkin 1 tbsp']
+  },
+  follicular: {
+    name: 'Follicular · The Maiden',
+    archetype: 'Maiden',
+    archLower: 'maiden',
+    traits: 'Young, enthusiastic, strong, independent, courageous, boundless. Full of ideas. Sees potential in everything. A woman one-in-herself.',
+    shadow: 'Naive, self-centered, inexperienced, lacks confidence. Too many ideas, lacks drive to finish. Overcommits because she doesn\'t want to miss out.',
+    season: 'Spring', element: 'Air', moon: 'Waxing / New moon', rite: 'Menarche',
+    idols: 'Brighid, Athena, Ostara, Persephone',
+    notes: "Come up with lots of ideas. Play and dream about what could be without restriction. Write your dreams, make your plans. The sky is the limit.",
+    prompts: ['What is she yearning for?', 'What does she want you to know?', 'What is her heart\'s deepest prayer for you?', 'What have you been avoiding that she wants to shine a light on?', 'What does she want you to remember?'],
+    seeds: ['Flax 1 tbsp','Pumpkin 1 tbsp']
+  },
+  ovulation: {
+    name: 'Ovulation · The Mother',
+    archetype: 'Mother',
+    archLower: 'mother',
+    traits: 'Fertile. Compassionate, nurturing, devotional, big-hearted. Takes the Maiden\'s energy and turns it into focused action. Births life AND creations into the world.',
+    shadow: 'Overprotective, smothering. Forgets to look after herself. Controlling, codependent, exhausted. Makes others feel guilty for not needing her.',
+    season: 'Summer', element: 'Fire', moon: 'Full moon', rite: 'Marriage / birth',
+    idols: 'Isis, Gaia, Mother Mary, Hathor, Quan Yin, Demeter, Rhea',
+    notes: "You feel and look at your best here. Commit to what is rising in you and go about making it happen for real. Launch the program. Write the book. Host the event.",
+    prompts: ['What have you been carrying that it\'s time to let go of?', 'What are you carrying that\'s not even yours?', 'What does your Mother want you to know?', 'What advice does she have for you?', 'What is her heart\'s deepest prayer for you?'],
+    seeds: ['Sunflower 1 tbsp','Black sesame 1 tbsp']
+  },
+  luteal: {
+    name: 'Luteal · The Wise Wild Woman',
+    archetype: 'Wise Wild Woman',
+    archLower: 'wild',
+    traits: 'Uninhibited and wise. Medicine Woman, Healer. Knows her worth. Guided by intuition. Fierce. Not afraid of what people think. Demands respect.',
+    shadow: 'Ruthless, angry, jealous, vindictive, impatient, blunt. "End justifies the means."',
+    season: 'Fall', element: 'Water', moon: 'Waning moon', rite: 'Saturn returns, significant loss or mourning, being initiated',
+    idols: 'Artemis, The Wolf, Kali, Tara, Saraswati, witch, healer, medicine woman',
+    notes: "The best place to let things go, refine, refocus. Dance, sing, express and transmute feelings into passion. De-clutter. Negotiate fiercely. Protect your boundaries. Create powerful, authentic work.",
+    prompts: ['What does she want you to know?', 'How does she want you to be courageous in your life?', 'How can you be more assertive and more fierce?', 'What does she want you to birth into the world?', 'What is her heart\'s deepest prayer for you?'],
+    seeds: ['Sunflower 1 tbsp','Black sesame 1 tbsp']
+  },
 };
 function getCycleDay() {
   const c = getCycleData();
@@ -1132,8 +1187,8 @@ function renderToday() {
     document.getElementById('today-cycle').innerHTML = `
       <div class="phase-block phase-${ph}">
         <div class="phase-name">${g.name}</div>
-        <div class="phase-day">Day ${cycleDay} of ${c.length}</div>
-        <div class="phase-guide">${g.desc}</div>
+        <div class="phase-day">Day ${cycleDay} of ${c.length} · ${g.season} · ${g.moon}</div>
+        <div class="phase-guide">${g.notes}</div>
         <div>${g.seeds.map(s => `<span class="seed-pill">${s}</span>`).join('')}</div>
       </div>`;
   } else {
@@ -1415,6 +1470,16 @@ function openTodoCoach() {
 }
 
 // ═══════════════════ BODY TAB ═══════════════════
+function saveArchetypeNote() {
+  const txt = document.getElementById('arch-note').value.trim();
+  const all = loadJSON('archetype-notes', {});
+  if (txt) all[todayKey()] = txt; else delete all[todayKey()];
+  saveJSON('archetype-notes', all);
+  const msg = document.getElementById('arch-saved-msg');
+  if (msg) { msg.style.display = 'inline'; setTimeout(()=>msg.style.display='none', 2000); }
+  showToast('Saved.');
+}
+
 function saveCycle() {
   const c = { start: document.getElementById('cycle-start').value || null, length: parseInt(document.getElementById('cycle-length').value)||28 };
   saveCycleData(c);
@@ -1431,15 +1496,57 @@ function renderBody() {
   if (day) {
     const ph = cyclePhase(day, c.length);
     const g = PHASE_GUIDE[ph];
+    const savedNote = loadJSON('archetype-notes', {})[todayKey()] || '';
     document.getElementById('cycle-readout').innerHTML = `
-      <div class="phase-block phase-${ph}" style="margin-bottom:0">
+      <div class="phase-block phase-${ph}" style="margin-bottom:12px">
         <div class="phase-name">${g.name}</div>
         <div class="phase-day">Day ${day} of ${c.length}</div>
-        <div class="phase-guide">${g.desc}</div>
-        <div>${g.seeds.map(s=>`<span class="seed-pill">${s}</span>`).join('')}</div>
-        <div style="margin-top:10px;font-size:12px;color:var(--ink-60);line-height:1.55">
-          <strong>Seed cycling:</strong> Grind raw seeds in a spice grinder for better absorption. Mix into smoothies, yogurt, oatmeal, or salads. Store in the fridge.
+
+        <div class="arch-meta">
+          <span><strong>Season</strong> ${g.season}</span>
+          <span><strong>Element</strong> ${g.element}</span>
+          <span><strong>Moon</strong> ${g.moon}</span>
         </div>
+
+        <div class="arch-section">
+          <div class="arch-label">Who she is</div>
+          <div class="arch-text">${g.traits}</div>
+        </div>
+
+        <div class="arch-section">
+          <div class="arch-label">Shadow — watch for</div>
+          <div class="arch-text shadow">${g.shadow}</div>
+        </div>
+
+        <div class="arch-section">
+          <div class="arch-label">Notes for rising</div>
+          <div class="arch-text notes">${g.notes}</div>
+        </div>
+
+        <div class="arch-section">
+          <div class="arch-label">Idols / guides</div>
+          <div class="arch-text" style="font-style:italic">${g.idols}</div>
+        </div>
+
+        <div class="arch-section">
+          <div class="arch-label">Seed cycling</div>
+          <div style="margin-bottom:6px">${g.seeds.map(s=>`<span class="seed-pill">${s}</span>`).join('')}</div>
+          <div style="font-size:12px;color:var(--ink-60);line-height:1.55">Grind raw seeds in a spice grinder. Mix into smoothies, yogurt, oatmeal, or salads. Store in the fridge.</div>
+        </div>
+      </div>
+
+      <div class="phase-block phase-${ph}" style="margin-bottom:0">
+        <div class="arch-label" style="margin-top:0">Journey with the ${g.archetype}</div>
+        <div style="font-size:13px;color:var(--ink-60);line-height:1.6;margin-bottom:10px">Ask the part of you that knows. Write what arises — one prompt or all.</div>
+        <ul class="arch-prompts">
+          ${g.prompts.map(p => `<li>${p}</li>`).join('')}
+        </ul>
+        <textarea class="ta" id="arch-note" placeholder="Write here. No editing, no performance." style="min-height:100px">${escapeHtml(savedNote)}</textarea>
+        <div class="btn-row">
+          <button class="btn btn-sm" onclick="saveArchetypeNote()">Save for today</button>
+          <span id="arch-saved-msg" style="display:none;font-family:'DM Mono',monospace;font-size:11px;color:var(--sage);letter-spacing:.04em;align-self:center">Saved.</span>
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--ink-30);letter-spacing:.08em;margin-top:12px">INNER COUNCIL OF WISE WOMEN · REBECCA CAMPBELL 2016</div>
       </div>`;
   } else {
     document.getElementById('cycle-readout').innerHTML = '<div class="empty">Enter your last period start date above.</div>';
