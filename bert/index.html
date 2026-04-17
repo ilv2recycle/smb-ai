@@ -462,6 +462,24 @@ body {
 .zone-task .grip { color: var(--ink-30); font-family: 'DM Mono', monospace; font-size: 14px; }
 .zone-task .x { margin-left: auto; font-size: 11px; color: var(--ink-30); cursor: pointer; padding: 2px 6px; }
 .zone-task .x:hover { color: var(--rust); }
+.zone-task .zt-btn {
+  font-size: 11px; color: var(--ink-60); cursor: pointer; padding: 4px 8px;
+  border-radius: 7px; user-select: none; flex-shrink: 0;
+  transition: background .12s, color .12s;
+}
+.zone-task .zt-btn:hover { background: rgba(43,33,24,0.06); color: var(--ink); }
+.zone-task .zt-go {
+  margin-left: auto; background: var(--pink-soft); color: #9E2C4E;
+  font-weight: 700; font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: .04em; padding: 4px 8px;
+}
+.zone-task .zt-go:hover { background: var(--pink); color: white; }
+@media (max-width: 860px) {
+  .zone-task { padding: 10px 12px; }
+  .zone-task .grip { display: none; } /* no drag on touch */
+  .zone-task .zt-btn { padding: 6px 10px; font-size: 12px; }
+  .zone-task .zt-go { font-size: 11px; }
+}
 .zone-add { display: flex; gap: 4px; margin-top: 8px; padding-left: 8px; }
 .zone-add input {
   flex: 1; border: 1.5px solid rgba(43,33,24,0.1); border-radius: 7px; padding: 5px 9px;
@@ -1250,7 +1268,7 @@ body {
       <div class="page-head">
         <div>
           <div class="page-title">The Hollow <span class="hand">🌲</span></div>
-          <div class="page-date">Recurring tasks by zone. Drag any task into This Week when it's time.</div>
+          <div class="page-date">Recurring tasks by zone. Drag (desktop) or tap <strong style="color:var(--pink)">→ week</strong> (mobile) to send to This Week.</div>
         </div>
       </div>
 
@@ -1726,8 +1744,9 @@ function zoneCardHtml(z, compact){
     <div class="zone-task" draggable="true" data-zone="${z.id}" data-idx="${i}" data-title="${esc(t)}" data-color="${z.color}">
       <span class="grip">⋮⋮</span>
       <span class="tt" ondblclick="event.stopPropagation(); editZoneTask('${z.id}',${i})" title="double-click to edit">${esc(t)}</span>
-      <span class="x" onclick="event.stopPropagation(); editZoneTask('${z.id}',${i})" style="color:var(--ink-30)" title="edit">✎</span>
-      <span class="x" onclick="event.stopPropagation(); deleteZoneTask('${z.id}',${i})" title="remove">×</span>
+      <span class="zt-btn zt-go" onclick="event.stopPropagation(); zoneTaskToWeek('${z.id}',${i})" title="add to this week">→ week</span>
+      <span class="zt-btn" onclick="event.stopPropagation(); editZoneTask('${z.id}',${i})" title="edit">✎</span>
+      <span class="zt-btn" onclick="event.stopPropagation(); deleteZoneTask('${z.id}',${i})" title="remove">×</span>
     </div>`).join('');
   const addUi = compact ? '' : `
     <div class="zone-add">
@@ -1767,6 +1786,14 @@ function editZoneTask(zoneId, idx){
   if (n === null) return;
   const v = n.trim(); if (!v) return;
   z.tasks[idx] = v; saveZones(zones); renderZones();
+}
+function zoneTaskToWeek(zoneId, idx){
+  const zones = getZones();
+  const z = zones.find(x => x.id === zoneId); if (!z) return;
+  const title = z.tasks[idx]; if (!title) return;
+  const zoneColorMap = { inside:'pink', back:'sun', baby:'plum', orchard:'grass', ladies:'sky', bert:'rust' };
+  const color = zoneColorMap[z.color] || 'pink';
+  addBubbleItem(title, z.id, color);
 }
 function addZone(){
   const name = document.getElementById('zone-new-name').value.trim(); if (!name) return;
