@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monique · Throughline</title>
+<title>Throughline</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1A1714">
 <link rel="apple-touch-icon" href="../favicon.png">
@@ -340,8 +340,8 @@ body {
 <div class="layout">
 
   <nav class="sidebar">
-    <div class="sidebar-logo">Monique</div>
-    <div class="sidebar-sub">Throughline</div>
+    <div class="sidebar-logo">Throughline</div>
+    <div class="sidebar-sub">The spine of a life</div>
 
     <div class="nav-section">Daily</div>
     <div class="nav-item active" onclick="switchTab('today',this)" data-tab="today"><div class="nav-dot"></div> Today</div>
@@ -390,6 +390,15 @@ body {
         <div class="stat-card"><div class="n" id="s-total">0</div><div class="l">Non-negotiables</div></div>
         <div class="stat-card"><div class="n" id="s-streak">0</div><div class="l">Streak</div></div>
         <div class="stat-card"><div class="n" id="s-pct">0%</div><div class="l">Complete</div></div>
+      </div>
+
+      <div class="section-label">Quick list <span class="hint">— fast add, fast check off</span></div>
+      <div class="card">
+        <div style="display:flex;gap:6px;margin-bottom:8px">
+          <input class="txt" id="quick-new" placeholder="Add a quick thing…" onkeydown="if(event.key==='Enter')addQuick()">
+          <button class="btn btn-sm btn-gold" onclick="addQuick()">+</button>
+        </div>
+        <div id="quick-list"></div>
       </div>
 
       <div class="section-label">Non-negotiables <span class="hint">— do these or the day doesn't count</span></div>
@@ -1059,6 +1068,9 @@ function renderToday() {
 
   // daily reflection
   loadTodayReflection();
+
+  // quick list
+  renderQuick();
 }
 
 function renderTodaySupps(){ /* re-render the three supp lists */ renderToday(); }
@@ -1092,6 +1104,44 @@ function saveReflection() {
   msg.style.display = 'inline';
   setTimeout(()=>msg.style.display='none', 2000);
   showToast('Reflection saved.');
+}
+
+// ═══════════════════ QUICK LIST (Today tab) ═══════════════════
+function getQuick(){ return loadJSON('quick-list', []); }
+function saveQuick(l){ saveJSON('quick-list', l); }
+function addQuick(){
+  const el = document.getElementById('quick-new');
+  const title = el.value.trim();
+  if (!title) return;
+  const list = getQuick();
+  list.unshift({ id:'q-'+Date.now(), title, done: false, created: todayKey() });
+  saveQuick(list);
+  el.value = '';
+  renderQuick();
+}
+function toggleQuick(id){
+  const list = getQuick();
+  const item = list.find(x => x.id === id);
+  if (!item) return;
+  item.done = !item.done;
+  saveQuick(list);
+  renderQuick();
+}
+function deleteQuick(id){
+  saveQuick(getQuick().filter(x => x.id !== id));
+  renderQuick();
+}
+function renderQuick(){
+  const list = getQuick();
+  const el = document.getElementById('quick-list');
+  if (!el) return;
+  if (list.length === 0) { el.innerHTML = '<div class="empty">Empty. Add one above.</div>'; return; }
+  el.innerHTML = list.map(item => `
+    <div class="todo-row${item.done?' done':''}">
+      <div class="todo-check" onclick="toggleQuick('${item.id}')">${CHECK_SVG}</div>
+      <div class="todo-body"><div class="ttitle">${escapeHtml(item.title)}</div></div>
+      <div class="todo-actions"><button class="iconbtn" onclick="deleteQuick('${item.id}')">×</button></div>
+    </div>`).join('');
 }
 
 function loadTodayReflection() {
