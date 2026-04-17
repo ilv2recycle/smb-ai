@@ -1,12 +1,12 @@
 {
-  "version": "v260417.03 10:50a",
-  "release": 26,
-  "sha": "4de55e2",
-  "fullSha": "4de55e224ef8b3d13eee85a19d03bd8c98161f61",
+  "version": "v260417.04 10:56a",
+  "release": 27,
+  "sha": "74c92d4",
+  "fullSha": "74c92d4aa68c38e1c9aca7c63cc1025620d0fa75",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
   "machine": "runnervmeorf1",
-  "pushedAt": "2026-04-17 15:50:15+00",
-  "commits": [{"sha":"4de55e2","message":"Bert: Siri + voice dictation (URL quick-add, mic, shortcut guide) (#48)","author":"ilv2recycle"}]
+  "pushedAt": "2026-04-17 15:56:05+00",
+  "commits": [{"sha":"74c92d4","message":"Bert: iPhone-first Siri setup (#49)","author":"ilv2recycle"}]
 }
