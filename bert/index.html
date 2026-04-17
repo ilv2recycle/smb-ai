@@ -74,11 +74,25 @@ body {
   box-shadow: 3px 0 0 rgba(43,33,24,0.06);
 }
 .sidebar-logo {
-  font-family: 'Caveat', cursive; font-size: 52px; font-weight: 700;
+  font-family: 'Caveat', cursive; font-size: 50px; font-weight: 700;
   color: var(--ink); line-height: 1; margin-bottom: 2px;
-  transform: rotate(-3deg); display: inline-block;
+  display: inline-flex; align-items: center; gap: 6px;
 }
-.sidebar-logo::after { content: ' ✨'; font-size: 28px; }
+.sidebar-logo .bert-av { width: 44px; height: 54px; flex-shrink: 0; transform: rotate(4deg); filter: drop-shadow(1px 2px 0 rgba(43,33,24,0.1)); }
+.sidebar-logo .txt { transform: rotate(-3deg); display: inline-block; }
+
+.welcome { position: relative; }
+.welcome .bert-av-big {
+  position: absolute; top: -18px; right: 14px; width: 90px; height: 108px;
+  transform: rotate(4deg);
+  filter: drop-shadow(2px 3px 0 rgba(43,33,24,0.12));
+  z-index: 2;
+}
+.welcome .howdy, .welcome .line { padding-right: 100px; }
+@media (max-width: 600px) {
+  .welcome .bert-av-big { width: 66px; height: 80px; top: -8px; right: 8px; }
+  .welcome .howdy, .welcome .line { padding-right: 70px; }
+}
 .sidebar-sub {
   font-family: 'Caveat', cursive; font-size: 18px; font-weight: 500;
   color: rgba(43,33,24,0.7); margin-bottom: 1.75rem;
@@ -673,7 +687,7 @@ body {
 <div class="layout">
 
   <nav class="sidebar">
-    <div class="sidebar-logo">Bert</div>
+    <div class="sidebar-logo"><svg class="bert-av"><use href="#bert-avatar"/></svg><span class="txt">Bert</span></div>
     <div class="sidebar-sub">Ari's handy brain</div>
 
     <div class="nav-section">Daily</div>
@@ -707,7 +721,86 @@ body {
   </nav>
 
   <main class="main">
-    <div id="toast" class="toast"></div>
+    <!-- Bert cartoon avatar (inspired by Ari — stylized, playful) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="bert-avatar" viewBox="0 0 200 240">
+    <!-- back dreads (behind everything) -->
+    <g fill="#7A5430">
+      <path d="M58 60 Q40 125 45 205 Q47 225 55 234 L68 234 Q63 205 65 165 Q68 120 74 82 Z"/>
+      <path d="M72 68 Q58 135 62 218 L78 226 Q75 185 79 150 Q84 108 86 85 Z"/>
+      <path d="M142 60 Q160 125 155 205 Q153 225 145 234 L132 234 Q137 205 135 165 Q132 120 126 82 Z"/>
+      <path d="M128 68 Q142 135 138 218 L122 226 Q125 185 121 150 Q116 108 114 85 Z"/>
+    </g>
+    <!-- neck (skin) -->
+    <rect x="86" y="120" width="28" height="24" fill="#EAB896"/>
+    <!-- sweater / body -->
+    <path d="M42 188 Q42 156 74 156 L126 156 Q158 156 158 188 L158 240 L42 240 Z" fill="#2A1F14"/>
+    <!-- front dreads over body -->
+    <g fill="#6B4828">
+      <path d="M60 155 Q54 200 60 234 L72 234 Q68 200 68 170 Z"/>
+      <path d="M80 155 Q76 200 84 234 L94 234 Q88 200 90 170 Z"/>
+      <path d="M140 155 Q146 200 140 234 L128 234 Q132 200 132 170 Z"/>
+      <path d="M120 155 Q124 200 116 234 L106 234 Q110 200 110 170 Z"/>
+    </g>
+    <!-- dread bead accents -->
+    <circle cx="70" cy="200" r="3" fill="#B8975A"/>
+    <circle cx="132" cy="195" r="3" fill="#E06B4A"/>
+    <circle cx="88" cy="215" r="2.5" fill="#8FC5E0"/>
+    <!-- hat brim -->
+    <ellipse cx="100" cy="58" rx="64" ry="9" fill="#5A3E24"/>
+    <!-- hat crown -->
+    <path d="M68 58 Q68 24 100 22 Q132 24 132 58 Z" fill="#6E4E2E"/>
+    <!-- hat crease -->
+    <path d="M92 30 Q100 27 108 30" stroke="#4A2F17" stroke-width="1.5" fill="none" opacity="0.55"/>
+    <!-- hat band -->
+    <rect x="70" y="52" width="60" height="5" fill="#3E2A15"/>
+    <circle cx="105" cy="55" r="2.5" fill="#B8975A"/>
+    <!-- face (thinner, longer) -->
+    <ellipse cx="100" cy="94" rx="24" ry="32" fill="#EAB896"/>
+    <!-- forehead hair peek under hat -->
+    <path d="M78 68 Q100 78 122 68 Q122 74 118 78 Q100 84 82 78 Q78 74 78 68 Z" fill="#6B4828"/>
+    <!-- eyes — cartoon happy round eyes (open and excited) -->
+    <circle cx="89" cy="86" r="3.2" fill="#1A110A"/>
+    <circle cx="111" cy="86" r="3.2" fill="#1A110A"/>
+    <circle cx="90" cy="85" r="1" fill="#FFF"/>
+    <circle cx="112" cy="85" r="1" fill="#FFF"/>
+    <!-- eyebrows -->
+    <path d="M83 78 Q89 75 95 78" stroke="#5A3E24" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <path d="M105 78 Q111 75 117 78" stroke="#5A3E24" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- tiny eyebrow piercing (silver stud) -->
+    <circle cx="97" cy="78" r="1.2" fill="#C9C9CE" stroke="#4A3820" stroke-width="0.4"/>
+    <!-- GLASSES (signature Ari) -->
+    <g fill="none" stroke="#1A110A" stroke-width="2.2">
+      <rect x="79" y="80" width="16" height="13" rx="2.5"/>
+      <rect x="105" y="80" width="16" height="13" rx="2.5"/>
+      <line x1="95" y1="85" x2="105" y2="85"/>
+    </g>
+    <!-- nose -->
+    <path d="M98 97 Q100 106 102 97" stroke="#B8896A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- open toothy grin -->
+    <path d="M82 112 Q100 128 118 112 Q118 117 100 118 Q82 117 82 112 Z" fill="#1A110A"/>
+    <!-- teeth (upper row) -->
+    <path d="M86 112 Q100 115 114 112 L114 116 Q100 117 86 116 Z" fill="#FFFAF0"/>
+    <!-- mustache -->
+    <path d="M90 107 Q100 112 110 107" stroke="#3E2A15" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.55"/>
+    <!-- chin goatee / soul patch -->
+    <path d="M96 121 Q100 126 104 121 Q104 124 100 125 Q96 124 96 121 Z" fill="#3E2A15" opacity="0.6"/>
+    <!-- tiny hoop earring (left side, viewer's right actually — mirror on both) -->
+    <circle cx="74" cy="108" r="2.2" fill="none" stroke="#C9A95C" stroke-width="1"/>
+    <circle cx="126" cy="108" r="2.2" fill="none" stroke="#C9A95C" stroke-width="1"/>
+    <!-- cheeks (blush — happy energy) -->
+    <circle cx="78" cy="104" r="4.5" fill="#FF8CA8" opacity="0.55"/>
+    <circle cx="122" cy="104" r="4.5" fill="#FF8CA8" opacity="0.55"/>
+    <!-- guitar neck peeking from lower right -->
+    <rect x="138" y="175" width="50" height="7" rx="2" transform="rotate(-34 138 175)" fill="#6E4E2E"/>
+    <rect x="140" y="177" width="46" height="3" rx="1" transform="rotate(-34 140 177)" fill="#3E2A15"/>
+    <!-- guitar body hint -->
+    <ellipse cx="134" cy="230" rx="24" ry="16" fill="#E8A74A"/>
+    <ellipse cx="130" cy="228" rx="5" ry="4" fill="#1A110A"/>
+  </symbol>
+</svg>
+
+<div id="toast" class="toast"></div>
 
 <button class="feature-req" onclick="openFeatureReq()" title="Tell the maker what's missing">
   <span class="spark">✨</span> Feature request
@@ -737,6 +830,7 @@ body {
       </div>
 
       <div class="welcome">
+        <svg class="bert-av-big" aria-hidden="true"><use href="#bert-avatar"/></svg>
         <div class="howdy" id="welcome-line">Let's make it a good one.</div>
         <div class="line">Bert keeps Alpenglow, The Hollow, and everything else you juggle all in one place.</div>
       </div>
