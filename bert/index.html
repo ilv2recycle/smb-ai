@@ -84,11 +84,69 @@ body {
 .welcome { position: relative; }
 .welcome .bert-av-big {
   position: absolute; top: -18px; right: 14px; width: 90px; height: 108px;
-  transform: rotate(4deg);
   filter: drop-shadow(2px 3px 0 rgba(43,33,24,0.12));
-  z-index: 2;
+  z-index: 2; cursor: pointer; user-select: none;
+  transform-origin: bottom center;
+  animation: bertBob 4s ease-in-out infinite;
 }
-.welcome .howdy, .welcome .line { padding-right: 100px; }
+.welcome .bert-av-big:hover { animation: bertWiggle 0.6s ease-in-out; }
+.welcome .bert-av-big.bounced { animation: bertBounce 0.7s cubic-bezier(.3,1.6,.5,1); }
+@keyframes bertBob {
+  0%, 100% { transform: rotate(4deg) translateY(0); }
+  50%      { transform: rotate(4deg) translateY(-5px); }
+}
+@keyframes bertWiggle {
+  0%   { transform: rotate(4deg) scale(1); }
+  25%  { transform: rotate(-6deg) scale(1.05); }
+  50%  { transform: rotate(8deg) scale(1.05); }
+  75%  { transform: rotate(-4deg) scale(1.03); }
+  100% { transform: rotate(4deg) scale(1); }
+}
+@keyframes bertBounce {
+  0%   { transform: rotate(4deg) scale(1); }
+  30%  { transform: rotate(-10deg) scale(1.2); }
+  60%  { transform: rotate(12deg) scale(0.92); }
+  100% { transform: rotate(4deg) scale(1); }
+}
+/* sidebar avatar tiny idle too */
+.sidebar-logo .bert-av { animation: bertBob 5s ease-in-out infinite; transform-origin: bottom center; cursor: pointer; }
+.sidebar-logo .bert-av.bounced { animation: bertBounce 0.7s cubic-bezier(.3,1.6,.5,1); }
+
+/* speech bubble */
+.bert-speech {
+  position: absolute; right: 118px; top: 50%; transform: translateY(-50%) scale(0.6);
+  background: #FFFBF3; border: 2.5px solid var(--ink); border-radius: 18px;
+  padding: 10px 16px; max-width: 240px; z-index: 10;
+  font-family: 'Caveat', cursive; font-size: 22px; font-weight: 700;
+  color: var(--ink); line-height: 1.15; box-shadow: 3px 3px 0 rgba(43,33,24,0.18);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+.bert-speech.show { animation: speechPop 0.45s cubic-bezier(.3,1.6,.5,1) forwards; pointer-events: auto; }
+.bert-speech::after {
+  content: ''; position: absolute; right: -11px; top: 50%; transform: translateY(-50%);
+  width: 0; height: 0;
+  border-left: 12px solid #FFFBF3;
+  border-top: 9px solid transparent; border-bottom: 9px solid transparent;
+}
+.bert-speech::before {
+  content: ''; position: absolute; right: -15px; top: 50%; transform: translateY(-50%);
+  width: 0; height: 0;
+  border-left: 13px solid var(--ink);
+  border-top: 10px solid transparent; border-bottom: 10px solid transparent;
+}
+@keyframes speechPop {
+  0%   { opacity: 0; transform: translateY(-50%) scale(0.5) rotate(-8deg); }
+  60%  { opacity: 1; transform: translateY(-50%) scale(1.1) rotate(2deg); }
+  100% { opacity: 1; transform: translateY(-50%) scale(1) rotate(0deg); }
+}
+@media (max-width: 600px) {
+  .welcome .bert-av-big { width: 66px; height: 80px; top: -8px; right: 8px; }
+  .welcome .howdy, .welcome .line { padding-right: 70px; }
+  .bert-speech { right: 82px; font-size: 17px; max-width: 170px; padding: 7px 12px; }
+  .bert-speech::after { right: -9px; border-left-width: 10px; border-top-width: 7px; border-bottom-width: 7px; }
+  .bert-speech::before { right: -12px; border-left-width: 11px; border-top-width: 8px; border-bottom-width: 8px; }
+}
 
 /* avatar picker */
 .av-picker {
@@ -125,10 +183,6 @@ body {
   .av-picker .ap-opt svg { width: 50px; height: 60px; }
 }
 .av-picker.collapsed .ap-grid { display: none; }
-@media (max-width: 600px) {
-  .welcome .bert-av-big { width: 66px; height: 80px; top: -8px; right: 8px; }
-  .welcome .howdy, .welcome .line { padding-right: 70px; }
-}
 .sidebar-sub {
   font-family: 'Caveat', cursive; font-size: 18px; font-weight: 500;
   color: rgba(43,33,24,0.7); margin-bottom: 1.75rem;
@@ -723,8 +777,8 @@ body {
 <div class="layout">
 
   <nav class="sidebar">
-    <div class="sidebar-logo"><svg class="bert-av bert-av-use" viewBox="0 0 200 240"><use href="#bert-avatar"/></svg><span class="txt">Bert</span></div>
-    <div class="sidebar-sub">Ari's handy brain</div>
+    <div class="sidebar-logo"><svg class="bert-av bert-av-use" viewBox="0 0 200 240"><use href="#bert-avatar"/></svg><span class="txt">Bert Life</span></div>
+    <div class="sidebar-sub">Ari's handy brain 🎸</div>
 
     <div class="nav-section">Daily</div>
     <div class="nav-item active" onclick="switchTab('today',this)" data-tab="today"><span class="nav-emoji">🏡</span> Today</div>
@@ -749,6 +803,7 @@ body {
     <div class="nav-item" onclick="switchTab('brain',this)" data-tab="brain"><span class="nav-emoji">💭</span> Brain dump</div>
 
     <div class="sidebar-footer">
+      <div id="sidebar-profile" style="display:none; align-items:center; gap:8px; background:var(--paper); border-radius:14px; padding:8px 10px; margin-bottom:10px; box-shadow:var(--shadow)"></div>
       <div class="bert-blurb">
         Bert's got you.
         <small id="sidebar-week-count">0 in the week</small>
@@ -757,8 +812,14 @@ body {
   </nav>
 
   <main class="main">
-    <!-- Bert cartoon avatar (inspired by Ari — stylized, playful) -->
+    <!-- Bert cartoon avatars (stylized from Ari — four moods) -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <defs>
+    <radialGradient id="bert-glow" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#FFE8B0" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#FFE8B0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
   <symbol id="bert-avatar" viewBox="0 0 200 240">
     <!-- back dreads (behind everything) -->
     <g fill="#7A5430">
@@ -1026,7 +1087,7 @@ body {
     <div id="panel-today" class="panel active">
       <div class="page-head">
         <div>
-          <div class="page-title">Howdy Ari <span class="hand" id="howdy-wave">🤘</span></div>
+          <div class="page-title"><span id="howdy-text">Howdy, Ari</span> <span class="hand" id="howdy-wave">🤘</span></div>
           <div class="page-date" id="today-date"></div>
         </div>
       </div>
@@ -1054,7 +1115,8 @@ body {
       </div>
 
       <div class="welcome">
-        <svg class="bert-av-big bert-av-use" aria-hidden="true" viewBox="0 0 200 240"><use href="#bert-avatar"/></svg>
+        <div class="bert-speech" id="bert-speech"></div>
+        <svg class="bert-av-big bert-av-use" aria-hidden="true" viewBox="0 0 200 240" onclick="sayBert()"><use href="#bert-avatar"/></svg>
         <div class="howdy" id="welcome-line">Let's make it a good one.</div>
         <div class="line">Bert keeps Alpenglow, The Hollow, and everything else you juggle all in one place.</div>
       </div>
@@ -2873,13 +2935,34 @@ function openGCal(){
 function openGCalHome(){ window.open('https://calendar.google.com', '_blank'); }
 
 // ─── AVATAR PICKER ──────────────────────────────────────────────────
+const BERT_SAYINGS = [
+  "Well howdy darling!",
+  "That there is a how-ya-doin'",
+  "I am the concrete mitigation unit.",
+  "OFF THE MOUNTAIN!!!",
+  "Oh dat shit broke.",
+];
+function sayBert(line){
+  const el = document.getElementById('bert-speech'); if (!el) return;
+  const text = line || BERT_SAYINGS[Math.floor(Math.random() * BERT_SAYINGS.length)];
+  el.textContent = text;
+  // restart animation
+  el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  // bounce every avatar that's visible
+  document.querySelectorAll('.bert-av-big, .sidebar-logo .bert-av').forEach(av => {
+    av.classList.remove('bounced'); void av.offsetWidth; av.classList.add('bounced');
+    setTimeout(() => av.classList.remove('bounced'), 800);
+  });
+  clearTimeout(window._bertSpeechTimer);
+  window._bertSpeechTimer = setTimeout(() => el.classList.remove('show'), 3200);
+}
 function pickBert(id){
   save('bert-avatar-id', id);
   applyBert(id);
   document.querySelectorAll('.av-picker .ap-opt').forEach(el => {
     el.classList.toggle('selected', el.dataset.av === id);
   });
-  showToast('Avatar updated 🤘');
+  sayBert();
 }
 function applyBert(id){
   document.querySelectorAll('.bert-av-use use').forEach(u => {
@@ -2908,7 +2991,7 @@ function toggleAvPicker(){
 }
 
 // ─── GOOGLE CALENDAR ────────────────────────────────────────────────
-const GOOGLE_SCOPE = 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly';
+const GOOGLE_SCOPE = 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/drive.appdata openid profile email';
 function getGCfg(){ return load('g-cfg', { clientId: '', token: '', expires: 0 }); }
 function saveGCfg(c){ save('g-cfg', c); }
 function gIsConnected(){ const c = getGCfg(); return !!(c.token && c.expires > Date.now()); }
@@ -2931,14 +3014,24 @@ function gConnect(){
     const tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: c.clientId,
       scope: GOOGLE_SCOPE,
-      callback: (resp) => {
+      callback: async (resp) => {
         if (resp && resp.access_token) {
           const cfg = getGCfg();
           cfg.token = resp.access_token;
           cfg.expires = Date.now() + ((resp.expires_in || 3600) * 1000);
           saveGCfg(cfg);
-          showToast('Connected to Google ✅');
+          // fetch user profile
+          try {
+            const pr = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: 'Bearer ' + cfg.token }});
+            if (pr.ok) {
+              const profile = await pr.json();
+              save('g-profile', { name: profile.name, email: profile.email, picture: profile.picture });
+            }
+          } catch {}
+          showToast('Signed in ✅');
           renderGoogleStatus();
+          renderProfile();
+          renderCloudStatus();
           fetchGEvents();
         } else {
           showToast('Auth failed');
@@ -2952,8 +3045,123 @@ function gConnect(){
 function gDisconnect(){
   const c = getGCfg(); c.token = ''; c.expires = 0; saveGCfg(c);
   save('g-events', []);
-  renderGoogleStatus(); renderGEvents();
-  showToast('Disconnected');
+  save('g-profile', null);
+  renderGoogleStatus(); renderGEvents(); renderProfile(); renderCloudStatus();
+  showToast('Signed out');
+}
+
+// ─── CLOUD SAVE (Google Drive appdata) ──────────────────────────────
+const BERT_CLOUD_FILE = 'bert-data.json';
+const CLOUD_SKIP_PREFIXES = ['g-token','g-expires','g-events','g-cfg','g-profile','bert-mig-','journal-draft','bert-daily-','journal-prompt-idx-','cloud-last-'];
+function shouldSkipKey(k){ return CLOUD_SKIP_PREFIXES.some(p => k.startsWith(p)); }
+async function gDriveFindFile(){
+  const token = getGCfg().token;
+  const res = await fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&fields=files(id,name,modifiedTime)', {
+    headers: { Authorization: 'Bearer ' + token }
+  });
+  if (!res.ok) throw new Error('list ' + res.status);
+  const list = await res.json();
+  return (list.files || []).find(f => f.name === BERT_CLOUD_FILE);
+}
+async function gDriveSave(){
+  if (!gIsConnected()) { showToast('Sign in first'); return; }
+  const token = getGCfg().token;
+  // Snapshot of localStorage (excluding transient/migration keys)
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (!k || shouldSkipKey(k)) continue;
+    data[k] = localStorage.getItem(k);
+  }
+  const payload = { version: 1, savedAt: new Date().toISOString(), data };
+  try {
+    const existing = await gDriveFindFile();
+    if (existing) {
+      const r = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${existing.id}?uploadType=media`, {
+        method: 'PATCH',
+        headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!r.ok) throw new Error('patch ' + r.status);
+    } else {
+      const boundary = 'bert' + Date.now();
+      const metadata = { name: BERT_CLOUD_FILE, parents: ['appDataFolder'], mimeType: 'application/json' };
+      const body = `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(payload)}\r\n--${boundary}--`;
+      const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + token, 'Content-Type': `multipart/related; boundary=${boundary}` },
+        body
+      });
+      if (!r.ok) throw new Error('create ' + r.status);
+    }
+    save('cloud-last-save', new Date().toISOString());
+    renderCloudStatus();
+    showToast('Saved to cloud ☁️');
+  } catch (e) { console.error(e); showToast('Save failed'); }
+}
+async function gDriveLoad(){
+  if (!gIsConnected()) { showToast('Sign in first'); return; }
+  if (!confirm('Load from cloud? This will replace your current local data.')) return;
+  const token = getGCfg().token;
+  try {
+    const existing = await gDriveFindFile();
+    if (!existing) { showToast('No cloud save found'); return; }
+    const res = await fetch(`https://www.googleapis.com/drive/v3/files/${existing.id}?alt=media`, {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('get ' + res.status);
+    const payload = await res.json();
+    if (!payload || !payload.data) { showToast('Cloud data is empty'); return; }
+    // preserve Google auth/session keys
+    const preserve = {};
+    ['g-token','g-expires','g-cfg','g-profile','g-events','cloud-last-save','cloud-last-load'].forEach(k => {
+      const v = localStorage.getItem(k); if (v !== null) preserve[k] = v;
+    });
+    // wipe non-skip keys
+    const toRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && !shouldSkipKey(k)) toRemove.push(k);
+    }
+    toRemove.forEach(k => localStorage.removeItem(k));
+    // apply cloud data
+    Object.keys(payload.data).forEach(k => localStorage.setItem(k, payload.data[k]));
+    // restore preserved
+    Object.keys(preserve).forEach(k => localStorage.setItem(k, preserve[k]));
+    save('cloud-last-load', new Date().toISOString());
+    showToast('Loaded from cloud ☁️');
+    renderAll();
+    renderCloudStatus();
+  } catch (e) { console.error(e); showToast('Load failed'); }
+}
+function renderProfile(){
+  const el = document.getElementById('sidebar-profile'); if (!el) return;
+  const p = load('g-profile', null);
+  if (p && gIsConnected()) {
+    el.innerHTML = `
+      ${p.picture ? `<img src="${esc(p.picture)}" referrerpolicy="no-referrer" alt="" style="width:32px; height:32px; border-radius:50%; border:2px solid rgba(43,33,24,0.15); flex-shrink:0">` : ''}
+      <div style="min-width:0; flex:1">
+        <div style="font-size:12px; font-weight:700; color:var(--ink); line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${esc(p.name || '')}</div>
+        <div style="font-size:10px; color:rgba(43,33,24,0.55); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${esc(p.email || '')}</div>
+      </div>`;
+    el.style.display = 'flex';
+  } else {
+    el.style.display = 'none';
+  }
+}
+function renderCloudStatus(){
+  const el = document.getElementById('cloud-status'); if (!el) return;
+  const lastSave = load('cloud-last-save', null);
+  const lastLoad = load('cloud-last-load', null);
+  if (!gIsConnected()) {
+    el.innerHTML = '<span style="color:var(--ink-60)">Sign in with Google above to enable cloud save.</span>';
+    return;
+  }
+  const lines = [];
+  if (lastSave) { const d = new Date(lastSave); lines.push('Last saved: ' + fmtShort(d) + ' · ' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})); }
+  if (lastLoad) { const d = new Date(lastLoad); lines.push('Last loaded: ' + fmtShort(d) + ' · ' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})); }
+  if (lines.length === 0) lines.push('No cloud save yet.');
+  el.innerHTML = '<span style="color:var(--grass); font-weight:600">✓ Ready to sync</span> <span style="font-family:\'DM Mono\',monospace; font-size:11px; color:var(--ink-60); display:block; margin-top:4px">' + lines.join(' · ') + '</span>';
 }
 async function fetchGEvents(){
   if (!gIsConnected()) { showToast('Connect first'); return; }
@@ -3058,8 +3266,14 @@ function setWelcome(){
   const l = document.getElementById('welcome-line'); if (!l) return;
   const idx = new Date().getDate() % HOWDY_LINES.length;
   l.textContent = HOWDY_LINES[idx];
-  const w = document.getElementById('howdy-wave');
-  if (w) { const waves = ['🤘','☀️','🌻','🌲','🫧','🍎','🌿']; w.textContent = waves[new Date().getDate() % waves.length]; }
+  const h = new Date().getHours();
+  const headline = document.getElementById('howdy-text');
+  const wave = document.getElementById('howdy-wave');
+  if (headline && wave) {
+    if (h >= 5 && h < 12)        { headline.textContent = 'Good morning, good lookin\''; wave.textContent = '☕'; }
+    else if (h >= 12 && h < 17)  { headline.textContent = 'Howdy, Ari';                  wave.textContent = '🤘'; }
+    else                         { headline.textContent = "It's Alpenglow time";        wave.textContent = '🌄'; }
+  }
   const td = document.getElementById('today-date');
   if (td) td.textContent = fmtDate(new Date()).toUpperCase();
   setBertDaily();
