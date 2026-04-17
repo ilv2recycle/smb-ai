@@ -1,0 +1,15 @@
+{
+  "name": "Bert",
+  "short_name": "Bert",
+  "description": "Ari's handy brain — Alpenglow jobs, The Hollow, and everything in between",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF5E6",
+  "theme_color": "#FF7A9C",
+  "icons": [
+    { "src": "../favicon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "../favicon.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
