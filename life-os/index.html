@@ -294,6 +294,18 @@ body {
 
 .divider { border: none; border-top: 1px solid var(--ink-10); margin: 1.5rem 0; }
 
+.page-footer {
+  margin-top: 3rem;
+  padding: 1.5rem 0 .5rem;
+  border-top: 1px solid var(--ink-10);
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--ink-30);
+  letter-spacing: .02em;
+}
+
 /* recipes */
 .recipe-card { background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--rl); padding: 16px 18px; margin-bottom: 10px; }
 .recipe-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; margin-bottom: 4px; }
@@ -1058,7 +1070,7 @@ body {
       </div>
     </div>
 
-    <!-- ── RECIPES ── -->
+    <!-- ── RECIPES ── (footer added after all panels) -->
     <div id="panel-recipes" class="panel">
       <div class="page-head">
         <div class="page-title">Recipes</div>
@@ -1093,6 +1105,9 @@ body {
       <div id="recipe-list"></div>
     </div>
 
+    <footer class="page-footer">
+      Made by Monique Mascio
+    </footer>
   </main>
 </div>
 
