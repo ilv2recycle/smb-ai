@@ -1,12 +1,12 @@
 {
-  "version": "v260417.04 10:56a",
-  "release": 27,
-  "sha": "74c92d4",
-  "fullSha": "74c92d4aa68c38e1c9aca7c63cc1025620d0fa75",
+  "version": "v260417.05 12:42p",
+  "release": 28,
+  "sha": "2b0b428",
+  "fullSha": "2b0b42833cf08afc6334b14cde80ab26dc2deb39",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
   "machine": "runnervmeorf1",
-  "pushedAt": "2026-04-17 15:56:05+00",
-  "commits": [{"sha":"74c92d4","message":"Bert: iPhone-first Siri setup (#49)","author":"ilv2recycle"}]
+  "pushedAt": "2026-04-17 17:42:26+00",
+  "commits": [{"sha":"2b0b428","message":"Bert: alpenglow app icon (#50)","author":"ilv2recycle"}]
 }
