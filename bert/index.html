@@ -1171,7 +1171,7 @@ body {
 
 <div id="toast" class="toast"></div>
 
-<button class="mic-btn" onclick="startDictation()" title="Talk to Bert (or use Siri Shortcut)">🎤</button>
+<button class="mic-btn" id="mic-btn" onclick="startDictation()" title="Talk to Bert (or use Siri Shortcut)">🎤</button>
 
 <button class="feature-req" onclick="openFeatureReq()" title="Tell the maker what's missing">
   <span class="spark">✨</span> Feature request
@@ -1662,35 +1662,50 @@ body {
         </div>
       </div>
 
-      <div class="section-label" style="margin-top:2rem"><span class="emoji">🎤</span> Talk to Bert with Siri <span class="hint">— dictate a note, Siri opens Bert and saves it</span></div>
-      <div class="card">
-        <p style="font-size: 14px; color: var(--ink-60); margin-bottom: 10px">Set this up once on your iPhone — say "Hey Siri, tell Bert" and then dictate. Bert opens and saves it.</p>
-        <details>
-          <summary style="cursor:pointer; font-weight:600; color:var(--plum); font-size:13px">How to set up the Siri Shortcut ↘</summary>
-          <ol style="font-size: 13px; color: var(--ink-60); margin: 10px 0 0 20px; line-height: 1.7">
-            <li>Open the <strong>Shortcuts</strong> app on your iPhone and tap <strong>+</strong></li>
-            <li>Add action: <strong>Dictate Text</strong></li>
-            <li>Add action: <strong>URL Encode</strong> — set input to the <em>Dictated Text</em> variable</li>
-            <li>Add action: <strong>URL</strong> — paste:<br>
-              <code style="background:var(--ink-05); padding:3px 8px; border-radius:6px; font-size:11px; display:inline-block; margin-top:4px; word-break:break-all">https://ilv2recycle.github.io/smb-ai/bert/?add-note=[URL-Encoded Text]</code>
-            </li>
-            <li>Add action: <strong>Open URLs</strong> — input is the URL above</li>
-            <li>Name it <strong>"Tell Bert"</strong> and save</li>
-            <li>Now say <strong>"Hey Siri, tell Bert"</strong> → dictate → Bert opens and saves the note ✨</li>
+      <div class="section-label" style="margin-top:2rem"><span class="emoji">🎤</span> Hey Siri, Tell Bert <span class="hint">— iPhone voice setup</span></div>
+      <div class="card" style="background: linear-gradient(135deg, var(--pink-soft), var(--sun-soft))">
+        <div style="font-family: 'Caveat', cursive; font-size: 26px; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: 4px">Say it, don't type it.</div>
+        <p style="font-size: 14px; color: var(--ink); margin-bottom: 14px">One-time iPhone setup. After that — "Hey Siri, Tell Bert" → speak your thought → Bert saves it.</p>
+
+        <div style="background: var(--paper); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px">
+          <strong style="font-family: 'Fredoka', sans-serif; font-size: 15px; color: var(--ink); display:block; margin-bottom: 8px">📱 Step-by-step (2 minutes)</strong>
+          <ol style="font-size: 14px; color: var(--ink); margin: 0 0 0 20px; line-height: 1.8">
+            <li>Open <strong>Shortcuts</strong> app on your iPhone</li>
+            <li>Tap <strong>+</strong> to create a new shortcut</li>
+            <li>Tap <strong>Add Action</strong> → search <strong>"Dictate Text"</strong> → add</li>
+            <li>Tap <strong>Add Action</strong> → search <strong>"URL Encode"</strong> → add. Tap the input field, pick <em>Dictated Text</em></li>
+            <li>Tap <strong>Add Action</strong> → search <strong>"URL"</strong> → add. Paste this and long-press the <em>[URL Encoded Text]</em> bit where marked:</li>
           </ol>
-          <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--ink-10)">
-            <strong style="font-size:13px">Power moves</strong> — make more shortcuts with these URL params:
-            <ul style="font-size:12px; color:var(--ink-60); margin: 6px 0 0 20px; line-height: 1.7">
-              <li><code>?add-note=...</code> → saves as brain-dump note</li>
-              <li><code>?add-bubble=...</code> → adds to This Week</li>
-              <li><code>?add-todo=...</code> → same as bubble (sun color)</li>
-              <li><code>?add-grocery=item1,item2</code> → adds to grocery (comma-separated)</li>
-              <li><code>?add-journal=...</code> → saves as a journal entry</li>
-            </ul>
+          <div style="background: var(--ink-05); padding: 10px 12px; border-radius: 8px; margin: 8px 0 0 20px; font-family: 'DM Mono', monospace; font-size: 11px; word-break: break-all; line-height: 1.5">
+            https://ilv2recycle.github.io/smb-ai/bert/?add-note=<span style="color:var(--pink); font-weight:700">[URL&nbsp;Encoded&nbsp;Text]</span>
           </div>
+          <ol start="6" style="font-size: 14px; color: var(--ink); margin: 8px 0 0 20px; line-height: 1.8">
+            <li>Tap <strong>Add Action</strong> → search <strong>"Open URLs"</strong> → add. Input should be the URL you just made.</li>
+            <li>Tap the name at the top and rename to <strong>"Tell Bert"</strong> → tap Done</li>
+            <li>Test: say <strong>"Hey Siri, Tell Bert"</strong> → speak → Bert opens with your note saved ✨</li>
+          </ol>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px">
+          <a href="?add-note=Hey+this+works%21" class="btn btn-sm btn-grass" style="text-decoration: none">🧪 Test the URL (saves a test note)</a>
+          <button class="btn btn-sm" onclick="copyShortcutUrl()">📋 Copy the URL</button>
+        </div>
+
+        <details>
+          <summary style="cursor:pointer; font-weight: 600; color: var(--plum); font-size: 13px">Want shortcuts for other stuff? ↘</summary>
+          <p style="font-size: 13px; color: var(--ink); margin: 10px 0; line-height: 1.5">Make separate shortcuts named "<em>Add to Week</em>", "<em>Grocery</em>", etc. Same steps — just swap the end of the URL:</p>
+          <ul style="font-size: 12px; color: var(--ink); margin: 0 0 0 20px; line-height: 1.7; font-family: 'DM Mono', monospace">
+            <li><code>?add-note=...</code> → Brain Dump</li>
+            <li><code>?add-bubble=...</code> → This Week</li>
+            <li><code>?add-todo=...</code> → This Week (sun)</li>
+            <li><code>?add-grocery=a,b,c</code> → Grocery (comma-separated)</li>
+            <li><code>?add-journal=...</code> → Journal</li>
+          </ul>
         </details>
-        <div style="margin-top: 12px; padding: 10px 12px; background: var(--sun-soft); border-radius: 10px; font-size: 13px; color: var(--ink)">
-          💡 On desktop / Android, just hit the <strong>🎤 mic button</strong> in the bottom-left to talk. Say <em>"grocery coffee"</em> or <em>"week fix the shed"</em> or just a thought to save as a note.
+
+        <div style="margin-top: 14px; padding-top: 12px; border-top: 2px dashed rgba(43,33,24,0.12)">
+          <strong style="font-family: 'Fredoka', sans-serif; font-size: 14px">📲 Install Bert like an app</strong>
+          <p style="font-size: 13px; color: var(--ink); margin-top: 4px; line-height: 1.5">In Safari, tap the Share button → <strong>Add to Home Screen</strong>. Bert gets its own icon, opens full-screen, and feels like a native app.</p>
         </div>
       </div>
 
@@ -3652,6 +3667,14 @@ function handleUrlAdds(){
   return false;
 }
 
+function copyShortcutUrl(){
+  const url = 'https://ilv2recycle.github.io/smb-ai/bert/?add-note=';
+  navigator.clipboard.writeText(url).then(
+    () => showToast('URL copied — paste into Shortcuts + long-press to insert [URL Encoded Text]'),
+    () => showToast('Copy failed — long-press the URL above to copy')
+  );
+}
+
 // ─── IN-APP MIC (Web Speech API) ────────────────────────────────────
 function startDictation(){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -3701,8 +3724,23 @@ function routeVoiceInput(text){
   showToast('💭 Saved: ' + text.slice(0, 30) + (text.length > 30 ? '…' : ''));
 }
 
+// Hide the Web-Speech mic button on iOS (Safari can't reliably run it).
+// On iPhone, Ari uses the Siri Shortcut + URL params instead.
+function isIOS(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+function applyPlatformUI(){
+  if (isIOS()) {
+    const mic = document.getElementById('mic-btn');
+    if (mic) mic.style.display = 'none';
+    document.body.classList.add('is-ios');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   renderAll();
+  applyPlatformUI();
   // URL-driven quick add (Siri / Shortcut entry point) — run after first render
   if (handleUrlAdds()) renderAll();
   if ('serviceWorker' in navigator) {
