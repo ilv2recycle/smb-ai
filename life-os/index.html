@@ -306,6 +306,23 @@ body {
   letter-spacing: .02em;
 }
 
+/* Sync bar */
+.sync-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--r); margin-bottom: 1rem; font-size: 12px; flex-wrap: wrap; }
+.sync-bar .sb-status { display: flex; align-items: center; gap: 8px; color: var(--ink-60); }
+.sync-bar .sb-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-30); flex-shrink: 0; }
+.sync-bar.synced .sb-dot { background: var(--sage); }
+.sync-bar.syncing .sb-dot { background: var(--gold); animation: pulse 1.4s ease-in-out infinite; }
+.sync-bar.error .sb-dot { background: var(--rust); }
+.sync-bar.offline .sb-dot { background: var(--ink-30); }
+@keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .4 } }
+.sync-bar .sb-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.sync-bar input { max-width: 200px; padding: 5px 10px; border: 1px solid var(--ink-10); border-radius: var(--r); font-size: 12px; background: var(--cream); }
+.sync-bar button { padding: 5px 10px; font-size: 11px; border: 1px solid var(--ink-30); background: transparent; border-radius: var(--r); cursor: pointer; color: var(--ink); }
+.sync-bar button:hover { background: var(--ink-05); }
+.sync-bar button.primary { background: var(--ink); color: var(--gold-light); border-color: var(--ink); }
+.sync-bar .sb-email { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink); }
+.sync-bar .sb-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-30); letter-spacing: .04em; }
+
 /* recipes */
 .recipe-card { background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--rl); padding: 16px 18px; margin-bottom: 10px; }
 .recipe-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; margin-bottom: 4px; }
@@ -548,6 +565,10 @@ body {
 
   <main class="main">
     <div id="toast" class="toast"></div>
+    <div id="sync-bar" class="sync-bar offline" style="display:none">
+      <div class="sb-status"><div class="sb-dot"></div><span id="sb-text">Checking sync…</span></div>
+      <div class="sb-actions" id="sb-actions"></div>
+    </div>
 
     <!-- ── TODAY ── -->
     <div id="panel-today" class="panel active">
@@ -2740,6 +2761,100 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(()=>{});
   });
 }
+
+// ═══════════════════ SYNC BAR ═══════════════════
+// Rerender hook used by sync.js after pulling remote state
+window.rerenderAll = function() {
+  try {
+    setDate();
+    renderToday();
+    renderTodos();
+    renderBody();
+    renderValues();
+    loadGoals();
+    renderFeel();
+    renderRecipes();
+    buildVisionDots();
+    loadTodayVision();
+    renderVisionLog();
+    updateStreakUI();
+  } catch (e) { console.warn('rerenderAll', e); }
+};
+
+function fmtSyncTime(iso) {
+  if (!iso) return '';
+  try {
+    const d = new Date(iso);
+    const diff = Date.now() - d.getTime();
+    if (diff < 60000) return 'just now';
+    if (diff < 3600000) return Math.floor(diff/60000) + ' min ago';
+    if (diff < 86400000) return Math.floor(diff/3600000) + ' hr ago';
+    return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  } catch { return iso; }
+}
+
+function renderSyncBar(status, extra) {
+  const bar = document.getElementById('sync-bar');
+  const text = document.getElementById('sb-text');
+  const actions = document.getElementById('sb-actions');
+  if (!bar) return;
+  bar.style.display = 'flex';
+  bar.className = 'sync-bar';
+
+  if (status === 'not-configured') {
+    bar.classList.add('offline');
+    text.textContent = 'Sync not configured';
+    actions.innerHTML = '';
+    return;
+  }
+  if (status === 'error') {
+    bar.classList.add('error');
+    text.innerHTML = 'Sync unavailable' + (extra ? ' <span class="sb-meta">· '+escapeHtml(extra)+'</span>' : '');
+    actions.innerHTML = '<button onclick="ThroughlineSync.forcePull()">Retry</button>';
+    return;
+  }
+  if (status === 'signed-out') {
+    bar.classList.add('offline');
+    text.textContent = 'Sign in to sync across devices';
+    actions.innerHTML = '<input type="email" id="sync-email" placeholder="you@email.com"><button class="primary" onclick="doSignIn()">Send magic link</button>';
+    return;
+  }
+  if (status === 'sending-magic-link') {
+    bar.classList.add('syncing');
+    text.textContent = 'Sending magic link…';
+    actions.innerHTML = '';
+    return;
+  }
+  if (status === 'magic-link-sent') {
+    bar.classList.add('syncing');
+    text.innerHTML = 'Check your email · <span class="sb-email">'+escapeHtml(extra||'')+'</span>';
+    actions.innerHTML = '<button onclick="ThroughlineSync.signOut()">Cancel</button>';
+    return;
+  }
+  if (status === 'signed-in' || status === 'syncing' || status === 'synced') {
+    const user = ThroughlineSync.getUser();
+    const last = ThroughlineSync.getLastSync();
+    if (status === 'syncing') bar.classList.add('syncing');
+    else bar.classList.add('synced');
+    text.innerHTML = (status==='syncing'?'Syncing…':'Synced') + ' · <span class="sb-email">'+escapeHtml(user?.email||'')+'</span>' + (last?' <span class="sb-meta">· '+fmtSyncTime(last)+'</span>':'');
+    actions.innerHTML = '<button onclick="ThroughlineSync.forcePush()">Sync now</button><button onclick="ThroughlineSync.signOut()">Sign out</button>';
+  }
+}
+
+function doSignIn() {
+  const el = document.getElementById('sync-email');
+  const email = (el?.value || '').trim();
+  if (!email || !email.includes('@')) { showToast('Enter a valid email.'); return; }
+  ThroughlineSync.signIn(email);
+}
+
+// Register the sync status listener once sync.js initializes
+function wireSyncBar() {
+  if (window.ThroughlineSync) { ThroughlineSync.onStatus(renderSyncBar); }
+  else setTimeout(wireSyncBar, 200);
+}
+wireSyncBar();
 </script>
+<script src="sync.js"></script>
 </body>
 </html>
