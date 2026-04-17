@@ -449,9 +449,15 @@ body {
 .zone-orchard::before { background: var(--grass); }
 .zone-ladies::before { background: var(--sky); }
 .zone-bert::before { background: var(--rust); }
-.zone-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-left: 8px; }
-.zone-title { font-family: 'Fredoka', sans-serif; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-.zone-count { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-30); letter-spacing: .06em; }
+.zone-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-left: 8px; gap: 6px; }
+.zone-title { font-family: 'Fredoka', sans-serif; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; cursor: grab; user-select: none; }
+.zone-title:active { cursor: grabbing; }
+.zone-count { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-30); letter-spacing: .06em; flex-shrink: 0; }
+.zone-move { display: flex; gap: 2px; }
+.zone-move button { background: var(--cream); border: 1.5px solid rgba(43,33,24,0.1); border-radius: 6px; width: 22px; height: 22px; padding: 0; cursor: pointer; font-size: 11px; line-height: 1; color: var(--ink-60); display: flex; align-items: center; justify-content: center; }
+.zone-move button:hover { background: var(--pink-soft); border-color: var(--pink); color: var(--ink); }
+.zone-card.z-dragging { opacity: 0.4; }
+.zone-card.z-drop-over { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255,122,156,0.18); }
 .zone-tasks { padding-left: 8px; }
 .zone-task {
   background: var(--cream); border: 1.5px solid rgba(43,33,24,0.08);
@@ -782,9 +788,10 @@ body {
 
 <div class="mobile-nav" id="mobile-nav">
   <button class="mobile-nav-btn active" onclick="switchTab('today',this)">🏡 Today</button>
+  <button class="mobile-nav-btn" onclick="switchTab('week',this)">🫧 Week</button>
+  <button class="mobile-nav-btn" onclick="switchTab('brain',this)">💭 Brain</button>
   <button class="mobile-nav-btn" onclick="switchTab('jobs',this)">☀️ Solar</button>
   <button class="mobile-nav-btn" onclick="switchTab('zones',this)">🌲 Hollow</button>
-  <button class="mobile-nav-btn" onclick="switchTab('week',this)">🫧 Week</button>
   <button class="mobile-nav-btn" onclick="switchTab('grocery',this)">🛒 Grocery</button>
   <button class="mobile-nav-btn" onclick="switchTab('dump',this)">🗑️ Dump</button>
   <button class="mobile-nav-btn" onclick="switchTab('vehicles',this)">🚐 Vehicles</button>
@@ -792,7 +799,6 @@ body {
   <button class="mobile-nav-btn" onclick="switchTab('wellness',this)">🧘 Wellness</button>
   <button class="mobile-nav-btn" onclick="switchTab('journal',this)">📓 Journal</button>
   <button class="mobile-nav-btn" onclick="switchTab('band',this)">🎸 Band</button>
-  <button class="mobile-nav-btn" onclick="switchTab('brain',this)">💭 Brain</button>
 </div>
 
 <div class="layout">
@@ -801,9 +807,10 @@ body {
     <div class="sidebar-logo"><svg class="bert-av bert-av-use" viewBox="0 0 200 240"><use href="#bert-avatar"/></svg><span class="txt">Bert Life</span></div>
     <div class="sidebar-sub">Ari's handy brain 🎸</div>
 
-    <div class="nav-section">Daily</div>
+    <div class="nav-section">Bert Daily</div>
     <div class="nav-item active" onclick="switchTab('today',this)" data-tab="today"><span class="nav-emoji">🏡</span> Today</div>
     <div class="nav-item" onclick="switchTab('week',this)" data-tab="week"><span class="nav-emoji">🫧</span> This Week</div>
+    <div class="nav-item" onclick="switchTab('brain',this)" data-tab="brain"><span class="nav-emoji">💭</span> Brain dump</div>
 
     <div class="nav-section">Alpenglow</div>
     <div class="nav-item" onclick="switchTab('jobs',this)" data-tab="jobs"><span class="nav-emoji">☀️</span> Solar jobs</div>
@@ -819,9 +826,6 @@ body {
     <div class="nav-item" onclick="switchTab('wellness',this)" data-tab="wellness"><span class="nav-emoji">🧘</span> Wellness</div>
     <div class="nav-item" onclick="switchTab('journal',this)" data-tab="journal"><span class="nav-emoji">📓</span> Journal</div>
     <div class="nav-item" onclick="switchTab('band',this)" data-tab="band"><span class="nav-emoji">🎸</span> Band</div>
-
-    <div class="nav-section">Bert</div>
-    <div class="nav-item" onclick="switchTab('brain',this)" data-tab="brain"><span class="nav-emoji">💭</span> Brain dump</div>
 
     <div class="sidebar-footer">
       <div id="sidebar-profile" style="display:none; align-items:center; gap:8px; background:var(--paper); border-radius:14px; padding:8px 10px; margin-bottom:10px; box-shadow:var(--shadow)"></div>
@@ -1216,9 +1220,10 @@ body {
           </div>
           <textarea id="brain-quick-input" placeholder="Say whatever. Bert'll remember." onkeydown="if(event.key==='Enter' && (event.metaKey||event.ctrlKey)) addBrainQuick()"></textarea>
           <div class="brain-row">
-            <button class="btn btn-sm btn-pink" onclick="addBrainQuick()">+ Stick it</button>
+            <button class="btn btn-sm btn-pink" onclick="addBrainQuick()">+ Save thought</button>
             <button class="btn btn-sm" onclick="switchTab('brain', findNavBtn('brain'))">see all ↗</button>
           </div>
+          <div id="brain-recent" style="margin-top: 4px"></div>
         </div>
       </div>
 
@@ -1833,15 +1838,79 @@ function zoneCardHtml(z, compact){
       <button class="iconbtn" onclick="renameZone('${z.id}')">rename</button>
       <button class="iconbtn" onclick="deleteZone('${z.id}')">delete zone</button>
     </div>`;
+  const moveUi = compact ? '' : `
+    <div class="zone-move">
+      <button onclick="moveZone('${z.id}',-1)" title="move left">←</button>
+      <button onclick="moveZone('${z.id}',1)" title="move right">→</button>
+    </div>`;
   return `
-    <div class="zone-card zone-${z.color}">
+    <div class="zone-card zone-${z.color}"
+         data-zone-id="${z.id}"
+         ${compact?'':`draggable="true"
+         ondragstart="zoneDragStart(event,'${z.id}')"
+         ondragend="zoneDragEnd(event)"
+         ondragover="zoneDragOver(event)"
+         ondragleave="zoneDragLeave(event)"
+         ondrop="zoneDrop(event,'${z.id}')"`}>
       <div class="zone-head">
-        <div class="zone-title">${z.emoji || '📍'} ${esc(z.name)}</div>
+        <div class="zone-title" title="drag to reorder">${z.emoji || '📍'} ${esc(z.name)}</div>
+        ${moveUi}
         <div class="zone-count">${z.tasks.length} tasks</div>
       </div>
       <div class="zone-tasks">${tasks || '<div class="empty" style="font-size:15px">empty</div>'}</div>
       ${addUi}
     </div>`;
+}
+
+// Zone drag-drop reorder
+let _zoneDragId = null;
+function zoneDragStart(e, id){
+  // only fire when dragging by the card itself (not by a task inside)
+  if (e.target.closest('.zone-task')) return;
+  _zoneDragId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('application/bert-zone', id);
+  e.currentTarget.classList.add('z-dragging');
+}
+function zoneDragEnd(e){
+  e.currentTarget.classList.remove('z-dragging');
+  document.querySelectorAll('.zone-card.z-drop-over').forEach(el => el.classList.remove('z-drop-over'));
+  _zoneDragId = null;
+}
+function zoneDragOver(e){
+  if (!_zoneDragId) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('z-drop-over');
+}
+function zoneDragLeave(e){
+  e.currentTarget.classList.remove('z-drop-over');
+}
+function zoneDrop(e, targetId){
+  e.preventDefault();
+  e.stopPropagation();
+  e.currentTarget.classList.remove('z-drop-over');
+  if (!_zoneDragId || _zoneDragId === targetId) { _zoneDragId = null; return; }
+  const zones = getZones();
+  const srcIdx = zones.findIndex(z => z.id === _zoneDragId);
+  const tgtIdx = zones.findIndex(z => z.id === targetId);
+  if (srcIdx === -1 || tgtIdx === -1) { _zoneDragId = null; return; }
+  const [moved] = zones.splice(srcIdx, 1);
+  zones.splice(tgtIdx, 0, moved);
+  saveZones(zones);
+  _zoneDragId = null;
+  renderZones();
+}
+function moveZone(id, delta){
+  const zones = getZones();
+  const idx = zones.findIndex(z => z.id === id);
+  if (idx === -1) return;
+  const newIdx = Math.max(0, Math.min(zones.length - 1, idx + delta));
+  if (newIdx === idx) return;
+  const [moved] = zones.splice(idx, 1);
+  zones.splice(newIdx, 0, moved);
+  saveZones(zones);
+  renderZones();
 }
 function addZoneTask(zoneId, input){
   const v = input.value.trim(); if (!v) return;
@@ -3409,12 +3478,26 @@ function addBrainQuick(){
   const el = document.getElementById('brain-quick-input'); if (!el) return;
   const v = el.value.trim(); if (!v) return;
   const n = getNotes(); n.unshift({ id: uid('n'), text: v, date: new Date().toISOString() });
-  saveNotes(n); el.value = ''; renderNotes(); renderBrainCount(); showToast('Stuck to the wall 📌');
+  saveNotes(n); el.value = ''; renderNotes(); renderBrainCount(); renderBrainRecent(); showToast('Saved 📌');
 }
 function renderBrainCount(){
   const el = document.getElementById('brain-count'); if (!el) return;
   const n = getNotes().length;
-  el.textContent = n + (n === 1 ? ' in the pile' : ' in the pile');
+  el.textContent = n + (n === 1 ? ' saved' : ' saved');
+}
+function renderBrainRecent(){
+  const host = document.getElementById('brain-recent'); if (!host) return;
+  const n = getNotes();
+  if (n.length === 0) { host.innerHTML = ''; return; }
+  host.innerHTML = n.slice(0, 3).map(x => {
+    const d = new Date(x.date);
+    const when = d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) + ' · ' + d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const preview = x.text.length > 90 ? x.text.slice(0, 90) + '…' : x.text;
+    return `<div style="background:var(--cream); border:1.5px solid rgba(43,33,24,0.08); border-radius:10px; padding:8px 12px; margin-top:6px; font-family:'Caveat',cursive; font-size:17px; line-height:1.3; color:var(--ink)">
+      <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--ink-60); letter-spacing:.06em; margin-bottom:2px">${when}</div>
+      ${esc(preview)}
+    </div>`;
+  }).join('');
 }
 
 // ─── INIT ───────────────────────────────────────────────────────────
@@ -3434,6 +3517,7 @@ function renderAll(){
   renderBand();
   renderNotes();
   renderBrainCount();
+  renderBrainRecent();
   renderGoogleStatus();
   renderGEvents();
   renderProfile();
