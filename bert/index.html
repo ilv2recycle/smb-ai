@@ -1234,15 +1234,6 @@ body {
         <div class="stat-card c-grass"><div class="n" id="s-dump">—</div><div class="l">Days since dump</div></div>
       </div>
 
-      <div class="section-label"><span class="emoji">✏️</span> Quick catch <span class="hint">— throw it on the list before it floats away</span></div>
-      <div class="card">
-        <div style="display:flex; gap:8px; margin-bottom:10px">
-          <input class="txt" id="quick-new" placeholder="What's the thought?" onkeydown="if(event.key==='Enter')addQuick()">
-          <button class="btn btn-pink btn-sm" onclick="addQuick()">+ Catch</button>
-        </div>
-        <div id="quick-list"></div>
-      </div>
-
       <div class="section-label"><span class="emoji">🫧</span> This week's bubbles <span class="hint">— drag more from The Hollow or Jobs</span></div>
       <div id="today-bubbles"></div>
 
@@ -3426,21 +3417,27 @@ const HOWDY_LINES = [
   "You've juggled more than this. Let's go.",
 ];
 const BERT_DAILY = [
-  "One job, one zone, one thing.",
-  "Whatever's heaviest — do that first.",
-  "The panels don't install themselves.",
-  "Water the ladies. Check on Baby Momma. Eat something.",
-  "If it takes under 2 minutes, just do it.",
-  "Text the client before they text you.",
-  "Dump run overdue? Go get it.",
-  "A tidy porch is a tidy mind.",
-  "Solar calc > vibes. Do the math.",
-  "One materials list is worth ten mental notes.",
-  "You're the only you the Hollow has.",
-  "Check trichomes. Check the sky. Check yourself.",
-  "Dreads tight. Head clear. Let's go.",
-  "If you're stuck, write it down and keep walking.",
-  "Bert believes in you. Also Bert is a website.",
+  { text: "What a long, strange trip it's been.",                                            attr: "Grateful Dead · Truckin'" },
+  { text: "Once in a while you get shown the light in the strangest of places if you look at it right.", attr: "Grateful Dead · Scarlet Begonias" },
+  { text: "Wake up to find out that you are the eyes of the world.",                         attr: "Grateful Dead · Eyes of the World" },
+  { text: "Let there be songs to fill the air.",                                             attr: "Grateful Dead · Ripple" },
+  { text: "Like the morning sun you come, and like the wind you go.",                        attr: "Grateful Dead · Uncle John's Band" },
+  { text: "Sometimes the light's all shinin' on me. Other times I can barely see.",          attr: "Grateful Dead · Truckin'" },
+  { text: "Without love in the dream, it'll never come true.",                               attr: "Grateful Dead · Help on the Way" },
+  { text: "Fire on the mountain, run boys run.",                                             attr: "Grateful Dead · Fire on the Mountain" },
+  { text: "I will get by, I will survive.",                                                  attr: "Grateful Dead · Touch of Grey" },
+  { text: "If the thunder don't get ya, then the lightning will.",                           attr: "Grateful Dead · The Wheel" },
+  { text: "If I knew the way, I would take you home.",                                       attr: "Grateful Dead · Ripple" },
+  { text: "Don't tell me this town ain't got no heart.",                                     attr: "Grateful Dead · Jack Straw" },
+  { text: "Somebody has to do something. It's just incredibly pathetic that it has to be us.", attr: "Jerry Garcia" },
+  { text: "Constantly choosing the lesser of two evils is still choosing evil.",             attr: "Jerry Garcia" },
+  { text: "Surrender to the flow.",                                                          attr: "Phish · Down with Disease" },
+  { text: "The trick was to surrender to the flow.",                                         attr: "Phish · Down with Disease" },
+  { text: "Everything's right, so just hold tight.",                                         attr: "Phish · Backwards Down the Number Line" },
+  { text: "Come waste your time with me.",                                                   attr: "Phish · Waste" },
+  { text: "Birds of a feather are flocking outside.",                                        attr: "Phish · Birds of a Feather" },
+  { text: "Ain't life grand?",                                                               attr: "Widespread Panic · Ain't Life Grand" },
+  { text: "Chilly water, chilly water.",                                                     attr: "Widespread Panic · Chilly Water" },
 ];
 function setWelcome(){
   const l = document.getElementById('welcome-line'); if (!l) return;
@@ -3464,16 +3461,22 @@ function setBertDaily(){
   const msg = document.getElementById('bert-daily-msg'); if (!msg) return;
   const key = 'bert-daily-' + todayKey();
   let idx = load(key, null);
-  if (idx === null) { idx = Math.floor(Math.random() * BERT_DAILY.length); save(key, idx); }
-  msg.textContent = BERT_DAILY[idx];
+  if (idx === null || idx < 0 || idx >= BERT_DAILY.length) {
+    idx = Math.floor(Math.random() * BERT_DAILY.length); save(key, idx);
+  }
+  const q = BERT_DAILY[idx];
+  msg.textContent = '"' + q.text + '"';
   const sub = document.getElementById('bert-daily-sub');
-  if (sub) sub.textContent = '— Bert, ' + fmtDate(new Date());
+  if (sub) sub.textContent = '— ' + q.attr;
 }
 function rollBertDaily(){
   const msg = document.getElementById('bert-daily-msg'); if (!msg) return;
   let idx = Math.floor(Math.random() * BERT_DAILY.length);
   save('bert-daily-' + todayKey(), idx);
-  msg.textContent = BERT_DAILY[idx];
+  const q = BERT_DAILY[idx];
+  msg.textContent = '"' + q.text + '"';
+  const sub = document.getElementById('bert-daily-sub');
+  if (sub) sub.textContent = '— ' + q.attr;
 }
 function addBrainQuick(){
   const el = document.getElementById('brain-quick-input'); if (!el) return;
