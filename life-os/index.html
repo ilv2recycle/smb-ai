@@ -189,13 +189,30 @@ body {
 .wday .dp { font-size: 11px; color: var(--ink); font-weight: 500; }
 .wday .dn { font-size: 10px; color: var(--ink-60); margin-top: 3px; }
 
-/* redlight dots */
+/* weekly tracker rows */
 .rl-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: .5rem; }
 .rl-day { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; user-select: none; }
 .rl-day .rl-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--ink-30); letter-spacing: .08em; }
 .rl-dot { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--ink-10); background: var(--warm-white); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--ink-30); transition: all .15s; }
-.rl-dot.done { background: var(--rust); border-color: var(--rust); color: white; }
+.rl-dot.done { background: var(--sage); border-color: var(--sage); color: white; }
 .rl-dot.today { border-color: var(--ink-60); }
+
+.week-tracker { background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--rl); padding: 12px 16px; margin-bottom: 8px; }
+.wt-label { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; font-size: 13px; font-weight: 500; color: var(--ink); flex-wrap: wrap; }
+.wt-count { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold); letter-spacing: .08em; margin-left: auto; font-weight: 400; }
+.wt-hint { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 12px; color: var(--ink-60); font-weight: 400; }
+
+/* supplements weekly chart */
+.supp-chart { display: grid; grid-template-columns: 1fr repeat(7, minmax(28px, 40px)); gap: 4px 6px; align-items: center; background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--rl); padding: 14px 16px; margin-bottom: 1rem; }
+.supp-chart-head { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--ink-30); letter-spacing: .08em; text-align: center; line-height: 1.2; padding: 4px 0; }
+.supp-chart-head.name { text-align: left; padding-right: 8px; }
+.supp-row-name { font-size: 12px; color: var(--ink); padding: 8px 0; line-height: 1.3; border-top: 1px solid var(--ink-10); }
+.supp-row-name .stime { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--ink-30); letter-spacing: .08em; text-transform: uppercase; margin-left: 6px; }
+.supp-dot { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--ink-10); background: var(--cream); cursor: pointer; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--ink-30); transition: all .15s; border-top: 1px solid var(--ink-10); }
+.supp-cell { padding: 6px 0; display: flex; justify-content: center; border-top: 1px solid var(--ink-10); }
+.supp-dot:hover { border-color: var(--ink-30); }
+.supp-dot.taken { background: var(--sage); border-color: var(--sage); color: white; }
+.supp-dot.today { border-color: var(--gold); border-width: 2px; }
 
 /* gratitude */
 .grat-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
@@ -231,8 +248,16 @@ body {
 /* recipes */
 .recipe-card { background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--rl); padding: 16px 18px; margin-bottom: 10px; }
 .recipe-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; margin-bottom: 4px; }
-.recipe-tag { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold); letter-spacing: .08em; margin-bottom: 8px; }
+.recipe-tags-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.recipe-tag-chip { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; background: var(--gold-pale); color: var(--gold); cursor: pointer; border: 1px solid transparent; }
+.recipe-tag-chip:hover { border-color: var(--gold); }
+.recipe-tag-chip.active { background: var(--gold); color: white; border-color: var(--gold); }
 .recipe-body { font-size: 13px; color: var(--ink-60); line-height: 1.6; white-space: pre-wrap; }
+.recipe-photo { width: 100%; max-height: 280px; object-fit: cover; border-radius: var(--r); margin-bottom: 10px; cursor: pointer; }
+.recipe-photo-thumb { width: 100%; max-height: 160px; object-fit: cover; border-radius: var(--r); margin-bottom: 8px; }
+.recipe-lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.9); display: none; align-items: center; justify-content: center; z-index: 1000; cursor: pointer; padding: 20px; }
+.recipe-lightbox.show { display: flex; }
+.recipe-lightbox img { max-width: 95%; max-height: 95%; border-radius: var(--rl); }
 
 /* goals */
 .goal-card { background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--rl); padding: 20px 22px; margin-bottom: 12px; position: relative; overflow: hidden; }
@@ -510,21 +535,63 @@ body {
       <div class="section-label">Moon phase <span class="hint">— tracking alongside cycle (Rebecca Campbell)</span></div>
       <div id="moon-card"></div>
 
-      <div class="section-label">This week's workouts <span class="hint">— M-F alternating · 3x knees</span></div>
+      <div class="section-label">This week's plan <span class="hint">— M-F alternating · 3× knees</span></div>
       <div class="week-grid" id="workout-week"></div>
       <div id="workout-today-body"></div>
 
-      <div class="section-label">Yoga this week</div>
-      <div class="rl-week" id="yoga-week"></div>
+      <div class="section-label">Training · check each box per day</div>
 
-      <div class="section-label">Red light · teeth <span class="hint">— daily</span></div>
-      <div class="rl-week" id="rl-teeth-week"></div>
+      <div class="week-tracker">
+        <div class="wt-label">Weight training <span id="wt-count-workout" class="wt-count"></span></div>
+        <div class="rl-week" id="workout-week-row"></div>
+      </div>
 
-      <div class="section-label">Red light · body <span class="hint">— 3× weekly target</span></div>
-      <div class="rl-week" id="rl-body-week"></div>
-      <div id="rl-body-summary" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-30);letter-spacing:.06em;margin-top:4px"></div>
+      <div class="week-tracker">
+        <div class="wt-label">Knee training <span id="wt-count-knees" class="wt-count"></span></div>
+        <div class="rl-week" id="knees-week"></div>
+      </div>
 
-      <div class="section-label">Supplements <span class="hint">— configure what you take &amp; when</span></div>
+      <div class="week-tracker">
+        <div class="wt-label">Yoga <span id="wt-count-yoga" class="wt-count"></span></div>
+        <div class="rl-week" id="yoga-week"></div>
+      </div>
+
+      <div class="section-label">Today's training notes</div>
+      <div class="card">
+        <textarea class="ta" id="workout-note" placeholder="What did you do? Weights, reps, how it felt…" style="min-height:80px"></textarea>
+        <div class="btn-row">
+          <button class="btn btn-sm" onclick="saveWorkoutNote()">Save note</button>
+          <span id="wnote-saved" style="display:none;font-family:'DM Mono',monospace;font-size:11px;color:var(--sage);letter-spacing:.04em;align-self:center">Saved.</span>
+        </div>
+        <div id="workout-note-log" style="margin-top:10px"></div>
+      </div>
+
+      <div class="section-label">Wellness <span class="hint">— check each box per day</span></div>
+
+      <div class="week-tracker">
+        <div class="wt-label">Red light · teeth <span class="wt-hint">daily</span> <span id="wt-count-rl-teeth" class="wt-count"></span></div>
+        <div class="rl-week" id="rl-teeth-week"></div>
+      </div>
+
+      <div class="week-tracker">
+        <div class="wt-label">Red light · body <span class="wt-hint">3× weekly</span> <span id="wt-count-rl-body" class="wt-count"></span></div>
+        <div class="rl-week" id="rl-body-week"></div>
+      </div>
+
+      <div class="week-tracker">
+        <div class="wt-label">Sauna <span id="wt-count-sauna" class="wt-count"></span></div>
+        <div class="rl-week" id="sauna-week"></div>
+      </div>
+
+      <div class="week-tracker">
+        <div class="wt-label">Cold plunge <span id="wt-count-plunge" class="wt-count"></span></div>
+        <div class="rl-week" id="plunge-week"></div>
+      </div>
+
+      <div class="section-label">Supplements · this week <span class="hint">— tap a dot to mark taken</span></div>
+      <div id="supp-chart"></div>
+
+      <div class="section-label">Configure supplements</div>
       <div id="supp-config"></div>
       <div class="btn-row">
         <button class="btn btn-sm" onclick="addSupplement()">+ Add supplement</button>
@@ -812,19 +879,36 @@ body {
 
       <div class="card">
         <input class="txt" id="recipe-title" placeholder="Recipe name" style="margin-bottom:6px">
-        <input class="txt" id="recipe-tag" placeholder="Tag (kraut, sourdough, broth, drink…)" style="margin-bottom:6px">
+        <input class="txt" id="recipe-tags" placeholder="Tags — comma separated (kraut, fermented, drink, breakfast…)" style="margin-bottom:6px">
         <textarea class="ta" id="recipe-body" placeholder="Ingredients + method. Loose is fine." style="min-height:120px"></textarea>
+        <div style="margin-top:8px">
+          <label class="btn btn-sm" style="display:inline-block;cursor:pointer">
+            📷 Add photo
+            <input type="file" id="recipe-photo" accept="image/*" style="display:none" onchange="handleRecipePhoto(event)">
+          </label>
+          <span id="recipe-photo-status" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-30);margin-left:8px"></span>
+        </div>
+        <div id="recipe-photo-preview" style="margin-top:10px"></div>
         <div class="btn-row">
           <button class="btn btn-sm" onclick="saveRecipe()">Save recipe</button>
+          <button class="btn btn-sm" onclick="clearRecipeForm()">Clear</button>
         </div>
       </div>
 
-      <div class="section-label" style="margin-top:2rem">Saved recipes</div>
+      <div class="section-label" style="margin-top:2rem">Search</div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+        <input class="txt" id="recipe-search" placeholder="Search by name, tag, or ingredient…" oninput="renderRecipes()" style="flex:1;min-width:200px">
+      </div>
+      <div id="recipe-tag-cloud" style="margin-bottom:10px"></div>
+
+      <div class="section-label">Saved recipes <span class="hint" id="recipe-count"></span></div>
       <div id="recipe-list"></div>
     </div>
 
   </main>
 </div>
+
+<div class="recipe-lightbox" id="recipe-lightbox" onclick="this.classList.remove('show')"><img id="recipe-lightbox-img" src=""></div>
 
 <script>
 // ═══════════════════ CORE UTILITIES ═══════════════════
@@ -1163,16 +1247,15 @@ function resetToday() {
 }
 
 function logWorkout(){
-  const k = 'workout-'+todayKey();
-  localStorage.setItem(k, '1');
+  localStorage.setItem('workout-'+todayKey(), '1');
   showToast('Workout logged.');
   renderWorkoutWeek();
+  renderAllTrackers();
 }
 function logYoga(){
-  const k = 'yoga-'+todayKey();
-  localStorage.setItem(k, '1');
+  localStorage.setItem('yoga-'+todayKey(), '1');
   showToast('Yoga logged.');
-  renderYogaWeek();
+  renderAllTrackers();
 }
 
 function updateStreakUI(){
@@ -1372,9 +1455,11 @@ function renderBody() {
     </div>`;
 
   renderWorkoutWeek();
-  renderYogaWeek();
-  renderRedLightWeek();
+  renderAllTrackers();
+  renderSuppChart();
   renderSuppConfig();
+  loadWorkoutNote();
+  renderWorkoutNoteLog();
 }
 
 function renderWorkoutWeek() {
@@ -1404,49 +1489,113 @@ function renderWorkoutWeek() {
     </div>`;
 }
 
-function renderYogaWeek() {
+// Generalized weekly tracker row
+function renderWeekRow(kind, containerId, countElId) {
   const now = new Date();
   const dow = now.getDay();
-  let html = '';
+  let html = '', count = 0;
   for (let i = 0; i < 7; i++) {
     const d = new Date(now); d.setDate(now.getDate() - dow + i);
     const k = dateKey(d);
-    const did = localStorage.getItem('yoga-'+k) === '1';
+    const did = localStorage.getItem(kind+'-'+k) === '1';
+    if (did) count++;
     const isToday = d.toDateString() === now.toDateString();
-    html += `<div class="rl-day" onclick="toggleDateFlag('yoga','${k}')">
+    html += `<div class="rl-day" onclick="toggleDateFlag('${kind}','${k}')">
       <div class="rl-label">${DOW[d.getDay()].toUpperCase()}</div>
-      <div class="rl-dot${did?' done':''}${isToday?' today':''}" style="${did?'background:var(--sage);border-color:var(--sage)':''}">${did?'✓':d.getDate()}</div>
+      <div class="rl-dot${did?' done':''}${isToday?' today':''}">${did?'✓':d.getDate()}</div>
     </div>`;
   }
-  document.getElementById('yoga-week').innerHTML = html;
+  const el = document.getElementById(containerId);
+  if (el) el.innerHTML = html;
+  if (countElId) {
+    const c = document.getElementById(countElId);
+    if (c) c.textContent = count + ' this week';
+  }
+  return count;
 }
 
-function renderRedLightWeek() {
-  const now = new Date();
-  const dow = now.getDay();
-  let html1 = '', html2 = '', bodyCount = 0;
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(now); d.setDate(now.getDate() - dow + i);
-    const k = dateKey(d);
-    const t = localStorage.getItem('rl-teeth-'+k) === '1';
-    const b = localStorage.getItem('rl-body-'+k) === '1';
-    if (b) bodyCount++;
-    const isToday = d.toDateString() === now.toDateString();
-    html1 += `<div class="rl-day" onclick="toggleDateFlag('rl-teeth','${k}')"><div class="rl-label">${DOW[d.getDay()].toUpperCase()}</div><div class="rl-dot${t?' done':''}${isToday?' today':''}">${t?'✓':d.getDate()}</div></div>`;
-    html2 += `<div class="rl-day" onclick="toggleDateFlag('rl-body','${k}')"><div class="rl-label">${DOW[d.getDay()].toUpperCase()}</div><div class="rl-dot${b?' done':''}${isToday?' today':''}">${b?'✓':d.getDate()}</div></div>`;
-  }
-  document.getElementById('rl-teeth-week').innerHTML = html1;
-  document.getElementById('rl-body-week').innerHTML = html2;
-  document.getElementById('rl-body-summary').textContent = `${bodyCount} / 3 this week — ${bodyCount>=3?'target hit':'keep going'}`;
+function renderAllTrackers() {
+  renderWeekRow('workout', 'workout-week-row', 'wt-count-workout');
+  renderWeekRow('knees',   'knees-week',       'wt-count-knees');
+  renderWeekRow('yoga',    'yoga-week',        'wt-count-yoga');
+  renderWeekRow('rl-teeth','rl-teeth-week',    'wt-count-rl-teeth');
+  renderWeekRow('rl-body', 'rl-body-week',     'wt-count-rl-body');
+  renderWeekRow('sauna',   'sauna-week',       'wt-count-sauna');
+  renderWeekRow('plunge',  'plunge-week',      'wt-count-plunge');
 }
 
 function toggleDateFlag(kind, key) {
   const k = kind+'-'+key;
   if (localStorage.getItem(k) === '1') localStorage.removeItem(k);
   else localStorage.setItem(k, '1');
-  renderYogaWeek();
-  renderRedLightWeek();
+  renderAllTrackers();
   renderWorkoutWeek();
+}
+
+// Supplements weekly chart
+function renderSuppChart() {
+  const el = document.getElementById('supp-chart');
+  if (!el) return;
+  const supps = getSupps();
+  const now = new Date();
+  const dow = now.getDay();
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(now); d.setDate(now.getDate() - dow + i);
+    days.push(d);
+  }
+  let html = '<div class="supp-chart-head name">Supplement</div>';
+  days.forEach(d => {
+    const isToday = d.toDateString() === now.toDateString();
+    html += `<div class="supp-chart-head" style="${isToday?'color:var(--gold);font-weight:500':''}">${DOW[d.getDay()].slice(0,2).toUpperCase()}<br>${d.getDate()}</div>`;
+  });
+  if (supps.length === 0) {
+    el.innerHTML = html + '<div style="grid-column:1/-1;padding:1rem;text-align:center" class="empty">No supplements configured.</div>';
+    return;
+  }
+  supps.forEach(s => {
+    html += `<div class="supp-row-name">${escapeHtml(s.name)}<span class="stime">${s.time||''}</span></div>`;
+    days.forEach(d => {
+      const k = dateKey(d);
+      const m = loadJSON('supp-done-'+k, {});
+      const taken = !!m[s.id];
+      const isToday = d.toDateString() === now.toDateString();
+      html += `<div class="supp-cell"><div class="supp-dot${taken?' taken':''}${isToday?' today':''}" onclick="toggleSuppDay('${s.id}','${k}')">${taken?'✓':''}</div></div>`;
+    });
+  });
+  el.innerHTML = html;
+}
+function toggleSuppDay(suppId, key) {
+  const m = loadJSON('supp-done-'+key, {});
+  m[suppId] = !m[suppId];
+  saveJSON('supp-done-'+key, m);
+  renderSuppChart();
+  if (key === todayKey()) renderToday();
+}
+
+// Workout notes
+function saveWorkoutNote(){
+  const txt = document.getElementById('workout-note').value.trim();
+  const all = loadJSON('workout-notes', {});
+  if (txt) all[todayKey()] = txt; else delete all[todayKey()];
+  saveJSON('workout-notes', all);
+  const msg = document.getElementById('wnote-saved');
+  msg.style.display = 'inline';
+  setTimeout(()=>msg.style.display='none', 2000);
+  renderWorkoutNoteLog();
+}
+function loadWorkoutNote(){
+  const all = loadJSON('workout-notes', {});
+  const el = document.getElementById('workout-note');
+  if (el) el.value = all[todayKey()] || '';
+}
+function renderWorkoutNoteLog(){
+  const all = loadJSON('workout-notes', {});
+  const keys = Object.keys(all).filter(k => k !== todayKey()).sort().reverse().slice(0, 5);
+  const el = document.getElementById('workout-note-log');
+  if (!el) return;
+  if (keys.length === 0) { el.innerHTML = ''; return; }
+  el.innerHTML = '<div style="font-family:\'DM Mono\',monospace;font-size:10px;color:var(--ink-30);letter-spacing:.08em;margin-top:10px;margin-bottom:6px">RECENT NOTES</div>' + keys.map(k => `<div style="font-size:12px;padding:6px 0;border-top:1px solid var(--ink-10)"><span style="font-family:'DM Mono',monospace;color:var(--ink-30);font-size:10px">${k}</span> · ${escapeHtml(all[k])}</div>`).join('');
 }
 
 function renderSuppConfig() {
@@ -1466,9 +1615,9 @@ function renderSuppConfig() {
     </div>`).join('');
   document.getElementById('supp-config').innerHTML = html || '<div class="empty">No supplements configured.</div>';
 }
-function updateSupp(i, field, value){ const s = getSupps(); s[i][field] = value; saveSupps(s); renderToday(); }
-function removeSupp(i){ const s = getSupps(); s.splice(i,1); saveSupps(s); renderSuppConfig(); renderToday(); }
-function addSupplement(){ const s = getSupps(); s.push({ id:'s-'+Date.now(), name:'New supplement', time:'morning', note:'' }); saveSupps(s); renderSuppConfig(); renderToday(); }
+function updateSupp(i, field, value){ const s = getSupps(); s[i][field] = value; saveSupps(s); renderSuppChart(); renderToday(); }
+function removeSupp(i){ const s = getSupps(); s.splice(i,1); saveSupps(s); renderSuppConfig(); renderSuppChart(); renderToday(); }
+function addSupplement(){ const s = getSupps(); s.push({ id:'s-'+Date.now(), name:'New supplement', time:'morning', note:'' }); saveSupps(s); renderSuppConfig(); renderSuppChart(); renderToday(); }
 
 // ═══════════════════ VALUES ═══════════════════
 const SEASONS = ['spring','summer','fall','winter'];
@@ -1964,30 +2113,138 @@ function openJournalReflect(){
 }
 
 // ═══════════════════ RECIPES ═══════════════════
+let pendingPhoto = null;
+let activeRecipeTag = null;
+
+function parseTags(s) {
+  return (s||'').split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
+}
+
+// Resize uploaded photo to ~800px max + jpeg to keep localStorage happy
+async function handleRecipePhoto(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('recipe-photo-status');
+  status.textContent = 'Processing…';
+  try {
+    const dataUrl = await resizeImage(file, 900, 0.72);
+    pendingPhoto = dataUrl;
+    document.getElementById('recipe-photo-preview').innerHTML = `<img src="${dataUrl}" class="recipe-photo-thumb">`;
+    const kb = Math.round(dataUrl.length * 0.75 / 1024);
+    status.textContent = `Photo ready (~${kb}KB)`;
+  } catch (e) {
+    status.textContent = 'Photo failed: ' + e.message;
+  }
+}
+
+function resizeImage(file, maxDim, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => reject(new Error('Could not read image'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('File read failed'));
+    reader.readAsDataURL(file);
+  });
+}
+
 function saveRecipe(){
   const title = document.getElementById('recipe-title').value.trim();
-  const tag = document.getElementById('recipe-tag').value.trim();
+  const tags = parseTags(document.getElementById('recipe-tags').value);
   const body = document.getElementById('recipe-body').value.trim();
   if (!title || !body) { showToast('Title + body required.'); return; }
   const arr = loadJSON('recipes', []);
-  arr.unshift({ id:'r-'+Date.now(), title, tag, body, date: todayKey() });
-  saveJSON('recipes', arr);
-  document.getElementById('recipe-title').value = '';
-  document.getElementById('recipe-tag').value = '';
-  document.getElementById('recipe-body').value = '';
+  const recipe = { id:'r-'+Date.now(), title, tags, body, date: todayKey() };
+  if (pendingPhoto) recipe.photo = pendingPhoto;
+  arr.unshift(recipe);
+  try {
+    saveJSON('recipes', arr);
+  } catch (e) {
+    // localStorage full — probably photos
+    showToast('Storage full. Remove some recipes or skip photo.');
+    return;
+  }
+  clearRecipeForm();
   renderRecipes();
   showToast('Recipe saved.');
 }
-function deleteRecipe(id){ if (!confirm('Delete this recipe?')) return; saveJSON('recipes', loadJSON('recipes',[]).filter(r=>r.id!==id)); renderRecipes(); }
+
+function clearRecipeForm(){
+  document.getElementById('recipe-title').value = '';
+  document.getElementById('recipe-tags').value = '';
+  document.getElementById('recipe-body').value = '';
+  document.getElementById('recipe-photo').value = '';
+  document.getElementById('recipe-photo-preview').innerHTML = '';
+  document.getElementById('recipe-photo-status').textContent = '';
+  pendingPhoto = null;
+}
+
+function deleteRecipe(id){
+  if (!confirm('Delete this recipe?')) return;
+  saveJSON('recipes', loadJSON('recipes',[]).filter(r=>r.id!==id));
+  renderRecipes();
+}
+
+function openRecipeLightbox(src) {
+  document.getElementById('recipe-lightbox-img').src = src;
+  document.getElementById('recipe-lightbox').classList.add('show');
+}
+
+function setRecipeTag(tag) {
+  activeRecipeTag = (activeRecipeTag === tag) ? null : tag;
+  renderRecipes();
+}
+
 function renderRecipes(){
   const rs = loadJSON('recipes', []);
-  document.getElementById('recipe-list').innerHTML = rs.length ? rs.map(r => `
+  const searchEl = document.getElementById('recipe-search');
+  const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
+
+  // tag cloud
+  const tagCounts = {};
+  rs.forEach(r => (r.tags||[]).forEach(t => { tagCounts[t] = (tagCounts[t]||0) + 1; }));
+  const tagEntries = Object.entries(tagCounts).sort((a,b) => b[1]-a[1]);
+  const cloud = document.getElementById('recipe-tag-cloud');
+  if (cloud) {
+    cloud.innerHTML = tagEntries.length
+      ? '<div class="recipe-tags-row">' + tagEntries.map(([t,c]) => `<span class="recipe-tag-chip${activeRecipeTag===t?' active':''}" onclick="setRecipeTag('${t.replace(/'/g,"\\'")}')">${escapeHtml(t)} · ${c}</span>`).join('') + (activeRecipeTag?'<span class="recipe-tag-chip" onclick="setRecipeTag(null)" style="background:transparent;color:var(--ink-60)">× clear</span>':'') + '</div>'
+      : '';
+  }
+
+  // filter
+  const filtered = rs.filter(r => {
+    if (activeRecipeTag && !(r.tags||[]).includes(activeRecipeTag)) return false;
+    if (q) {
+      const hay = (r.title + ' ' + (r.tags||[]).join(' ') + ' ' + r.body).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const countEl = document.getElementById('recipe-count');
+  if (countEl) countEl.textContent = filtered.length === rs.length ? `— ${rs.length}` : `— ${filtered.length} of ${rs.length}`;
+
+  const html = filtered.map(r => `
     <div class="recipe-card">
+      ${r.photo ? `<img class="recipe-photo" src="${r.photo}" onclick="openRecipeLightbox('${r.photo}')">` : ''}
       <div class="recipe-title">${escapeHtml(r.title)}</div>
-      ${r.tag?`<div class="recipe-tag">${escapeHtml(r.tag)}</div>`:''}
+      ${(r.tags && r.tags.length) ? `<div class="recipe-tags-row">${r.tags.map(t => `<span class="recipe-tag-chip${activeRecipeTag===t?' active':''}" onclick="setRecipeTag('${t.replace(/'/g,"\\'")}')">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
       <div class="recipe-body">${escapeHtml(r.body)}</div>
       <div class="btn-row"><button class="btn btn-sm btn-danger" onclick="deleteRecipe('${r.id}')">Delete</button></div>
-    </div>`).join('') : '<div class="empty">No recipes yet.</div>';
+    </div>`).join('');
+
+  document.getElementById('recipe-list').innerHTML = html || (rs.length ? '<div class="empty">No recipes match.</div>' : '<div class="empty">No recipes yet.</div>');
 }
 
 // ═══════════════════ COACHING ═══════════════════
