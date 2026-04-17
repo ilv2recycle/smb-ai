@@ -3452,7 +3452,8 @@ function setWelcome(){
   if (headline && wave) {
     if (h >= 5 && h < 12)        { headline.textContent = 'Good morning, good lookin\''; wave.textContent = '☕'; }
     else if (h >= 12 && h < 17)  { headline.textContent = 'Howdy, Ari';                  wave.textContent = '🤘'; }
-    else                         { headline.textContent = "It's Alpenglow time";        wave.textContent = '🌄'; }
+    else if (h >= 17 && h < 22)  { headline.textContent = "It's Alpenglow time";         wave.textContent = '🌄'; }
+    else                         { headline.textContent = 'Goodnight moon, the bats are out'; wave.textContent = '🦇'; }
   }
   const td = document.getElementById('today-date');
   if (td) td.textContent = fmtDate(new Date()).toUpperCase();
