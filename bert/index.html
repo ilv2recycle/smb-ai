@@ -1,0 +1,3467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bert — Ari's handy brain</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#FF7A9C">
+<link rel="apple-touch-icon" href="../favicon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bert">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Caveat:wght@500;600;700&family=Nunito:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root {
+  --cream: #FFF5E6;
+  --warm: #FFEFD5;
+  --paper: #FFFBF3;
+  --ink: #2B2118;
+  --ink-60: rgba(43,33,24,0.6);
+  --ink-30: rgba(43,33,24,0.3);
+  --ink-10: rgba(43,33,24,0.1);
+  --ink-05: rgba(43,33,24,0.05);
+
+  --peach: #FFB088;
+  --pink: #FF7A9C;
+  --pink-soft: #FFC0D3;
+  --sky: #8FC5E0;
+  --sky-soft: #C9E4F0;
+  --grass: #7CB342;
+  --grass-soft: #C9E0A7;
+  --sun: #FFD54F;
+  --sun-soft: #FFEBAE;
+  --plum: #8E6CB0;
+  --plum-soft: #D5C3E5;
+  --rust: #E06B4A;
+  --rust-soft: #F5C6B7;
+
+  --r: 10px;
+  --rl: 18px;
+  --rxl: 24px;
+  --shadow: 0 2px 0 rgba(43,33,24,0.08);
+  --shadow-lift: 0 4px 0 rgba(43,33,24,0.1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', system-ui, sans-serif;
+  background: var(--cream);
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(255,122,156,0.08), transparent 40%),
+    radial-gradient(circle at 85% 20%, rgba(143,197,224,0.1), transparent 40%),
+    radial-gradient(circle at 50% 90%, rgba(255,213,79,0.1), transparent 45%);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.layout { display: flex; min-height: 100vh; }
+
+/* ────── sidebar ────── */
+.sidebar {
+  width: 240px; flex-shrink: 0;
+  background: linear-gradient(180deg, #FF7A9C 0%, #FFB088 55%, #FFD54F 100%);
+  color: var(--ink);
+  display: flex; flex-direction: column;
+  padding: 1.75rem 1.25rem;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 100;
+  overflow-y: auto;
+  box-shadow: 3px 0 0 rgba(43,33,24,0.06);
+}
+.sidebar-logo {
+  font-family: 'Caveat', cursive; font-size: 50px; font-weight: 700;
+  color: var(--ink); line-height: 1; margin-bottom: 2px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.sidebar-logo .bert-av { width: 44px; height: 54px; flex-shrink: 0; transform: rotate(4deg); filter: drop-shadow(1px 2px 0 rgba(43,33,24,0.1)); }
+.sidebar-logo .txt { transform: rotate(-3deg); display: inline-block; }
+
+.welcome { position: relative; }
+.welcome .bert-av-big {
+  position: absolute; top: -18px; right: 14px; width: 90px; height: 108px;
+  filter: drop-shadow(2px 3px 0 rgba(43,33,24,0.12));
+  z-index: 2; cursor: pointer; user-select: none;
+  transform-origin: bottom center;
+  animation: bertBob 4s ease-in-out infinite;
+}
+.welcome .bert-av-big:hover { animation: bertWiggle 0.6s ease-in-out; }
+.welcome .bert-av-big.bounced { animation: bertBounce 0.7s cubic-bezier(.3,1.6,.5,1); }
+@keyframes bertBob {
+  0%, 100% { transform: rotate(4deg) translateY(0); }
+  50%      { transform: rotate(4deg) translateY(-5px); }
+}
+@keyframes bertWiggle {
+  0%   { transform: rotate(4deg) scale(1); }
+  25%  { transform: rotate(-6deg) scale(1.05); }
+  50%  { transform: rotate(8deg) scale(1.05); }
+  75%  { transform: rotate(-4deg) scale(1.03); }
+  100% { transform: rotate(4deg) scale(1); }
+}
+@keyframes bertBounce {
+  0%   { transform: rotate(4deg) scale(1); }
+  30%  { transform: rotate(-10deg) scale(1.2); }
+  60%  { transform: rotate(12deg) scale(0.92); }
+  100% { transform: rotate(4deg) scale(1); }
+}
+/* sidebar avatar tiny idle too */
+.sidebar-logo .bert-av { animation: bertBob 5s ease-in-out infinite; transform-origin: bottom center; cursor: pointer; }
+.sidebar-logo .bert-av.bounced { animation: bertBounce 0.7s cubic-bezier(.3,1.6,.5,1); }
+
+/* speech bubble — floats ABOVE the avatar, tail points down */
+.bert-speech {
+  position: absolute; right: 0; top: -72px;
+  background: #FFFBF3; border: 2.5px solid var(--ink); border-radius: 18px;
+  padding: 10px 16px; max-width: 260px; z-index: 10;
+  font-family: 'Caveat', cursive; font-size: 22px; font-weight: 700;
+  color: var(--ink); line-height: 1.15; box-shadow: 3px 3px 0 rgba(43,33,24,0.18);
+  opacity: 0; pointer-events: none;
+  transform: scale(0.5);
+  transform-origin: bottom right;
+  white-space: normal;
+}
+.bert-speech.show { animation: speechPop 0.45s cubic-bezier(.3,1.6,.5,1) forwards; pointer-events: auto; }
+/* tail — pointing DOWN toward the avatar's head */
+.bert-speech::after {
+  content: ''; position: absolute; bottom: -11px; right: 36px;
+  width: 0; height: 0;
+  border-top: 12px solid #FFFBF3;
+  border-left: 9px solid transparent; border-right: 9px solid transparent;
+}
+.bert-speech::before {
+  content: ''; position: absolute; bottom: -15px; right: 34px;
+  width: 0; height: 0;
+  border-top: 13px solid var(--ink);
+  border-left: 10px solid transparent; border-right: 10px solid transparent;
+}
+@keyframes speechPop {
+  0%   { opacity: 0; transform: scale(0.4) rotate(-6deg); }
+  60%  { opacity: 1; transform: scale(1.1) rotate(2deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+@media (max-width: 600px) {
+  .welcome .bert-av-big { width: 66px; height: 80px; top: -8px; right: 8px; }
+  .welcome .howdy, .welcome .line { padding-right: 70px; }
+  .bert-speech { right: 0; top: -60px; font-size: 17px; max-width: 200px; padding: 7px 12px; }
+  .bert-speech::after { right: 24px; border-top-width: 10px; border-left-width: 7px; border-right-width: 7px; }
+  .bert-speech::before { right: 22px; border-top-width: 11px; border-left-width: 8px; border-right-width: 8px; }
+}
+
+/* avatar picker */
+.av-picker {
+  background: var(--paper); border: 2px solid rgba(43,33,24,0.08); border-radius: var(--rxl);
+  padding: 16px 20px; margin-bottom: 1rem; box-shadow: var(--shadow);
+}
+.av-picker .ap-title {
+  font-family: 'Caveat', cursive; font-size: 24px; font-weight: 700;
+  color: var(--ink); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
+}
+.av-picker .ap-title small {
+  font-family: 'Nunito', sans-serif; font-weight: 500; font-size: 12px; color: var(--ink-60);
+  cursor: pointer; background: var(--cream); padding: 4px 10px; border-radius: 999px;
+  border: 1.5px solid rgba(43,33,24,0.1);
+}
+.av-picker .ap-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+}
+.av-picker .ap-opt {
+  border: 2px solid rgba(43,33,24,0.1); border-radius: var(--rl); padding: 10px 8px;
+  background: var(--cream); cursor: pointer; transition: all .15s;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.av-picker .ap-opt:hover { transform: translateY(-2px); border-color: var(--pink); }
+.av-picker .ap-opt.selected { border-color: var(--ink); background: var(--sun-soft); box-shadow: var(--shadow); }
+.av-picker .ap-opt svg { width: 60px; height: 72px; }
+.av-picker .ap-opt .lbl {
+  font-family: 'Nunito', sans-serif; font-weight: 600; font-size: 11px; color: var(--ink-60);
+  text-align: center;
+}
+.av-picker .ap-opt.selected .lbl { color: var(--ink); }
+@media (max-width: 600px) {
+  .av-picker .ap-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .av-picker .ap-opt svg { width: 50px; height: 60px; }
+}
+.av-picker.collapsed .ap-grid { display: none; }
+.sidebar-sub {
+  font-family: 'Caveat', cursive; font-size: 18px; font-weight: 500;
+  color: rgba(43,33,24,0.7); margin-bottom: 1.75rem;
+  transform: rotate(-1deg); display: inline-block; margin-left: 4px;
+}
+
+.nav-section {
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .12em;
+  text-transform: uppercase; color: rgba(43,33,24,0.55);
+  margin: 1.1rem 0 .4rem .25rem; font-weight: 500;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 14px;
+  cursor: pointer; font-size: 15px; font-weight: 500;
+  color: rgba(43,33,24,0.8);
+  transition: all .15s; border: 2px solid transparent;
+  margin-bottom: 3px; user-select: none;
+}
+.nav-item:hover { background: rgba(255,255,255,0.35); color: var(--ink); }
+.nav-item.active {
+  background: var(--paper); color: var(--ink);
+  border-color: rgba(43,33,24,0.12);
+  box-shadow: var(--shadow);
+}
+.nav-emoji { font-size: 18px; flex-shrink: 0; }
+
+.sidebar-footer {
+  margin-top: auto; padding-top: 1rem;
+  border-top: 2px dashed rgba(43,33,24,0.15);
+}
+.bert-blurb {
+  background: var(--paper); border-radius: 14px; padding: 10px 12px;
+  font-family: 'Caveat', cursive; font-size: 16px; color: var(--ink);
+  text-align: center; line-height: 1.3;
+  box-shadow: var(--shadow);
+  transform: rotate(-1deg);
+}
+.bert-blurb small { display: block; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .1em; color: var(--ink-60); margin-top: 4px; text-transform: uppercase; font-weight: 500; }
+
+/* ────── main ────── */
+.main { margin-left: 240px; flex: 1; padding: 2.5rem 3rem; max-width: 1040px; }
+.page-head { margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; }
+.page-title {
+  font-family: 'Fredoka', sans-serif; font-size: 42px; font-weight: 600;
+  letter-spacing: -.01em; color: var(--ink); line-height: 1;
+}
+.page-title .hand {
+  font-family: 'Caveat', cursive; font-size: 44px; font-weight: 600;
+  color: var(--pink); margin-left: 10px; display: inline-block;
+  transform: rotate(-2deg);
+}
+.page-date { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-60); letter-spacing: .06em; margin-top: 6px; }
+
+.panel { display: none; animation: panelIn .25s ease; }
+.panel.active { display: block; }
+@keyframes panelIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ────── section label ────── */
+.section-label {
+  font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 600;
+  color: var(--ink); margin: 1.75rem 0 .75rem; display: flex; align-items: center; gap: 10px;
+}
+.section-label:first-child { margin-top: 0; }
+.section-label .hint {
+  font-family: 'Caveat', cursive; font-weight: 500; font-size: 18px;
+  color: var(--ink-60);
+}
+.section-label .emoji { font-size: 22px; }
+
+/* ────── stats ────── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2rem; }
+.stat-card {
+  background: var(--paper); border-radius: var(--rl); padding: 16px 18px;
+  border: 2px solid rgba(43,33,24,0.08); box-shadow: var(--shadow);
+  position: relative; overflow: hidden;
+}
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+.stat-card.c-pink::before { background: var(--pink); }
+.stat-card.c-grass::before { background: var(--grass); }
+.stat-card.c-sun::before { background: var(--sun); }
+.stat-card.c-sky::before { background: var(--sky); }
+.stat-card.c-plum::before { background: var(--plum); }
+.stat-card.c-rust::before { background: var(--rust); }
+.stat-card .n { font-family: 'Fredoka', sans-serif; font-size: 34px; font-weight: 600; color: var(--ink); line-height: 1; }
+.stat-card .l { font-size: 12px; color: var(--ink-60); margin-top: 4px; font-weight: 500; }
+
+/* ────── cards ────── */
+.card {
+  background: var(--paper); border: 2px solid rgba(43,33,24,0.08);
+  border-radius: var(--rl); padding: 18px 20px; margin-bottom: 12px;
+  box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s;
+}
+.card:hover { box-shadow: var(--shadow-lift); }
+.card h3 { font-family: 'Fredoka', sans-serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+.card p { font-size: 14px; color: var(--ink-60); line-height: 1.55; }
+
+/* ────── welcome banner ────── */
+.welcome {
+  background: linear-gradient(135deg, var(--pink-soft), var(--sun-soft));
+  border: 2px solid rgba(43,33,24,0.08); border-radius: var(--rxl);
+  padding: 22px 26px; margin-bottom: 1.5rem; position: relative;
+  box-shadow: var(--shadow);
+}
+.welcome .howdy {
+  font-family: 'Caveat', cursive; font-size: 30px; font-weight: 700;
+  color: var(--ink); transform: rotate(-1deg); display: inline-block;
+}
+.welcome .line {
+  font-family: 'Nunito', sans-serif; font-size: 15px; color: var(--ink-60);
+  margin-top: 4px; font-style: italic;
+}
+
+/* ────── inputs ────── */
+.txt {
+  width: 100%; border: 2px solid rgba(43,33,24,0.1); border-radius: var(--r);
+  padding: 10px 14px; font-size: 14px; font-family: 'Nunito', sans-serif;
+  color: var(--ink); background: var(--paper); transition: border-color .15s, box-shadow .15s;
+}
+.txt:focus { outline: none; border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255,122,156,0.15); }
+.txt::placeholder { color: var(--ink-30); }
+.ta {
+  width: 100%; border: 2px solid rgba(43,33,24,0.1); border-radius: var(--r);
+  padding: 12px 14px; font-size: 14px; font-family: 'Nunito', sans-serif;
+  color: var(--ink); background: var(--paper); resize: vertical; min-height: 80px;
+  line-height: 1.6; transition: border-color .15s;
+}
+.ta:focus { outline: none; border-color: var(--pink); }
+.sel {
+  padding: 9px 12px; border: 2px solid rgba(43,33,24,0.1); border-radius: var(--r);
+  background: var(--paper); font-size: 14px; font-family: 'Nunito', sans-serif;
+  color: var(--ink); cursor: pointer;
+}
+
+/* ────── buttons ────── */
+.btn {
+  padding: 10px 18px; border-radius: 999px; font-size: 14px; font-weight: 600;
+  font-family: 'Nunito', sans-serif; cursor: pointer;
+  border: 2px solid rgba(43,33,24,0.15); background: var(--paper); color: var(--ink);
+  transition: all .15s; box-shadow: var(--shadow);
+}
+.btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-lift); }
+.btn:active { transform: translateY(0); box-shadow: none; }
+.btn-pink { background: var(--pink); color: white; border-color: var(--pink); }
+.btn-grass { background: var(--grass); color: white; border-color: var(--grass); }
+.btn-sky { background: var(--sky); color: white; border-color: var(--sky); }
+.btn-sun { background: var(--sun); color: var(--ink); border-color: var(--sun); }
+.btn-plum { background: var(--plum); color: white; border-color: var(--plum); }
+.btn-rust { background: var(--rust); color: white; border-color: var(--rust); }
+.btn-ink { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1rem; }
+.btn-danger { color: var(--rust); border-color: rgba(224,107,74,0.4); background: var(--paper); }
+.btn-danger:hover { background: rgba(224,107,74,0.08); }
+
+/* ────── checkrow / todos ────── */
+.check-item {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px;
+  background: var(--paper); border: 2px solid rgba(43,33,24,0.08); border-radius: var(--rl);
+  cursor: pointer; user-select: none; transition: all .15s; margin-bottom: 6px;
+  box-shadow: var(--shadow);
+}
+.check-item:hover { transform: translateX(2px); border-color: var(--pink); }
+.check-item.done { background: rgba(124,179,66,0.08); border-color: rgba(124,179,66,0.3); }
+.check-item.done .t { text-decoration: line-through; color: var(--ink-60); }
+.cbox {
+  width: 22px; height: 22px; border-radius: 50%; border: 2.5px solid var(--ink-30);
+  flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center;
+  transition: all .18s; background: var(--paper);
+}
+.check-item.done .cbox { background: var(--grass); border-color: var(--grass); }
+.cbox svg { display: none; }
+.check-item.done .cbox svg { display: block; }
+.check-item .body { flex: 1; min-width: 0; }
+.check-item .t { font-size: 14px; font-weight: 500; color: var(--ink); line-height: 1.4; }
+.check-item .meta { font-size: 11px; color: var(--ink-60); margin-top: 2px; font-family: 'DM Mono', monospace; letter-spacing: .04em; }
+.check-item .actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+.iconbtn {
+  background: transparent; border: 1.5px solid rgba(43,33,24,0.1); border-radius: 8px;
+  padding: 4px 9px; cursor: pointer; font-size: 12px; color: var(--ink-60);
+  font-family: 'Nunito', sans-serif; font-weight: 500; transition: all .12s;
+}
+.iconbtn:hover { border-color: var(--ink-30); color: var(--ink); background: var(--cream); }
+
+.empty {
+  font-family: 'Caveat', cursive; font-size: 18px; color: var(--ink-30);
+  text-align: center; padding: 1rem; letter-spacing: .02em;
+}
+
+/* ────── tags ────── */
+.tag {
+  display: inline-block; font-size: 11px; font-family: 'DM Mono', monospace;
+  letter-spacing: .04em; padding: 3px 9px; border-radius: 999px; font-weight: 500;
+}
+.tag-pink { background: var(--pink-soft); color: #9E2C4E; }
+.tag-grass { background: var(--grass-soft); color: #3F6220; }
+.tag-sky { background: var(--sky-soft); color: #2E6A87; }
+.tag-sun { background: var(--sun-soft); color: #7D5F0A; }
+.tag-plum { background: var(--plum-soft); color: #4F3270; }
+.tag-rust { background: var(--rust-soft); color: #8E3A1F; }
+
+/* ────── SOLAR JOBS ────── */
+.job-card {
+  background: var(--paper); border: 2px solid rgba(43,33,24,0.1); border-radius: var(--rxl);
+  padding: 20px 22px; margin-bottom: 14px; position: relative; overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.job-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+  background: linear-gradient(90deg, var(--sun), var(--peach), var(--pink));
+}
+.job-card.status-planning::before { background: linear-gradient(90deg, var(--sky), var(--plum)); }
+.job-card.status-inprogress::before { background: linear-gradient(90deg, var(--sun), var(--peach), var(--pink)); }
+.job-card.status-done::before { background: linear-gradient(90deg, var(--grass), #5D9937); }
+.job-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 1rem; flex-wrap: wrap; }
+.job-name { font-family: 'Fredoka', sans-serif; font-size: 24px; font-weight: 600; color: var(--ink); line-height: 1.15; }
+.job-client { font-size: 13px; color: var(--ink-60); margin-top: 2px; }
+.job-date { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-60); letter-spacing: .04em; margin-top: 4px; }
+.job-lists { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+.mini-list {
+  background: var(--cream); border-radius: var(--r); padding: 12px 14px;
+  border: 2px dashed rgba(43,33,24,0.12);
+}
+.mini-list h4 {
+  font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.mini-list h4 .count { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-30); letter-spacing: .04em; font-weight: 400; }
+.mini-item {
+  display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px;
+  background: var(--paper); border: 1px solid rgba(43,33,24,0.06); margin-bottom: 5px;
+  font-size: 13px; cursor: pointer; user-select: none;
+}
+.mini-item:hover { border-color: var(--ink-30); }
+.mini-item.done { opacity: 0.5; text-decoration: line-through; }
+.mini-item .x { font-size: 11px; color: var(--ink-30); margin-left: auto; cursor: pointer; padding: 2px 6px; }
+.mini-item .x:hover { color: var(--rust); }
+.mini-add { display: flex; gap: 4px; margin-top: 6px; }
+.mini-add input {
+  flex: 1; border: 1.5px solid rgba(43,33,24,0.1); border-radius: 7px; padding: 5px 9px;
+  font-size: 12px; font-family: 'Nunito', sans-serif; background: var(--paper);
+}
+.mini-add input:focus { outline: none; border-color: var(--pink); }
+.mini-add button {
+  border: 1.5px solid var(--ink); background: var(--ink); color: var(--cream); border-radius: 7px;
+  padding: 4px 10px; font-size: 14px; cursor: pointer; font-weight: 600;
+}
+
+/* ────── ZONES & THIS WEEK ────── */
+.zones-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.zone-card {
+  background: var(--paper); border-radius: var(--rl); padding: 14px 16px;
+  border: 2px solid rgba(43,33,24,0.08); box-shadow: var(--shadow);
+  position: relative; overflow: hidden;
+}
+.zone-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 5px; }
+.zone-inside::before { background: var(--pink); }
+.zone-back::before { background: var(--sun); }
+.zone-baby::before { background: var(--plum); }
+.zone-orchard::before { background: var(--grass); }
+.zone-ladies::before { background: var(--sky); }
+.zone-bert::before { background: var(--rust); }
+.zone-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-left: 8px; }
+.zone-title { font-family: 'Fredoka', sans-serif; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.zone-count { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-30); letter-spacing: .06em; }
+.zone-tasks { padding-left: 8px; }
+.zone-task {
+  background: var(--cream); border: 1.5px solid rgba(43,33,24,0.08);
+  border-radius: 10px; padding: 7px 12px; margin-bottom: 5px; font-size: 13px;
+  cursor: grab; user-select: none; display: flex; align-items: center; gap: 6px;
+  transition: all .12s;
+}
+.zone-task:hover { border-color: var(--pink); transform: translateX(2px); }
+.zone-task:active { cursor: grabbing; }
+.zone-task.dragging { opacity: 0.4; }
+.zone-task .grip { color: var(--ink-30); font-family: 'DM Mono', monospace; font-size: 14px; }
+.zone-task .x { margin-left: auto; font-size: 11px; color: var(--ink-30); cursor: pointer; padding: 2px 6px; }
+.zone-task .x:hover { color: var(--rust); }
+.zone-task .zt-btn {
+  font-size: 11px; color: var(--ink-60); cursor: pointer; padding: 4px 8px;
+  border-radius: 7px; user-select: none; flex-shrink: 0;
+  transition: background .12s, color .12s;
+}
+.zone-task .zt-btn:hover { background: rgba(43,33,24,0.06); color: var(--ink); }
+.zone-task .zt-go {
+  margin-left: auto; background: var(--pink-soft); color: #9E2C4E;
+  font-weight: 700; font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: .04em; padding: 4px 8px;
+}
+.zone-task .zt-go:hover { background: var(--pink); color: white; }
+@media (max-width: 860px) {
+  .zone-task { padding: 10px 12px; }
+  .zone-task .grip { display: none; } /* no drag on touch */
+  .zone-task .zt-btn { padding: 6px 10px; font-size: 12px; }
+  .zone-task .zt-go { font-size: 11px; }
+}
+.zone-add { display: flex; gap: 4px; margin-top: 8px; padding-left: 8px; }
+.zone-add input {
+  flex: 1; border: 1.5px solid rgba(43,33,24,0.1); border-radius: 7px; padding: 5px 9px;
+  font-size: 12px; background: var(--cream);
+}
+.zone-add input:focus { outline: none; border-color: var(--ink-30); }
+.zone-add button { border: 1.5px solid var(--ink); background: var(--ink); color: var(--cream); border-radius: 7px; padding: 4px 10px; cursor: pointer; font-weight: 600; }
+
+/* bubble board */
+.bubble-drop {
+  background: linear-gradient(135deg, var(--sky-soft), var(--plum-soft));
+  border: 3px dashed rgba(43,33,24,0.2); border-radius: var(--rxl);
+  padding: 22px; min-height: 220px; margin-bottom: 1rem;
+  transition: all .2s; position: relative;
+}
+.bubble-drop.over { background: linear-gradient(135deg, var(--sun-soft), var(--pink-soft)); border-color: var(--pink); }
+.bubble-drop-hint {
+  font-family: 'Caveat', cursive; font-size: 22px; color: rgba(43,33,24,0.45);
+  text-align: center; padding: 2rem 0;
+}
+.bubbles { display: flex; flex-wrap: wrap; gap: 10px; }
+.bubble {
+  background: var(--paper); border: 2px solid rgba(43,33,24,0.12);
+  border-radius: 999px; padding: 9px 16px; font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  box-shadow: var(--shadow); transition: all .15s; user-select: none;
+}
+.bubble:hover { transform: translateY(-1px); box-shadow: var(--shadow-lift); }
+.bubble.done { background: var(--grass-soft); border-color: var(--grass); text-decoration: line-through; opacity: 0.7; }
+.bubble .src {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .06em;
+  background: rgba(43,33,24,0.08); padding: 2px 7px; border-radius: 999px;
+  color: var(--ink-60); text-transform: uppercase;
+}
+.bubble.b-pink { background: var(--pink-soft); border-color: var(--pink); }
+.bubble.b-sun  { background: var(--sun-soft); border-color: var(--sun); }
+.bubble.b-plum { background: var(--plum-soft); border-color: var(--plum); }
+.bubble.b-grass{ background: var(--grass-soft); border-color: var(--grass); }
+.bubble.b-sky  { background: var(--sky-soft); border-color: var(--sky); }
+.bubble.b-rust { background: var(--rust-soft); border-color: var(--rust); }
+.bubble .rm { font-size: 13px; color: var(--ink-60); padding: 0 4px; cursor: pointer; line-height: 1; }
+.bubble .rm:hover { color: var(--rust); }
+.bubble .ed { font-size: 12px; color: var(--ink-60); padding: 0 4px; cursor: pointer; line-height: 1; }
+.bubble .ed:hover { color: var(--plum); }
+
+/* ────── VISITORS ────── */
+.visitor-card {
+  background: var(--paper); border-radius: var(--rl); padding: 14px 18px;
+  margin-bottom: 10px; border: 2px solid rgba(43,33,24,0.08);
+  box-shadow: var(--shadow); display: flex; gap: 14px; align-items: flex-start;
+  position: relative; overflow: hidden;
+}
+.visitor-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 5px; background: var(--plum); }
+.visitor-card.here::before { background: var(--grass); }
+.visitor-card.soon::before { background: var(--sun); }
+.visitor-card.past::before { background: var(--ink-30); }
+.visitor-head { font-family: 'Fredoka', sans-serif; font-size: 18px; font-weight: 600; }
+.visitor-when { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-60); letter-spacing: .04em; margin-top: 3px; }
+.visitor-note { font-size: 13px; color: var(--ink-60); margin-top: 5px; font-style: italic; }
+.visitor-body { flex: 1; }
+.visitor-actions { display: flex; flex-direction: column; gap: 4px; }
+
+/* ────── VEHICLES ────── */
+.vehicle-card {
+  background: var(--paper); border-radius: var(--rl); padding: 16px 18px;
+  margin-bottom: 14px; border: 2px solid rgba(43,33,24,0.08);
+  box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.vehicle-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, var(--rust), var(--sun)); }
+.vehicle-name { font-family: 'Fredoka', sans-serif; font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+.vehicle-sub { font-size: 13px; color: var(--ink-60); }
+.maint-log { margin-top: 10px; }
+.maint-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0; border-top: 1px dashed rgba(43,33,24,0.1); font-size: 13px;
+}
+.maint-row:first-of-type { border-top: none; }
+.maint-when { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-60); }
+.maint-item { font-weight: 500; font-size: 13px; }
+.veh-lists { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+@media (max-width: 860px) { .veh-lists { grid-template-columns: 1fr; } }
+
+/* ────── Bert Daily / brain ribbon at top of Today ────── */
+.bert-daily {
+  background: linear-gradient(135deg, var(--plum-soft), var(--sky-soft));
+  border: 2px solid rgba(43,33,24,0.08); border-radius: var(--rxl);
+  padding: 18px 22px; margin-bottom: 1rem; box-shadow: var(--shadow);
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 18px; align-items: stretch;
+}
+.bert-daily .col-title {
+  font-family: 'Caveat', cursive; font-size: 26px; font-weight: 700; color: var(--ink);
+  line-height: 1; transform: rotate(-1deg); display: inline-block; margin-bottom: 6px;
+}
+.bert-daily .daily-msg {
+  font-family: 'Caveat', cursive; font-size: 22px; font-weight: 600; color: var(--ink);
+  line-height: 1.3;
+}
+.bert-daily .daily-sub {
+  font-family: 'Nunito', sans-serif; font-size: 13px; color: var(--ink-60);
+  margin-top: 6px; font-style: italic;
+}
+.bert-daily .brain-quick {
+  background: var(--paper); border-radius: var(--rl); padding: 12px 14px;
+  border: 2px solid rgba(43,33,24,0.06); display: flex; flex-direction: column; gap: 8px;
+}
+.bert-daily .brain-quick textarea {
+  flex: 1; border: none; background: transparent; font-family: 'Caveat', cursive;
+  font-size: 20px; resize: none; min-height: 70px; line-height: 1.3; color: var(--ink);
+}
+.bert-daily .brain-quick textarea:focus { outline: none; }
+.bert-daily .brain-row { display: flex; justify-content: space-between; align-items: center; }
+.bert-daily .brain-row small { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-60); letter-spacing: .05em; }
+@media (max-width: 860px) { .bert-daily { grid-template-columns: 1fr; } }
+
+/* ────── feature request bubble (bottom-left floater) ────── */
+.feature-req {
+  position: fixed; bottom: 20px; right: 20px; z-index: 250;
+  background: var(--paper); border: 2px solid rgba(43,33,24,0.15); border-radius: 999px;
+  padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 4px 0 rgba(43,33,24,0.15); color: var(--ink);
+  font-family: 'Nunito', sans-serif; transition: all .15s; display: flex; align-items: center; gap: 6px;
+}
+.feature-req:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(43,33,24,0.18); }
+.feature-req .spark { font-size: 14px; }
+
+.modal-bg {
+  position: fixed; inset: 0; background: rgba(43,33,24,0.45); z-index: 400;
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-bg.show { display: flex; animation: fadeIn .15s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  background: var(--paper); border-radius: var(--rxl); padding: 26px 28px;
+  max-width: 480px; width: 100%; border: 2px solid rgba(43,33,24,0.1);
+  box-shadow: 0 10px 0 rgba(43,33,24,0.15);
+}
+.modal h3 {
+  font-family: 'Caveat', cursive; font-size: 34px; font-weight: 700; margin-bottom: 4px;
+  color: var(--ink); transform: rotate(-1deg); display: inline-block;
+}
+.modal p { font-size: 14px; color: var(--ink-60); margin-bottom: 14px; }
+.modal .close-x {
+  float: right; background: transparent; border: none; font-size: 26px; cursor: pointer;
+  color: var(--ink-60); line-height: 1; padding: 0; margin: -10px -6px 0 0;
+}
+
+/* ────── calendar (Visitors) ────── */
+.cal-wrap {
+  background: var(--paper); border: 2px solid rgba(43,33,24,0.08); border-radius: var(--rxl);
+  padding: 16px 18px; margin-bottom: 1rem; box-shadow: var(--shadow);
+}
+.cal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.cal-month {
+  font-family: 'Fredoka', sans-serif; font-size: 22px; font-weight: 600; color: var(--ink);
+}
+.cal-nav { display: flex; gap: 6px; }
+.cal-nav button {
+  background: var(--cream); border: 2px solid rgba(43,33,24,0.1); border-radius: 999px;
+  padding: 5px 14px; font-size: 14px; cursor: pointer; font-family: 'Nunito', sans-serif;
+  font-weight: 600; color: var(--ink);
+}
+.cal-nav button:hover { background: var(--pink-soft); border-color: var(--pink); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-dow {
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .08em;
+  color: var(--ink-60); text-align: center; padding: 4px 0; text-transform: uppercase;
+}
+.cal-day {
+  aspect-ratio: 1.1; border: 1.5px solid rgba(43,33,24,0.08); border-radius: 10px;
+  padding: 4px 6px; background: var(--cream); position: relative;
+  font-size: 12px; color: var(--ink); cursor: pointer; overflow: hidden;
+  display: flex; flex-direction: column; gap: 2px; transition: all .12s;
+}
+.cal-day:hover { border-color: var(--pink); transform: translateY(-1px); }
+.cal-day.muted { opacity: 0.3; background: transparent; border-color: transparent; }
+.cal-day.today { border-color: var(--ink); background: var(--sun-soft); }
+.cal-day.sel-start, .cal-day.sel-end, .cal-day.sel-mid { background: var(--pink-soft); border-color: var(--pink); }
+.cal-day .dnum { font-weight: 600; font-size: 13px; }
+.cal-day .chips { display: flex; flex-direction: column; gap: 2px; margin-top: auto; }
+.cal-day .chip {
+  font-size: 9px; font-family: 'DM Mono', monospace; background: var(--plum);
+  color: white; border-radius: 4px; padding: 1px 4px; overflow: hidden;
+  white-space: nowrap; text-overflow: ellipsis; letter-spacing: .02em;
+}
+.cal-day .chip.c-plum { background: var(--plum); }
+.cal-day .chip.c-pink { background: var(--pink); }
+.cal-day .chip.c-sky  { background: var(--sky); }
+.cal-day .chip.c-grass{ background: var(--grass); }
+.cal-day .chip.c-sun  { background: var(--sun); color: var(--ink); }
+.cal-day .chip.c-rust { background: var(--rust); }
+.cal-legend { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-60); letter-spacing: .05em; margin-top: 8px; text-align: center; }
+
+/* ────── DUMP ────── */
+.dump-banner {
+  background: linear-gradient(135deg, var(--grass-soft), var(--sun-soft));
+  border: 2px solid rgba(43,33,24,0.08); border-radius: var(--rxl);
+  padding: 22px 26px; margin-bottom: 1.5rem; text-align: center;
+  box-shadow: var(--shadow);
+}
+.dump-banner .big {
+  font-family: 'Fredoka', sans-serif; font-size: 42px; font-weight: 700;
+  color: var(--ink); line-height: 1;
+}
+.dump-banner .sub { font-family: 'Caveat', cursive; font-size: 22px; color: var(--ink-60); margin-top: 6px; }
+
+/* ────── NOTES / BRAIN DUMP ────── */
+.note-card {
+  background: var(--sun-soft); border: 2px solid rgba(43,33,24,0.08);
+  border-radius: var(--rl); padding: 14px 16px; margin-bottom: 10px;
+  box-shadow: var(--shadow); transform: rotate(-.5deg);
+}
+.note-card:nth-child(2n) { transform: rotate(.5deg); background: var(--pink-soft); }
+.note-card:nth-child(3n) { transform: rotate(-.8deg); background: var(--sky-soft); }
+.note-card:nth-child(4n) { transform: rotate(.3deg); background: var(--plum-soft); }
+.note-card:nth-child(5n) { transform: rotate(-.4deg); background: var(--grass-soft); }
+.note-date { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-60); letter-spacing: .04em; margin-bottom: 4px; display: flex; justify-content: space-between; }
+.note-text { font-family: 'Caveat', cursive; font-size: 20px; font-weight: 500; color: var(--ink); line-height: 1.35; white-space: pre-wrap; word-break: break-word; }
+
+/* ────── TOAST ────── */
+.toast {
+  display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: var(--cream); border-radius: 999px; padding: 10px 22px;
+  font-size: 14px; font-weight: 600; z-index: 300; box-shadow: 0 6px 0 rgba(43,33,24,0.15);
+}
+.toast.show { display: block; animation: toastIn .2s; }
+@keyframes toastIn { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+.divider { border: none; border-top: 2px dashed rgba(43,33,24,0.12); margin: 1.5rem 0; }
+
+/* ────── MOBILE ────── */
+.mobile-nav {
+  display: none; background: linear-gradient(90deg, #FF7A9C, #FFB088, #FFD54F);
+  padding: .75rem 1rem; position: sticky; top: 0; z-index: 200;
+  gap: 6px; overflow-x: auto; white-space: nowrap;
+}
+.mobile-nav-btn {
+  padding: 6px 14px; border-radius: 999px; font-size: 13px; cursor: pointer;
+  border: 2px solid rgba(43,33,24,0.2); background: rgba(255,255,255,0.6); color: var(--ink);
+  font-family: 'Nunito', sans-serif; font-weight: 600; flex-shrink: 0;
+}
+.mobile-nav-btn.active { background: var(--paper); border-color: var(--ink); }
+
+@media (max-width: 860px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 1.25rem 1rem; max-width: 100%; }
+  .mobile-nav { display: flex; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stat-card { padding: 12px 14px; }
+  .stat-card .n { font-size: 28px; }
+  .layout { flex-direction: column; }
+  .page-title { font-size: 30px; }
+  .page-title .hand { font-size: 32px; margin-left: 6px; }
+  .job-lists, .veh-lists, .zones-grid { grid-template-columns: 1fr; }
+  .bert-daily { grid-template-columns: 1fr; padding: 16px; gap: 12px; }
+  .bert-daily .daily-msg { font-size: 20px; }
+  .welcome { padding: 16px 18px; }
+  .welcome .howdy { font-size: 24px; }
+  /* collapse any inline grid forms to single column on mobile */
+  [style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+  .cal-grid { grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-grid [style*="grid-template-columns"] { grid-template-columns: repeat(7, 1fr) !important; }
+  .cal-day { padding: 3px 4px; }
+  .cal-day .dnum { font-size: 12px; }
+  .cal-day .chip { font-size: 8px; padding: 1px 3px; }
+  .cal-head { flex-wrap: wrap; gap: 8px; }
+  .cal-month { font-size: 18px; order: -1; width: 100%; text-align: center; }
+  .todo-add, .btn-row { flex-wrap: wrap; }
+  .btn { padding: 9px 14px; font-size: 13px; }
+  .btn-sm { padding: 5px 10px; font-size: 11px; }
+  .check-item { padding: 10px 12px; }
+  .dump-banner .big { font-size: 32px; }
+  .feature-req { bottom: 12px; right: 12px; left: auto; padding: 8px 12px; font-size: 12px; }
+  .modal { padding: 18px 20px; }
+  .modal h3 { font-size: 28px; }
+  .bubble { padding: 8px 13px; font-size: 13px; }
+  .section-label { font-size: 18px; }
+  .card { padding: 14px 16px; }
+  .job-card, .vehicle-card { padding: 16px 18px; }
+  .job-name, .vehicle-name { font-size: 20px; }
+  .sidebar-logo { font-size: 42px; }
+  .zone-card { padding: 12px 14px; }
+}
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .page-title { font-size: 26px; }
+  .cal-day { aspect-ratio: 1; }
+  .cal-day .chips { display: none; }
+  .cal-day.has-visitor { background: var(--plum-soft); border-color: var(--plum); }
+  .main { padding: 1rem 0.75rem; }
+  .mobile-nav { padding: .6rem .75rem; }
+  .mobile-nav-btn { padding: 5px 11px; font-size: 12px; }
+  .feature-req .spark { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="mobile-nav" id="mobile-nav">
+  <button class="mobile-nav-btn active" onclick="switchTab('today',this)">🏡 Today</button>
+  <button class="mobile-nav-btn" onclick="switchTab('jobs',this)">☀️ Solar</button>
+  <button class="mobile-nav-btn" onclick="switchTab('zones',this)">🌲 Hollow</button>
+  <button class="mobile-nav-btn" onclick="switchTab('week',this)">🫧 Week</button>
+  <button class="mobile-nav-btn" onclick="switchTab('grocery',this)">🛒 Grocery</button>
+  <button class="mobile-nav-btn" onclick="switchTab('dump',this)">🗑️ Dump</button>
+  <button class="mobile-nav-btn" onclick="switchTab('vehicles',this)">🚐 Vehicles</button>
+  <button class="mobile-nav-btn" onclick="switchTab('visitors',this)">✌️ Visitors</button>
+  <button class="mobile-nav-btn" onclick="switchTab('wellness',this)">🧘 Wellness</button>
+  <button class="mobile-nav-btn" onclick="switchTab('journal',this)">📓 Journal</button>
+  <button class="mobile-nav-btn" onclick="switchTab('band',this)">🎸 Band</button>
+  <button class="mobile-nav-btn" onclick="switchTab('brain',this)">💭 Brain</button>
+</div>
+
+<div class="layout">
+
+  <nav class="sidebar">
+    <div class="sidebar-logo"><svg class="bert-av bert-av-use" viewBox="0 0 200 240"><use href="#bert-avatar"/></svg><span class="txt">Bert Life</span></div>
+    <div class="sidebar-sub">Ari's handy brain 🎸</div>
+
+    <div class="nav-section">Daily</div>
+    <div class="nav-item active" onclick="switchTab('today',this)" data-tab="today"><span class="nav-emoji">🏡</span> Today</div>
+    <div class="nav-item" onclick="switchTab('week',this)" data-tab="week"><span class="nav-emoji">🫧</span> This Week</div>
+
+    <div class="nav-section">Alpenglow</div>
+    <div class="nav-item" onclick="switchTab('jobs',this)" data-tab="jobs"><span class="nav-emoji">☀️</span> Solar jobs</div>
+
+    <div class="nav-section">The Hollow</div>
+    <div class="nav-item" onclick="switchTab('zones',this)" data-tab="zones"><span class="nav-emoji">🌲</span> Zones</div>
+    <div class="nav-item" onclick="switchTab('grocery',this)" data-tab="grocery"><span class="nav-emoji">🛒</span> Grocery</div>
+    <div class="nav-item" onclick="switchTab('dump',this)" data-tab="dump"><span class="nav-emoji">🗑️</span> Dump runs</div>
+    <div class="nav-item" onclick="switchTab('vehicles',this)" data-tab="vehicles"><span class="nav-emoji">🚐</span> Vehicles</div>
+    <div class="nav-item" onclick="switchTab('visitors',this)" data-tab="visitors"><span class="nav-emoji">✌️</span> Visitors</div>
+
+    <div class="nav-section">Personal</div>
+    <div class="nav-item" onclick="switchTab('wellness',this)" data-tab="wellness"><span class="nav-emoji">🧘</span> Wellness</div>
+    <div class="nav-item" onclick="switchTab('journal',this)" data-tab="journal"><span class="nav-emoji">📓</span> Journal</div>
+    <div class="nav-item" onclick="switchTab('band',this)" data-tab="band"><span class="nav-emoji">🎸</span> Band</div>
+
+    <div class="nav-section">Bert</div>
+    <div class="nav-item" onclick="switchTab('brain',this)" data-tab="brain"><span class="nav-emoji">💭</span> Brain dump</div>
+
+    <div class="sidebar-footer">
+      <div id="sidebar-profile" style="display:none; align-items:center; gap:8px; background:var(--paper); border-radius:14px; padding:8px 10px; margin-bottom:10px; box-shadow:var(--shadow)"></div>
+      <div class="bert-blurb">
+        Bert's got you.
+        <small id="sidebar-week-count">0 in the week</small>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main">
+    <!-- Bert cartoon avatars (stylized from Ari — four moods) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <defs>
+    <radialGradient id="bert-glow" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#FFE8B0" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#FFE8B0" stop-opacity="0"/>
+    </radialGradient>
+    <!-- tie-dye gradient for Fluffhead's shirt -->
+    <radialGradient id="tie-dye" cx="35%" cy="30%" r="95%">
+      <stop offset="0%" stop-color="#FFD54F"/>
+      <stop offset="25%" stop-color="#FF9F68"/>
+      <stop offset="50%" stop-color="#FF7A9C"/>
+      <stop offset="78%" stop-color="#8E6CB0"/>
+      <stop offset="100%" stop-color="#3F2A6B"/>
+    </radialGradient>
+    <!-- sunshine gradient for Sugar Magnolia's shirt -->
+    <linearGradient id="sunshine-shirt" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3DB7C6"/>
+      <stop offset="100%" stop-color="#2E8E9C"/>
+    </linearGradient>
+  </defs>
+  <symbol id="bert-avatar" viewBox="0 0 200 240">
+    <!-- back dreads (behind everything) -->
+    <g fill="#7A5430">
+      <path d="M58 60 Q40 125 45 205 Q47 225 55 234 L68 234 Q63 205 65 165 Q68 120 74 82 Z"/>
+      <path d="M72 68 Q58 135 62 218 L78 226 Q75 185 79 150 Q84 108 86 85 Z"/>
+      <path d="M142 60 Q160 125 155 205 Q153 225 145 234 L132 234 Q137 205 135 165 Q132 120 126 82 Z"/>
+      <path d="M128 68 Q142 135 138 218 L122 226 Q125 185 121 150 Q116 108 114 85 Z"/>
+    </g>
+    <!-- neck (skin) -->
+    <rect x="86" y="120" width="28" height="24" fill="#EAB896"/>
+    <!-- sweater / body -->
+    <path d="M42 188 Q42 156 74 156 L126 156 Q158 156 158 188 L158 240 L42 240 Z" fill="#2A1F14"/>
+    <!-- front dreads over body -->
+    <g fill="#6B4828">
+      <path d="M60 155 Q54 200 60 234 L72 234 Q68 200 68 170 Z"/>
+      <path d="M80 155 Q76 200 84 234 L94 234 Q88 200 90 170 Z"/>
+      <path d="M140 155 Q146 200 140 234 L128 234 Q132 200 132 170 Z"/>
+      <path d="M120 155 Q124 200 116 234 L106 234 Q110 200 110 170 Z"/>
+    </g>
+    <!-- dread bead accents -->
+    <circle cx="70" cy="200" r="3" fill="#B8975A"/>
+    <circle cx="132" cy="195" r="3" fill="#E06B4A"/>
+    <circle cx="88" cy="215" r="2.5" fill="#8FC5E0"/>
+    <!-- hat brim -->
+    <ellipse cx="100" cy="58" rx="64" ry="9" fill="#5A3E24"/>
+    <!-- hat crown -->
+    <path d="M68 58 Q68 24 100 22 Q132 24 132 58 Z" fill="#6E4E2E"/>
+    <!-- hat crease -->
+    <path d="M92 30 Q100 27 108 30" stroke="#4A2F17" stroke-width="1.5" fill="none" opacity="0.55"/>
+    <!-- hat band -->
+    <rect x="70" y="52" width="60" height="5" fill="#3E2A15"/>
+    <circle cx="105" cy="55" r="2.5" fill="#B8975A"/>
+    <!-- face (thinner, longer) -->
+    <ellipse cx="100" cy="94" rx="24" ry="32" fill="#EAB896"/>
+    <!-- forehead hair peek under hat -->
+    <path d="M78 68 Q100 78 122 68 Q122 74 118 78 Q100 84 82 78 Q78 74 78 68 Z" fill="#6B4828"/>
+    <!-- eyes — cartoon happy round eyes (open and excited) -->
+    <circle cx="89" cy="86" r="3.2" fill="#1A110A"/>
+    <circle cx="111" cy="86" r="3.2" fill="#1A110A"/>
+    <circle cx="90" cy="85" r="1" fill="#FFF"/>
+    <circle cx="112" cy="85" r="1" fill="#FFF"/>
+    <!-- eyebrows -->
+    <path d="M83 78 Q89 75 95 78" stroke="#5A3E24" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <path d="M105 78 Q111 75 117 78" stroke="#5A3E24" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- tiny eyebrow piercing (silver stud) -->
+    <circle cx="97" cy="78" r="1.2" fill="#C9C9CE" stroke="#4A3820" stroke-width="0.4"/>
+    <!-- GLASSES (signature Ari) -->
+    <g fill="none" stroke="#1A110A" stroke-width="2.2">
+      <rect x="79" y="80" width="16" height="13" rx="2.5"/>
+      <rect x="105" y="80" width="16" height="13" rx="2.5"/>
+      <line x1="95" y1="85" x2="105" y2="85"/>
+    </g>
+    <!-- nose -->
+    <path d="M98 97 Q100 106 102 97" stroke="#B8896A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- open toothy grin -->
+    <path d="M82 112 Q100 128 118 112 Q118 117 100 118 Q82 117 82 112 Z" fill="#1A110A"/>
+    <!-- teeth (upper row) -->
+    <path d="M86 112 Q100 115 114 112 L114 116 Q100 117 86 116 Z" fill="#FFFAF0"/>
+    <!-- mustache -->
+    <path d="M90 107 Q100 112 110 107" stroke="#3E2A15" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.55"/>
+    <!-- chin goatee / soul patch -->
+    <path d="M96 121 Q100 126 104 121 Q104 124 100 125 Q96 124 96 121 Z" fill="#3E2A15" opacity="0.6"/>
+    <!-- tiny hoop earring (left side, viewer's right actually — mirror on both) -->
+    <circle cx="74" cy="108" r="2.2" fill="none" stroke="#C9A95C" stroke-width="1"/>
+    <circle cx="126" cy="108" r="2.2" fill="none" stroke="#C9A95C" stroke-width="1"/>
+    <!-- cheeks (blush — happy energy) -->
+    <circle cx="78" cy="104" r="4.5" fill="#FF8CA8" opacity="0.55"/>
+    <circle cx="122" cy="104" r="4.5" fill="#FF8CA8" opacity="0.55"/>
+    <!-- guitar neck peeking from lower right -->
+    <rect x="138" y="175" width="50" height="7" rx="2" transform="rotate(-34 138 175)" fill="#6E4E2E"/>
+    <rect x="140" y="177" width="46" height="3" rx="1" transform="rotate(-34 140 177)" fill="#3E2A15"/>
+    <!-- guitar body hint -->
+    <ellipse cx="134" cy="230" rx="24" ry="16" fill="#E8A74A"/>
+    <ellipse cx="130" cy="228" rx="5" ry="4" fill="#1A110A"/>
+    <!-- music notes floating (guitar vibes) -->
+    <g fill="#FF7A9C">
+      <ellipse cx="28" cy="80" rx="5" ry="4" transform="rotate(-20 28 80)"/>
+      <rect x="32" y="60" width="2" height="22" fill="#FF7A9C"/>
+      <path d="M34 60 L42 56 L42 62 L34 66 Z"/>
+    </g>
+    <g fill="#8FC5E0">
+      <ellipse cx="50" cy="42" rx="4" ry="3" transform="rotate(-15 50 42)"/>
+      <rect x="53" y="26" width="1.5" height="17" fill="#8FC5E0"/>
+    </g>
+  </symbol>
+
+  <!-- ───── Option B: Topknot Bert (shaved sides, dread bundle on top, glasses) ───── -->
+  <symbol id="bert-topknot" viewBox="0 0 200 240">
+    <!-- back dreads sticking up/back -->
+    <g fill="#7A5430">
+      <path d="M70 40 Q55 15 65 5 Q80 10 82 28 Z"/>
+      <path d="M90 30 Q92 6 105 4 Q115 10 108 28 Z"/>
+      <path d="M115 30 Q130 8 140 14 Q142 28 128 34 Z"/>
+    </g>
+    <!-- dread bundle on top of head -->
+    <ellipse cx="100" cy="42" rx="28" ry="14" fill="#6B4828"/>
+    <!-- dread strands within bundle -->
+    <path d="M82 40 Q85 30 92 34" stroke="#3E2A15" stroke-width="1.5" fill="none"/>
+    <path d="M100 38 Q102 28 110 32" stroke="#3E2A15" stroke-width="1.5" fill="none"/>
+    <path d="M114 40 Q118 30 124 34" stroke="#3E2A15" stroke-width="1.5" fill="none"/>
+    <!-- dread tail going behind right -->
+    <path d="M118 48 Q150 80 160 140 Q162 170 155 190 L140 188 Q148 160 140 130 Q130 90 110 60 Z" fill="#6F4B28"/>
+    <!-- shaved sides — visible scalp / skin -->
+    <ellipse cx="100" cy="76" rx="26" ry="22" fill="#E8B090"/>
+    <!-- hairline shadow at top of shaved area -->
+    <path d="M76 68 Q100 58 124 68 Q124 74 100 78 Q76 74 76 68 Z" fill="#5A3E24" opacity="0.55"/>
+    <!-- body — TIE DYE -->
+    <path d="M42 190 Q42 160 74 158 L126 158 Q158 160 158 190 L158 240 L42 240 Z" fill="url(#tie-dye)"/>
+    <!-- tie-dye swirl overlay -->
+    <g opacity="0.35" stroke="#FFFAF0" stroke-width="2" fill="none" stroke-linecap="round">
+      <path d="M60 210 Q80 195 100 210 Q120 225 140 210"/>
+      <path d="M70 225 Q90 215 110 225 Q130 235 148 225"/>
+    </g>
+    <!-- peace sign floating near shoulder -->
+    <g transform="translate(25, 175)">
+      <circle cx="0" cy="0" r="10" fill="#FFD54F" stroke="#2B2118" stroke-width="2"/>
+      <line x1="0" y1="-10" x2="0" y2="10" stroke="#2B2118" stroke-width="2"/>
+      <line x1="0" y1="0" x2="-7" y2="7" stroke="#2B2118" stroke-width="2"/>
+      <line x1="0" y1="0" x2="7" y2="7" stroke="#2B2118" stroke-width="2"/>
+    </g>
+    <!-- neck -->
+    <rect x="88" y="124" width="24" height="22" fill="#EAB896"/>
+    <!-- face -->
+    <ellipse cx="100" cy="96" rx="24" ry="30" fill="#EAB896"/>
+    <!-- eyes -->
+    <circle cx="89" cy="88" r="3" fill="#1A110A"/>
+    <circle cx="111" cy="88" r="3" fill="#1A110A"/>
+    <circle cx="90" cy="87" r="0.9" fill="#FFF"/>
+    <circle cx="112" cy="87" r="0.9" fill="#FFF"/>
+    <!-- eyebrows -->
+    <path d="M82 80 Q89 77 96 80" stroke="#5A3E24" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <path d="M104 80 Q111 77 118 80" stroke="#5A3E24" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- glasses -->
+    <g fill="none" stroke="#1A110A" stroke-width="2.2">
+      <rect x="79" y="82" width="16" height="13" rx="2.5"/>
+      <rect x="105" y="82" width="16" height="13" rx="2.5"/>
+      <line x1="95" y1="87" x2="105" y2="87"/>
+    </g>
+    <!-- nose -->
+    <path d="M98 99 Q100 107 102 99" stroke="#B8896A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- smile -->
+    <path d="M85 113 Q100 125 115 113" stroke="#1A110A" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path d="M89 115 Q100 120 111 115 L111 118 Q100 120 89 118 Z" fill="#FFFAF0"/>
+    <!-- mustache + goatee -->
+    <path d="M90 109 Q100 114 110 109" stroke="#3E2A15" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.6"/>
+    <path d="M96 122 Q100 128 104 122 Q104 126 100 127 Q96 126 96 122 Z" fill="#3E2A15" opacity="0.6"/>
+    <!-- earring -->
+    <circle cx="74" cy="108" r="2.2" fill="none" stroke="#C9A95C" stroke-width="1"/>
+    <!-- Alpenglow shirt logo hint -->
+    <path d="M85 200 L100 185 L115 200 Z" fill="#1A5F3E" opacity="0.35"/>
+  </symbol>
+
+  <!-- ───── Option C: Beanie Bert (slouchy tan beanie, big grin, honey-jar energy) ───── -->
+  <symbol id="bert-beanie" viewBox="0 0 200 240">
+    <!-- back dreads -->
+    <g fill="#7A5430">
+      <path d="M58 70 Q40 130 45 205 Q47 225 55 234 L68 234 Q63 205 65 165 Q68 120 74 92 Z"/>
+      <path d="M142 70 Q160 130 155 205 Q153 225 145 234 L132 234 Q137 205 135 165 Q132 120 126 92 Z"/>
+      <path d="M72 75 Q58 140 62 218 L78 226 Q75 185 79 150 Q84 115 86 95 Z"/>
+      <path d="M128 75 Q142 140 138 218 L122 226 Q125 185 121 150 Q116 115 114 95 Z"/>
+    </g>
+    <!-- beanie — slouchy knit -->
+    <path d="M62 66 Q62 26 100 22 Q138 26 138 66 Q138 70 132 72 L68 72 Q62 70 62 66 Z" fill="#A98A60"/>
+    <!-- knit ribbing lines -->
+    <g stroke="#7A6340" stroke-width="1" fill="none" opacity="0.5">
+      <line x1="72" y1="30" x2="72" y2="70"/>
+      <line x1="84" y1="26" x2="84" y2="70"/>
+      <line x1="100" y1="24" x2="100" y2="70"/>
+      <line x1="116" y1="26" x2="116" y2="70"/>
+      <line x1="128" y1="30" x2="128" y2="70"/>
+    </g>
+    <!-- beanie cuff -->
+    <rect x="62" y="60" width="76" height="10" fill="#8D7148"/>
+    <!-- face -->
+    <ellipse cx="100" cy="102" rx="26" ry="30" fill="#EAB896"/>
+    <!-- neck -->
+    <rect x="86" y="128" width="28" height="20" fill="#EAB896"/>
+    <!-- body — teal -->
+    <path d="M42 190 Q42 160 74 158 L126 158 Q158 160 158 190 L158 240 L42 240 Z" fill="url(#sunshine-shirt)"/>
+    <!-- little honey bee buzzing -->
+    <g transform="translate(165, 95)">
+      <ellipse cx="0" cy="0" rx="6" ry="4" fill="#FFD54F"/>
+      <rect x="-4" y="-3" width="2" height="6" fill="#2B2118"/>
+      <rect x="0" y="-3" width="2" height="6" fill="#2B2118"/>
+      <ellipse cx="-4" cy="-6" rx="4" ry="2" fill="#FFFAF0" opacity="0.7"/>
+      <ellipse cx="4" cy="-6" rx="4" ry="2" fill="#FFFAF0" opacity="0.7"/>
+    </g>
+    <!-- buzz lines -->
+    <g stroke="#2B2118" stroke-width="1" fill="none" stroke-linecap="round">
+      <path d="M178 100 Q182 104 178 108"/>
+      <path d="M184 98 Q188 104 184 110"/>
+    </g>
+    <!-- eyebrows — big excited arches -->
+    <path d="M83 85 Q88 80 94 85" stroke="#5A3E24" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <path d="M106 85 Q111 80 117 85" stroke="#5A3E24" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <!-- eyes -->
+    <circle cx="89" cy="94" r="3.2" fill="#1A110A"/>
+    <circle cx="111" cy="94" r="3.2" fill="#1A110A"/>
+    <circle cx="90" cy="93" r="1" fill="#FFF"/>
+    <circle cx="112" cy="93" r="1" fill="#FFF"/>
+    <!-- nose -->
+    <path d="M98 104 Q100 112 102 104" stroke="#B8896A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- big open toothy grin -->
+    <path d="M80 118 Q100 140 120 118 Q120 124 100 126 Q80 124 80 118 Z" fill="#1A110A"/>
+    <path d="M86 118 Q100 122 114 118 L114 123 Q100 124 86 123 Z" fill="#FFFAF0"/>
+    <!-- tooth divider -->
+    <line x1="100" y1="118" x2="100" y2="123" stroke="#1A110A" stroke-width="0.8"/>
+    <!-- mustache -->
+    <path d="M90 114 Q100 118 110 114" stroke="#3E2A15" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.55"/>
+    <!-- goatee -->
+    <path d="M96 130 Q100 136 104 130 Q104 134 100 135 Q96 134 96 130 Z" fill="#3E2A15" opacity="0.6"/>
+    <!-- cheeks -->
+    <circle cx="78" cy="112" r="4.5" fill="#FF8CA8" opacity="0.55"/>
+    <circle cx="122" cy="112" r="4.5" fill="#FF8CA8" opacity="0.55"/>
+    <!-- honey jar in corner -->
+    <rect x="20" y="195" width="22" height="30" fill="#E8A74A" opacity="0.9" rx="3"/>
+    <rect x="18" y="190" width="26" height="8" fill="#FFD54F" rx="2"/>
+    <ellipse cx="31" cy="212" rx="7" ry="5" fill="#FFFAF0" opacity="0.7"/>
+  </symbol>
+
+  <!-- ───── Option D: Grower Bert (shaved + bun, cannabis leaf, Alpenglow vibe) ───── -->
+  <symbol id="bert-grower" viewBox="0 0 200 240">
+    <!-- small dread strands wisping behind -->
+    <g fill="#6B4828">
+      <path d="M62 50 Q50 25 65 12 Q80 18 80 40 Z"/>
+      <path d="M140 50 Q150 25 135 12 Q120 18 120 40 Z"/>
+    </g>
+    <!-- dread topknot/bun -->
+    <ellipse cx="100" cy="38" rx="24" ry="16" fill="#6F4B28"/>
+    <path d="M82 36 Q86 24 94 30" stroke="#3E2A15" stroke-width="1.5" fill="none"/>
+    <path d="M102 34 Q106 22 112 28" stroke="#3E2A15" stroke-width="1.5" fill="none"/>
+    <path d="M112 38 Q118 26 122 32" stroke="#3E2A15" stroke-width="1.5" fill="none"/>
+    <!-- head / shaved sides -->
+    <ellipse cx="100" cy="78" rx="28" ry="24" fill="#E8B090"/>
+    <!-- hairline shadow -->
+    <path d="M74 65 Q100 55 126 65 Q126 72 100 76 Q74 72 74 65 Z" fill="#5A3E24" opacity="0.45"/>
+    <!-- body in green shirt -->
+    <path d="M42 190 Q42 160 74 158 L126 158 Q158 160 158 190 L158 240 L42 240 Z" fill="#2B8E6A"/>
+    <!-- neck -->
+    <rect x="88" y="128" width="24" height="20" fill="#EAB896"/>
+    <!-- face -->
+    <ellipse cx="100" cy="102" rx="25" ry="29" fill="#EAB896"/>
+    <!-- eyes — happy squints -->
+    <path d="M84 95 Q89 91 94 95" stroke="#1A110A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M106 95 Q111 91 116 95" stroke="#1A110A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- eyebrows -->
+    <path d="M82 88 Q89 85 96 88" stroke="#5A3E24" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    <path d="M104 88 Q111 85 118 88" stroke="#5A3E24" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    <!-- nose -->
+    <path d="M98 105 Q100 113 102 105" stroke="#B8896A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <!-- big smile -->
+    <path d="M84 120 Q100 134 116 120" stroke="#1A110A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M90 122 Q100 127 110 122 L110 125 Q100 127 90 125 Z" fill="#FFFAF0"/>
+    <!-- mustache -->
+    <path d="M90 116 Q100 121 110 116" stroke="#3E2A15" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.55"/>
+    <!-- goatee -->
+    <path d="M96 128 Q100 134 104 128 Q104 132 100 133 Q96 132 96 128 Z" fill="#3E2A15" opacity="0.6"/>
+    <!-- cheeks -->
+    <circle cx="80" cy="114" r="4" fill="#FF8CA8" opacity="0.5"/>
+    <circle cx="120" cy="114" r="4" fill="#FF8CA8" opacity="0.5"/>
+    <!-- cannabis leaf held up (upper left) -->
+    <g transform="translate(15, 20) rotate(-15)">
+      <!-- leaflets -->
+      <path d="M30 30 Q20 10 15 0 Q25 5 32 25 Z" fill="#4A7C1F"/>
+      <path d="M30 30 Q15 25 3 22 Q12 32 28 36 Z" fill="#4A7C1F"/>
+      <path d="M30 30 Q40 10 45 0 Q35 5 28 25 Z" fill="#4A7C1F"/>
+      <path d="M30 30 Q45 25 57 22 Q48 32 32 36 Z" fill="#4A7C1F"/>
+      <path d="M30 30 Q25 15 22 5 Q32 8 34 28 Z" fill="#3F6A1A"/>
+      <path d="M30 30 Q35 15 38 5 Q28 8 26 28 Z" fill="#3F6A1A"/>
+      <path d="M30 30 Q30 45 32 55 Q28 55 28 42 Z" fill="#4A7C1F"/>
+      <!-- stem -->
+      <line x1="30" y1="30" x2="35" y2="60" stroke="#5A3E24" stroke-width="2"/>
+    </g>
+    <!-- black glove holding it -->
+    <ellipse cx="52" cy="82" rx="8" ry="6" fill="#1A110A"/>
+    <!-- sparkle stars on the other side (shakedown vibes) -->
+    <g fill="#FFD54F" stroke="#2B2118" stroke-width="1">
+      <path d="M170 55 L172 49 L174 55 L180 57 L174 59 L172 65 L170 59 L164 57 Z"/>
+      <path d="M158 90 L159 86 L160 90 L164 91 L160 92 L159 96 L158 92 L154 91 Z"/>
+    </g>
+    <!-- tiny peace-sign cloud -->
+    <circle cx="175" cy="130" r="10" fill="#FF7A9C" stroke="#2B2118" stroke-width="1.8"/>
+    <line x1="175" y1="120" x2="175" y2="140" stroke="#2B2118" stroke-width="1.8"/>
+    <line x1="175" y1="130" x2="168" y2="137" stroke="#2B2118" stroke-width="1.8"/>
+    <line x1="175" y1="130" x2="182" y2="137" stroke="#2B2118" stroke-width="1.8"/>
+  </symbol>
+</svg>
+
+<div id="toast" class="toast"></div>
+
+<button class="feature-req" onclick="openFeatureReq()" title="Tell the maker what's missing">
+  <span class="spark">✨</span> Feature request
+</button>
+
+<div class="modal-bg" id="fr-modal" onclick="if(event.target===this)closeFeatureReq()">
+  <div class="modal">
+    <button class="close-x" onclick="closeFeatureReq()">×</button>
+    <h3>What's missing?</h3>
+    <p>Drop a feature request. Goes straight to Monique's inbox.</p>
+    <textarea class="ta" id="fr-text" placeholder="What would make Bert better for you?" style="min-height:120px"></textarea>
+    <input class="txt" id="fr-from" placeholder="Your name (optional)" style="margin-top:8px">
+    <div class="btn-row">
+      <button class="btn btn-pink" onclick="sendFeatureReq()">📧 Send it</button>
+      <button class="btn btn-sm" onclick="closeFeatureReq()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+    <!-- ════════════════════════ TODAY ════════════════════════ -->
+    <div id="panel-today" class="panel active">
+      <div class="page-head">
+        <div>
+          <div class="page-title"><span id="howdy-text">Howdy, Ari</span> <span class="hand" id="howdy-wave">🤘</span></div>
+          <div class="page-date" id="today-date"></div>
+        </div>
+      </div>
+
+      <div class="av-picker" id="av-picker">
+        <div class="ap-title">Pick your Bert, brah 🌈 <small onclick="toggleAvPicker()" id="av-toggle">hide ↑</small></div>
+        <div class="ap-grid">
+          <div class="ap-opt" data-av="bert-avatar" onclick="pickBert('bert-avatar')">
+            <svg viewBox="0 0 200 240"><use href="#bert-avatar"/></svg>
+            <div class="lbl">🎸 Harry Hood</div>
+          </div>
+          <div class="ap-opt" data-av="bert-topknot" onclick="pickBert('bert-topknot')">
+            <svg viewBox="0 0 200 240"><use href="#bert-topknot"/></svg>
+            <div class="lbl">✌️ Fluffhead</div>
+          </div>
+          <div class="ap-opt" data-av="bert-beanie" onclick="pickBert('bert-beanie')">
+            <svg viewBox="0 0 200 240"><use href="#bert-beanie"/></svg>
+            <div class="lbl">🍯 Sugar Magnolia</div>
+          </div>
+          <div class="ap-opt" data-av="bert-grower" onclick="pickBert('bert-grower')">
+            <svg viewBox="0 0 200 240"><use href="#bert-grower"/></svg>
+            <div class="lbl">🌿 Shakedown Bert</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="welcome">
+        <div class="bert-speech" id="bert-speech"></div>
+        <svg class="bert-av-big bert-av-use" aria-hidden="true" viewBox="0 0 200 240" onclick="sayBert()"><use href="#bert-avatar"/></svg>
+        <div class="howdy" id="welcome-line">Let's make it a good one.</div>
+        <div class="line">Bert keeps Alpenglow, The Hollow, and everything else you juggle all in one place.</div>
+      </div>
+
+      <div class="bert-daily">
+        <div>
+          <div class="col-title">Bert Daily 🤘</div>
+          <div class="daily-msg" id="bert-daily-msg">One job, one zone, one thing.</div>
+          <div class="daily-sub" id="bert-daily-sub"></div>
+          <div style="margin-top:10px">
+            <button class="btn btn-sm" onclick="rollBertDaily()">🎲 new line</button>
+          </div>
+        </div>
+        <div class="brain-quick">
+          <div class="brain-row">
+            <strong style="font-family:'Fredoka',sans-serif; font-size:15px">💭 Brain dump</strong>
+            <small id="brain-count">0 in the pile</small>
+          </div>
+          <textarea id="brain-quick-input" placeholder="Say whatever. Bert'll remember." onkeydown="if(event.key==='Enter' && (event.metaKey||event.ctrlKey)) addBrainQuick()"></textarea>
+          <div class="brain-row">
+            <button class="btn btn-sm btn-pink" onclick="addBrainQuick()">+ Stick it</button>
+            <button class="btn btn-sm" onclick="switchTab('brain', findNavBtn('brain'))">see all ↗</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card c-pink"><div class="n" id="s-week">0</div><div class="l">This week</div></div>
+        <div class="stat-card c-sun"><div class="n" id="s-jobs">0</div><div class="l">Active jobs</div></div>
+        <div class="stat-card c-sky"><div class="n" id="s-visitors">0</div><div class="l">Coming up</div></div>
+        <div class="stat-card c-grass"><div class="n" id="s-dump">—</div><div class="l">Days since dump</div></div>
+      </div>
+
+      <div class="section-label"><span class="emoji">✏️</span> Quick catch <span class="hint">— throw it on the list before it floats away</span></div>
+      <div class="card">
+        <div style="display:flex; gap:8px; margin-bottom:10px">
+          <input class="txt" id="quick-new" placeholder="What's the thought?" onkeydown="if(event.key==='Enter')addQuick()">
+          <button class="btn btn-pink btn-sm" onclick="addQuick()">+ Catch</button>
+        </div>
+        <div id="quick-list"></div>
+      </div>
+
+      <div class="section-label"><span class="emoji">🫧</span> This week's bubbles <span class="hint">— drag more from The Hollow or Jobs</span></div>
+      <div id="today-bubbles"></div>
+
+      <div class="section-label"><span class="emoji">☀️</span> Active solar jobs</div>
+      <div id="today-jobs"></div>
+
+      <div class="section-label"><span class="emoji">📆</span> Next up on Google <span class="hint" id="today-gevents-hint">— connect Google in Brain dump</span></div>
+      <div id="today-gevents"></div>
+
+      <div class="section-label"><span class="emoji">✌️</span> Who's around</div>
+      <div id="today-visitors"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-pink" onclick="switchTab('week', findNavBtn('week'))">Open the week ↗</button>
+        <button class="btn btn-sky" onclick="switchTab('jobs', findNavBtn('jobs'))">Jobs ↗</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════════ THIS WEEK ════════════════════════ -->
+    <div id="panel-week" class="panel">
+      <div class="page-head">
+        <div>
+          <div class="page-title">This Week <span class="hand">🫧</span></div>
+          <div class="page-date">Drag bubbles in. Check 'em off. Email the list to whoever's holding down the fort.</div>
+        </div>
+      </div>
+
+      <div class="bubble-drop" id="bubble-drop" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dragDrop(event)">
+        <div id="bubbles-wrap">
+          <div class="bubble-drop-hint" id="drop-hint">Drop zone tasks or job items here ·<br>or tap <em>+ Add bubble</em> below</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-bottom:1rem">
+        <input class="txt" id="bubble-new" placeholder="Quick bubble…" onkeydown="if(event.key==='Enter')addBubble()">
+        <select class="sel" id="bubble-color">
+          <option value="pink">Pink</option>
+          <option value="sun">Sunshine</option>
+          <option value="sky">Sky</option>
+          <option value="grass">Grass</option>
+          <option value="plum">Plum</option>
+          <option value="rust">Rust</option>
+        </select>
+        <button class="btn btn-pink btn-sm" onclick="addBubble()">+ Add bubble</button>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-grass" onclick="emailWeek()">📧 Email this list</button>
+        <button class="btn btn-sun" onclick="copyWeek()">📋 Copy as text</button>
+        <button class="btn btn-danger btn-sm" onclick="clearDoneBubbles()">Clear done</button>
+        <button class="btn btn-danger btn-sm" onclick="clearAllBubbles()">Clear all</button>
+      </div>
+
+      <div class="section-label" style="margin-top:2.5rem"><span class="emoji">🌲</span> Peek: zones you can pull from</div>
+      <div class="zones-grid" id="week-zones-peek"></div>
+    </div>
+
+    <!-- ════════════════════════ SOLAR JOBS ════════════════════════ -->
+    <div id="panel-jobs" class="panel">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Solar Jobs <span class="hand">☀️</span></div>
+          <div class="page-date">Each job gets a to-do, a buy list, and a materials list.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>+ New job</h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:10px">
+          <input class="txt" id="job-name" placeholder="Job name (e.g. Smith Ranch off-grid)">
+          <input class="txt" id="job-client" placeholder="Client / contact">
+          <input class="txt" id="job-start" type="date" placeholder="Start date">
+          <select class="sel" id="job-status">
+            <option value="planning">Planning</option>
+            <option value="inprogress">In progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-sun" onclick="addJob()">+ Add job</button>
+        </div>
+      </div>
+
+      <div id="jobs-list" style="margin-top:1.5rem"></div>
+    </div>
+
+    <!-- ════════════════════════ ZONES ════════════════════════ -->
+    <div id="panel-zones" class="panel">
+      <div class="page-head">
+        <div>
+          <div class="page-title">The Hollow <span class="hand">🌲</span></div>
+          <div class="page-date">Recurring tasks by zone. Drag (desktop) or tap <strong style="color:var(--pink)">→ week</strong> (mobile) to send to This Week.</div>
+        </div>
+      </div>
+
+      <div class="zones-grid" id="zones-grid"></div>
+
+      <div class="divider"></div>
+      <div class="section-label"><span class="emoji">➕</span> New zone</div>
+      <div class="card">
+        <div style="display:flex; gap:8px; flex-wrap: wrap">
+          <input class="txt" id="zone-new-name" placeholder="Zone name (e.g. Shop, Greenhouse)" style="flex:1; min-width:200px">
+          <select class="sel" id="zone-new-color">
+            <option value="inside">Pink</option>
+            <option value="back">Sun</option>
+            <option value="baby">Plum</option>
+            <option value="orchard">Grass</option>
+            <option value="ladies">Sky</option>
+            <option value="bert">Rust</option>
+          </select>
+          <button class="btn btn-pink btn-sm" onclick="addZone()">+ Add zone</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════ GROCERY ════════════════════════ -->
+    <div id="panel-grocery" class="panel">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Grocery <span class="hand">🛒</span></div>
+          <div class="page-date">Running list. Tap to check off when you grab it. Email it to whoever's shopping.</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card c-pink"><div class="n" id="gr-need">0</div><div class="l">Still need</div></div>
+        <div class="stat-card c-grass"><div class="n" id="gr-got">0</div><div class="l">Got</div></div>
+        <div class="stat-card c-sun"><div class="n" id="gr-total">0</div><div class="l">Total on list</div></div>
+        <div class="stat-card c-sky"><div class="n" id="gr-cats">0</div><div class="l">Categories</div></div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <input class="txt" id="gr-new" placeholder="What to grab?" style="flex:1; min-width:180px" onkeydown="if(event.key==='Enter')addGrocery()">
+          <select class="sel" id="gr-cat">
+            <option value="produce">🥬 Produce</option>
+            <option value="dairy">🥛 Dairy/eggs</option>
+            <option value="pantry">🥫 Pantry</option>
+            <option value="meat">🥩 Meat/fish</option>
+            <option value="frozen">🧊 Frozen</option>
+            <option value="bakery">🥖 Bakery</option>
+            <option value="drinks">🍹 Drinks</option>
+            <option value="household">🧼 Household</option>
+            <option value="other">✨ Other</option>
+          </select>
+          <button class="btn btn-grass btn-sm" onclick="addGrocery()">+ Add</button>
+        </div>
+      </div>
+
+      <div id="grocery-list"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-grass" onclick="emailGrocery()">📧 Email the list</button>
+        <button class="btn btn-sun" onclick="copyGrocery()">📋 Copy as text</button>
+        <button class="btn btn-danger btn-sm" onclick="clearGotGrocery()">Clear got</button>
+        <button class="btn btn-danger btn-sm" onclick="clearAllGrocery()">Clear all</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════════ DUMP ════════════════════════ -->
+    <div id="panel-dump" class="panel">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Dump Runs <span class="hand">🗑️</span></div>
+          <div class="page-date">When you last hauled trash, and when to go again.</div>
+        </div>
+      </div>
+
+      <div class="dump-banner">
+        <div class="big" id="dump-days-big">—</div>
+        <div class="sub" id="dump-sub">Log your first run below</div>
+      </div>
+
+      <div class="card">
+        <h3>Log a dump run</h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 2fr; gap:8px; margin-top:10px">
+          <input class="txt" id="dump-date" type="date">
+          <select class="sel" id="dump-type">
+            <option value="trash">🗑️ Trash</option>
+            <option value="recycle">♻️ Recycling</option>
+            <option value="compost">🌱 Compost</option>
+            <option value="scrap">🔧 Scrap / metal</option>
+          </select>
+          <input class="txt" id="dump-note" placeholder="Notes (optional)">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-grass" onclick="addDump()">+ Log run</button>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:2rem"><span class="emoji">📜</span> Recent runs</div>
+      <div id="dump-log"></div>
+
+      <div class="section-label" style="margin-top:2rem"><span class="emoji">⏰</span> Remind me every</div>
+      <div class="card">
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+          <input class="txt" id="dump-interval" type="number" min="1" max="60" value="7" style="max-width:100px">
+          <span style="color:var(--ink-60)">days — Bert will nudge you on the Today page.</span>
+          <button class="btn btn-sm" onclick="saveDumpInterval()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════ VEHICLES ════════════════════════ -->
+    <div id="panel-vehicles" class="panel">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Vehicles <span class="hand">🚐</span></div>
+          <div class="page-date">Parts on hand · maintenance log · what's due next.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>+ New vehicle</h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; margin-top:10px">
+          <input class="txt" id="veh-name" placeholder="Name (e.g. The Beast)">
+          <input class="txt" id="veh-model" placeholder="Year/make/model">
+          <input class="txt" id="veh-plate" placeholder="Plate / VIN (optional)">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-rust" onclick="addVehicle()">+ Add vehicle</button>
+        </div>
+      </div>
+
+      <div id="vehicles-list" style="margin-top:1.5rem"></div>
+    </div>
+
+    <!-- ════════════════════════ VISITORS ════════════════════════ -->
+    <div id="panel-visitors" class="panel">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Visitors <span class="hand">✌️</span></div>
+          <div class="page-date">Tap two days to pick a stay. Add name + how they can help.</div>
+        </div>
+      </div>
+
+      <div class="cal-wrap">
+        <div class="cal-head">
+          <div class="cal-nav">
+            <button onclick="calNav(-1)">←</button>
+            <button onclick="calNav(0)">today</button>
+            <button onclick="calNav(1)">→</button>
+          </div>
+          <div class="cal-month" id="cal-month">—</div>
+          <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--ink-60)" id="cal-sel-label">tap a day to start</div>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="cal-legend">tap one day to set arrival · tap another to set departure · tap again to reset</div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:10px">+ New visitor</h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px">
+          <input class="txt" id="vis-arrive" type="date" title="Arrive">
+          <input class="txt" id="vis-depart" type="date" title="Depart">
+        </div>
+        <input class="txt" id="vis-name" placeholder="Name(s)" style="margin-top:8px">
+        <input class="txt" id="vis-note" placeholder="Anything in particular to have them help with?" style="margin-top:8px">
+        <div class="btn-row">
+          <button class="btn btn-plum" onclick="addVisitor()">+ Add visitor</button>
+          <button class="btn btn-sm" onclick="clearVisitorForm()">Clear</button>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:2rem"><span class="emoji">📆</span> Everyone on the books</div>
+      <div id="visitors-list"></div>
+    </div>
+
+    <!-- ════════════════════════ WELLNESS ════════════════════════ -->
+    <div id="panel-wellness" class="panel">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Wellness <span class="hand">🧘</span></div>
+          <div class="page-date">Small daily things. Tick 'em. Build the streak.</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card c-plum"><div class="n" id="wn-today">0</div><div class="l">Done today</div></div>
+        <div class="stat-card c-grass"><div class="n" id="wn-streak">0</div><div class="l">Day streak</div></div>
+        <div class="stat-card c-sun"><div class="n" id="wn-month">0</div><div class="l">Days this month</div></div>
+        <div class="stat-card c-sky"><div class="n" id="wn-total">0</div><div class="l">All-time</div></div>
+      </div>
+
+      <div class="section-label"><span class="emoji">🌅</span> Every morning <span class="hint">— the non-negotiables</span></div>
+      <div id="wellness-core"></div>
+
+      <div class="section-label"><span class="emoji">🎨</span> Hobbies <span class="hint">— tick what you did today</span></div>
+      <div id="wellness-hobbies"></div>
+      <div class="card" style="margin-top:10px">
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <input class="txt" id="new-hobby" placeholder="Add a hobby (guitar, read, swim…)" style="flex:1; min-width:200px" onkeydown="if(event.key==='Enter')addHobby()">
+          <button class="btn btn-pink btn-sm" onclick="addHobby()">+ Add hobby</button>
+        </div>
+      </div>
+
+      <div class="section-label"><span class="emoji">📒</span> How I felt today</div>
+      <div class="card">
+        <textarea class="ta" id="wellness-note" placeholder="Body, mind, mood. One line is fine." style="min-height:70px"></textarea>
+        <div class="btn-row">
+          <button class="btn btn-sm" onclick="saveWellnessNote()">Save note</button>
+          <span id="wellness-note-msg" style="display:none; font-size:12px; color:var(--grass); align-self:center">Saved.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════ JOURNAL ════════════════════════ -->
+    <div id="panel-journal" class="panel">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Journal <span class="hand">📓</span></div>
+          <div class="page-date">Dated entries. For the head-stuff that needs out.</div>
+        </div>
+      </div>
+
+      <div class="card" style="background: linear-gradient(135deg, var(--plum-soft), var(--pink-soft))">
+        <div style="font-family:'Caveat', cursive; font-size:22px; font-weight:600; color:var(--ink); margin-bottom:6px" id="journal-prompt">What's in your head today?</div>
+        <div style="font-family:'DM Mono', monospace; font-size:10px; color:var(--ink-60); letter-spacing:.08em; margin-bottom:10px" id="journal-today-date"></div>
+        <textarea class="ta" id="journal-text" placeholder="Write whatever. Nobody else reads this." style="min-height:180px; background:var(--paper); font-family:'Caveat', cursive; font-size:19px; line-height:1.45"></textarea>
+        <div class="btn-row">
+          <button class="btn btn-plum" onclick="addJournalEntry()">💾 Save entry</button>
+          <button class="btn btn-sm" onclick="rollJournalPrompt()">🎲 new prompt</button>
+          <button class="btn btn-sm" onclick="clearJournalDraft()">Clear</button>
+        </div>
+      </div>
+
+      <div class="stats-row" style="margin-top:1rem">
+        <div class="stat-card c-plum"><div class="n" id="jn-total">0</div><div class="l">Entries</div></div>
+        <div class="stat-card c-pink"><div class="n" id="jn-month">0</div><div class="l">This month</div></div>
+        <div class="stat-card c-sun"><div class="n" id="jn-streak">0</div><div class="l">Day streak</div></div>
+        <div class="stat-card c-sky"><div class="n" id="jn-words">0</div><div class="l">Total words</div></div>
+      </div>
+
+      <div class="section-label" style="margin-top:1.5rem"><span class="emoji">📖</span> Past entries</div>
+      <div id="journal-list"></div>
+    </div>
+
+    <!-- ════════════════════════ BAND ════════════════════════ -->
+    <div id="panel-band" class="panel">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Band <span class="hand">🎸</span></div>
+          <div class="page-date">Shows coming up · rehearsals on the books.</div>
+        </div>
+      </div>
+
+      <div class="card" style="background: linear-gradient(135deg, var(--rust-soft), var(--sun-soft))">
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+          <label style="font-family:'Caveat', cursive; font-size:22px; font-weight:600">Band name:</label>
+          <input class="txt" id="band-name" placeholder="The Dreadnoughts, Sunset Compound, whatever" style="flex:1; min-width:200px">
+          <button class="btn btn-sm btn-rust" onclick="saveBandName()">Save</button>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:1.5rem"><span class="emoji">🔥</span> Shows</div>
+      <div class="card">
+        <h3 style="margin-bottom:8px">+ New show</h3>
+        <div style="display:grid; grid-template-columns: 2fr 2fr 1fr 1fr; gap:8px">
+          <input class="txt" id="show-name" placeholder="Show / event name">
+          <input class="txt" id="show-venue" placeholder="Venue">
+          <input class="txt" id="show-date" type="date">
+          <input class="txt" id="show-time" type="time">
+        </div>
+        <input class="txt" id="show-note" placeholder="Set length, load-in, guarantee, notes…" style="margin-top:8px">
+        <div class="btn-row">
+          <button class="btn btn-rust" onclick="addShow()">+ Add show</button>
+        </div>
+      </div>
+      <div id="shows-list" style="margin-top:1rem"></div>
+
+      <div class="section-label" style="margin-top:2rem"><span class="emoji">🥁</span> Rehearsals</div>
+      <div class="card">
+        <h3 style="margin-bottom:8px">+ New rehearsal</h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 2fr; gap:8px">
+          <input class="txt" id="reh-date" type="date">
+          <input class="txt" id="reh-time" type="time">
+          <input class="txt" id="reh-loc" placeholder="Where (The Hollow, the barn, someone's basement…)">
+        </div>
+        <input class="txt" id="reh-note" placeholder="What are you working on?" style="margin-top:8px">
+        <div class="btn-row">
+          <button class="btn btn-plum" onclick="addReh()">+ Add rehearsal</button>
+        </div>
+      </div>
+      <div id="reh-list" style="margin-top:1rem"></div>
+    </div>
+
+    <!-- ════════════════════════ BRAIN DUMP ════════════════════════ -->
+    <div id="panel-brain" class="panel">
+      <div class="page-head">
+        <div>
+          <div class="page-title">Brain dump <span class="hand">💭</span></div>
+          <div class="page-date">Sticky notes, half-baked ideas, and one-tap calendar add.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Drop a thought</h3>
+        <textarea class="ta" id="note-new" placeholder="Type something. Anything. Bert won't judge." style="min-height:100px"></textarea>
+        <div class="btn-row">
+          <button class="btn btn-pink" onclick="addNote()">+ Stick it</button>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:2rem"><span class="emoji">🔗</span> Sign in with Google <span class="hint">— calendar sync + cloud backup</span></div>
+      <div class="card">
+        <div id="g-status" style="font-size:14px; margin-bottom:10px">Loading…</div>
+        <details style="margin-bottom:10px">
+          <summary style="cursor:pointer; font-weight:600; color:var(--plum); font-size:13px">One-time setup ↘</summary>
+          <ol style="font-size:13px; color:var(--ink-60); margin:10px 0 0 20px; line-height:1.7">
+            <li>Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color:var(--sky)">Google Cloud Console → Credentials</a></li>
+            <li>Create an OAuth 2.0 Client ID · type: <strong>Web application</strong></li>
+            <li>Add <code style="background:var(--ink-05); padding:1px 5px; border-radius:4px">https://ilv2recycle.github.io</code> to <em>Authorized JavaScript origins</em></li>
+            <li>Enable the <strong>Google Calendar API</strong> and <strong>Google Drive API</strong> in that project</li>
+            <li>Paste the Client ID below and hit Sign in</li>
+          </ol>
+          <div style="font-size:12px; color:var(--ink-60); margin-top:10px; padding-top:10px; border-top:1px dashed var(--ink-10)">
+            Data backup uses Drive's <em>app data folder</em> — it's private to Bert and doesn't show up in your Drive file list.
+          </div>
+        </details>
+        <input class="txt" id="g-client-id" placeholder="123-abcdef.apps.googleusercontent.com" style="font-family:'DM Mono',monospace; font-size:12px">
+        <div class="btn-row">
+          <button class="btn btn-sm" onclick="gSaveClientId()">Save ID</button>
+          <button class="btn btn-sm btn-sky" onclick="gConnect()">🔗 Sign in with Google</button>
+          <button class="btn btn-sm btn-danger" onclick="gDisconnect()">Sign out</button>
+          <button class="btn btn-sm" onclick="fetchGEvents()">↻ Refresh events</button>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:2rem"><span class="emoji">☁️</span> Cloud save <span class="hint">— back up & sync across devices</span></div>
+      <div class="card">
+        <div id="cloud-status" style="font-size:13px; margin-bottom:12px">Loading…</div>
+        <div class="btn-row">
+          <button class="btn btn-grass" onclick="gDriveSave()">💾 Save to cloud</button>
+          <button class="btn btn-sky" onclick="gDriveLoad()">↓ Load from cloud</button>
+        </div>
+        <div style="font-size:12px; color:var(--ink-60); margin-top:12px; font-style:italic; line-height:1.5">
+          Save on one device, load on another. Loading replaces local data — save first if there's stuff you don't want to lose.
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:2rem"><span class="emoji">📆</span> Quick calendar add <span class="hint">— opens Google Calendar in a new tab</span></div>
+      <div class="card">
+        <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:8px">
+          <input class="txt" id="cal-title" placeholder="What's the event?">
+          <input class="txt" id="cal-date" type="date">
+          <input class="txt" id="cal-time" type="time">
+        </div>
+        <input class="txt" id="cal-detail" placeholder="Details (optional)" style="margin-top:8px">
+        <div class="btn-row">
+          <button class="btn btn-sky" onclick="openGCal()">📆 Add to Google Calendar ↗</button>
+          <button class="btn" onclick="openGCalHome()">Open Calendar ↗</button>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:2rem"><span class="emoji">🗒️</span> The pile</div>
+      <div id="notes-list"></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//   BERT — single-file app, localStorage only
+// ═══════════════════════════════════════════════════════════════════
+
+// ─── utilities ──────────────────────────────────────────────────────
+function todayKey() { const d = new Date(); return dateKey(d); }
+function dateKey(d) { return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function fmtDate(d) { return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); }
+function fmtShort(d) { return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+function daysBetween(a,b) { return Math.floor((b-a)/86400000); }
+function parseDate(s) { if (!s) return null; const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); }
+function load(k,d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } }
+function save(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+function uid(p){ return (p||'x') + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,6); }
+function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(window._tt); window._tt=setTimeout(()=>t.classList.remove('show'),1800); }
+const CHECK_SVG = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l2.5 2.5L9.5 2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+// ─── defaults / seeds ───────────────────────────────────────────────
+const DEFAULT_ZONES = [
+  { id: 'z-inside',   name: 'Inside House',  color: 'inside',  emoji: '🏠',
+    tasks: ['Sweep main rooms', 'Clean bathrooms', 'Empty bins', 'Wash dishes', 'Change sheets', 'Stock toilet paper', 'Fridge wipe-down', 'Vacuum rugs'] },
+  { id: 'z-back',     name: 'Back Porch',    color: 'back',    emoji: '🪴',
+    tasks: ['Sweep porch', 'Water pots', 'Tidy boots / gear', 'Stack firewood', 'Refill bird feeder', 'Check gutter'] },
+  { id: 'z-baby',     name: 'Baby Momma',    color: 'baby',    emoji: '🪴',
+    tasks: ['Vent / adjust doors', 'Water beds', 'Temp & humidity check', 'Start / transplant seedlings', 'Pest scout', 'Weed beds', 'Harvest what\'s ripe', 'Damp down floor'] },
+  { id: 'z-orchard',  name: 'Orchard',       color: 'orchard', emoji: '🍎',
+    tasks: ['Water young trees', 'Mulch ring check', 'Prune suckers', 'Harvest what\'s ripe', 'Check for pests', 'Mow between rows'] },
+  { id: 'z-ladies',   name: 'Ladies',        color: 'ladies',  emoji: '🌿',
+    tasks: ['pH water + feed', 'Scout for pests (mites, mildew)', 'Defoliate / LST training', 'Check trichomes', 'Temp & humidity check', 'Flush (if late flower)', 'Clean grow space', 'Harvest / dry check'] },
+  { id: 'z-monthly',  name: 'Monthly House Checks', color: 'bert', emoji: '🔧',
+    tasks: ['Generator check', 'Septic tank check', 'Vacuum inverter'] },
+  { id: 'z-seasonal', name: 'Seasonal House Checks', color: 'back', emoji: '🍂',
+    tasks: ['Check water tank', 'Check drip lines'] },
+  { id: 'z-kitchen',  name: 'Kitchen', color: 'orchard', emoji: '🍳',
+    tasks: ['Make yogurt', 'Feed sourdough starter'] },
+  { id: 'z-coudas',   name: 'Coudas', color: 'back', emoji: '🐈',
+    tasks: ['Flea/tick med (is he due?)', 'Food stock — does he need more?', 'Check the feeder', 'Fresh water'] },
+];
+// Migration v2 — Ladies is cannabis, Baby Momma is the greenhouse.
+// Only overwrite if the zone still has its exact old default tasks (untouched).
+(function migrateZonesV2(){
+  if (localStorage.getItem('bert-mig-v2')) return;
+  try {
+    const zones = JSON.parse(localStorage.getItem('zones') || 'null');
+    if (zones) {
+      const ladies = zones.find(z => z.id === 'z-ladies');
+      const oldLadies = ['Fresh water','Collect eggs','Feed scratch','Clean coop','Check fencing','Nest box bedding'];
+      if (ladies && JSON.stringify(ladies.tasks) === JSON.stringify(oldLadies)) {
+        ladies.tasks = ['pH water + feed','Scout for pests (mites, mildew)','Defoliate / LST training','Check trichomes','Temp & humidity check','Flush (if late flower)','Clean grow space','Harvest / dry check'];
+        ladies.emoji = '🌿';
+      }
+      const baby = zones.find(z => z.id === 'z-baby');
+      const oldBaby = ['Check in with her','Coordinate pickup / drop','Buy groceries on list','Send money for the week','Kid schedule sync'];
+      if (baby && JSON.stringify(baby.tasks) === JSON.stringify(oldBaby)) {
+        baby.tasks = ['Vent / adjust doors','Water beds','Temp & humidity check','Start / transplant seedlings','Pest scout','Weed beds','Harvest what\'s ripe','Damp down floor'];
+        baby.emoji = '🪴';
+      }
+      localStorage.setItem('zones', JSON.stringify(zones));
+    }
+  } catch {}
+  localStorage.setItem('bert-mig-v2', '1');
+})();
+// Migration v3 — add "Monthly House Checks" zone for existing users
+(function migrateZonesV3(){
+  if (localStorage.getItem('bert-mig-v3')) return;
+  try {
+    const zones = JSON.parse(localStorage.getItem('zones') || 'null');
+    if (zones && !zones.find(z => z.id === 'z-monthly')) {
+      zones.push({ id: 'z-monthly', name: 'Monthly House Checks', color: 'bert', emoji: '🔧',
+        tasks: ['Generator check', 'Septic tank check', 'Vacuum inverter'] });
+      localStorage.setItem('zones', JSON.stringify(zones));
+    }
+  } catch {}
+  localStorage.setItem('bert-mig-v3', '1');
+})();
+// Migration v4 — add Seasonal, Kitchen, Coudas zones for existing users
+(function migrateZonesV4(){
+  if (localStorage.getItem('bert-mig-v4')) return;
+  try {
+    const zones = JSON.parse(localStorage.getItem('zones') || 'null');
+    if (zones) {
+      const toAdd = [
+        { id: 'z-seasonal', name: 'Seasonal House Checks', color: 'back', emoji: '🍂',
+          tasks: ['Check water tank', 'Check drip lines'] },
+        { id: 'z-kitchen',  name: 'Kitchen', color: 'orchard', emoji: '🍳',
+          tasks: ['Make yogurt', 'Feed sourdough starter'] },
+        { id: 'z-coudas',   name: 'Coudas', color: 'back', emoji: '🐈',
+          tasks: ['Flea/tick med (is he due?)', 'Food stock — does he need more?', 'Check the feeder', 'Fresh water'] },
+      ];
+      toAdd.forEach(nz => { if (!zones.find(z => z.id === nz.id)) zones.push(nz); });
+      localStorage.setItem('zones', JSON.stringify(zones));
+    }
+  } catch {}
+  localStorage.setItem('bert-mig-v4', '1');
+})();
+
+// ─── ZONES ──────────────────────────────────────────────────────────
+function getZones(){
+  let z = load('zones', null);
+  if (!z) { z = structuredClone(DEFAULT_ZONES); save('zones', z); }
+  return z;
+}
+function saveZones(z){ save('zones', z); }
+
+function renderZones(){
+  const zones = getZones();
+  const host = document.getElementById('zones-grid');
+  const peek = document.getElementById('week-zones-peek');
+  if (!host) return;
+  const cardsHtml = zones.map(z => zoneCardHtml(z, false)).join('');
+  host.innerHTML = cardsHtml || '<div class="empty">No zones yet. Add one below.</div>';
+  if (peek) peek.innerHTML = zones.map(z => zoneCardHtml(z, true)).join('');
+  bindZoneDrag();
+}
+function zoneCardHtml(z, compact){
+  const tasks = z.tasks.map((t,i) => `
+    <div class="zone-task" draggable="true" data-zone="${z.id}" data-idx="${i}" data-title="${esc(t)}" data-color="${z.color}">
+      <span class="grip">⋮⋮</span>
+      <span class="tt" ondblclick="event.stopPropagation(); editZoneTask('${z.id}',${i})" title="double-click to edit">${esc(t)}</span>
+      <span class="zt-btn zt-go" onclick="event.stopPropagation(); zoneTaskToWeek('${z.id}',${i})" title="add to this week">→ week</span>
+      <span class="zt-btn" onclick="event.stopPropagation(); editZoneTask('${z.id}',${i})" title="edit">✎</span>
+      <span class="zt-btn" onclick="event.stopPropagation(); deleteZoneTask('${z.id}',${i})" title="remove">×</span>
+    </div>`).join('');
+  const addUi = compact ? '' : `
+    <div class="zone-add">
+      <input type="text" placeholder="+ add task" onkeydown="if(event.key==='Enter')addZoneTask('${z.id}', this)">
+      <button onclick="addZoneTask('${z.id}', this.previousElementSibling)">+</button>
+    </div>
+    <div style="padding:0 8px; margin-top:8px">
+      <button class="iconbtn" onclick="renameZone('${z.id}')">rename</button>
+      <button class="iconbtn" onclick="deleteZone('${z.id}')">delete zone</button>
+    </div>`;
+  return `
+    <div class="zone-card zone-${z.color}">
+      <div class="zone-head">
+        <div class="zone-title">${z.emoji || '📍'} ${esc(z.name)}</div>
+        <div class="zone-count">${z.tasks.length} tasks</div>
+      </div>
+      <div class="zone-tasks">${tasks || '<div class="empty" style="font-size:15px">empty</div>'}</div>
+      ${addUi}
+    </div>`;
+}
+function addZoneTask(zoneId, input){
+  const v = input.value.trim(); if (!v) return;
+  const zones = getZones();
+  const z = zones.find(x => x.id === zoneId); if (!z) return;
+  z.tasks.push(v); saveZones(zones); input.value = ''; renderZones(); showToast('Added to ' + z.name);
+}
+function deleteZoneTask(zoneId, idx){
+  const zones = getZones();
+  const z = zones.find(x => x.id === zoneId); if (!z) return;
+  z.tasks.splice(idx, 1); saveZones(zones); renderZones();
+}
+function editZoneTask(zoneId, idx){
+  const zones = getZones();
+  const z = zones.find(x => x.id === zoneId); if (!z) return;
+  const cur = z.tasks[idx]; if (cur === undefined) return;
+  const n = prompt('Edit task:', cur);
+  if (n === null) return;
+  const v = n.trim(); if (!v) return;
+  z.tasks[idx] = v; saveZones(zones); renderZones();
+}
+function zoneTaskToWeek(zoneId, idx){
+  const zones = getZones();
+  const z = zones.find(x => x.id === zoneId); if (!z) return;
+  const title = z.tasks[idx]; if (!title) return;
+  const zoneColorMap = { inside:'pink', back:'sun', baby:'plum', orchard:'grass', ladies:'sky', bert:'rust' };
+  const color = zoneColorMap[z.color] || 'pink';
+  addBubbleItem(title, z.id, color);
+}
+function addZone(){
+  const name = document.getElementById('zone-new-name').value.trim(); if (!name) return;
+  const color = document.getElementById('zone-new-color').value;
+  const zones = getZones();
+  zones.push({ id: uid('z'), name, color, emoji: '📍', tasks: [] });
+  saveZones(zones); document.getElementById('zone-new-name').value = ''; renderZones();
+  showToast('Zone added');
+}
+function deleteZone(id){
+  if (!confirm('Delete this zone and all its tasks?')) return;
+  saveZones(getZones().filter(z => z.id !== id)); renderZones();
+}
+function renameZone(id){
+  const zones = getZones(); const z = zones.find(x => x.id === id); if (!z) return;
+  const n = prompt('Rename zone:', z.name); if (!n) return;
+  z.name = n.trim() || z.name; saveZones(zones); renderZones();
+}
+
+// ─── DRAG & DROP ────────────────────────────────────────────────────
+function bindZoneDrag(){
+  document.querySelectorAll('.zone-task').forEach(el => {
+    el.addEventListener('dragstart', e => {
+      e.dataTransfer.effectAllowed = 'copy';
+      e.dataTransfer.setData('text/plain', JSON.stringify({
+        title: el.dataset.title,
+        source: el.dataset.zone,
+        color: el.dataset.color,
+      }));
+      el.classList.add('dragging');
+    });
+    el.addEventListener('dragend', e => el.classList.remove('dragging'));
+  });
+}
+function dragOver(e){ e.preventDefault(); e.currentTarget.classList.add('over'); }
+function dragLeave(e){ e.currentTarget.classList.remove('over'); }
+function dragDrop(e){
+  e.preventDefault();
+  e.currentTarget.classList.remove('over');
+  try {
+    const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+    if (!data.title) return;
+    const zoneColorMap = { inside:'pink', back:'sun', baby:'plum', orchard:'grass', ladies:'sky', bert:'rust' };
+    const color = zoneColorMap[data.color] || data.color || 'pink';
+    addBubbleItem(data.title, data.source, color);
+  } catch {}
+}
+
+// ─── THIS WEEK BUBBLES ──────────────────────────────────────────────
+function getBubbles(){ return load('bubbles', []); }
+function saveBubbles(b){ save('bubbles', b); }
+function addBubbleItem(title, source, color){
+  const b = getBubbles();
+  if (b.some(x => x.title.toLowerCase() === title.toLowerCase() && !x.done)) { showToast('Already in the week'); return; }
+  b.push({ id: uid('b'), title, source: source || '', color: color || 'pink', done: false, added: todayKey() });
+  saveBubbles(b); renderBubbles(); showToast('Added to the week 🫧');
+}
+function addBubble(){
+  const v = document.getElementById('bubble-new').value.trim(); if (!v) return;
+  const c = document.getElementById('bubble-color').value;
+  addBubbleItem(v, 'custom', c);
+  document.getElementById('bubble-new').value = '';
+}
+function toggleBubble(id){
+  const b = getBubbles(); const item = b.find(x => x.id === id); if (!item) return;
+  item.done = !item.done; saveBubbles(b); renderBubbles();
+}
+function removeBubble(id){
+  saveBubbles(getBubbles().filter(x => x.id !== id)); renderBubbles();
+}
+function clearDoneBubbles(){ saveBubbles(getBubbles().filter(x => !x.done)); renderBubbles(); showToast('Done ones cleared'); }
+function clearAllBubbles(){ if (confirm('Clear the whole week?')) { saveBubbles([]); renderBubbles(); } }
+
+function renderBubbles(){
+  const b = getBubbles();
+  const host = document.getElementById('bubbles-wrap');
+  const today = document.getElementById('today-bubbles');
+  const hint = document.getElementById('drop-hint');
+  if (host) {
+    if (b.length === 0) {
+      host.innerHTML = '<div class="bubble-drop-hint" id="drop-hint">Drop zone tasks or job items here ·<br>or tap <em>+ Add bubble</em> below</div>';
+    } else {
+      host.innerHTML = '<div class="bubbles">' + b.map(x => bubbleHtml(x)).join('') + '</div>';
+    }
+  }
+  if (today) {
+    if (b.length === 0) {
+      today.innerHTML = '<div class="empty">No bubbles yet — head to This Week to set up the week.</div>';
+    } else {
+      today.innerHTML = '<div class="card"><div class="bubbles">' + b.map(x => bubbleHtml(x)).join('') + '</div></div>';
+    }
+  }
+  const sc = document.getElementById('sidebar-week-count');
+  if (sc) { const open = b.filter(x => !x.done).length; sc.textContent = open + (open === 1 ? ' in the week' : ' in the week'); }
+  const sw = document.getElementById('s-week'); if (sw) sw.textContent = b.filter(x => !x.done).length;
+}
+function bubbleHtml(x){
+  const src = x.source && x.source !== 'custom' ? `<span class="src">${esc(x.source.replace('z-',''))}</span>` : '';
+  return `<div class="bubble b-${x.color}${x.done?' done':''}">
+    <span onclick="toggleBubble('${x.id}')" ondblclick="editBubble('${x.id}')" title="click: done · double-click: edit">${esc(x.title)}</span>
+    ${src}
+    <span class="ed" onclick="editBubble('${x.id}')" title="edit">✎</span>
+    <span class="rm" onclick="removeBubble('${x.id}')" title="remove">×</span>
+  </div>`;
+}
+function editBubble(id){
+  const b = getBubbles(); const it = b.find(x => x.id === id); if (!it) return;
+  const n = prompt('Edit bubble:', it.title);
+  if (n === null) return;
+  const v = n.trim(); if (!v) return;
+  it.title = v; saveBubbles(b); renderBubbles();
+}
+function cycleBubbleColor(id){
+  const order = ['pink','sun','sky','grass','plum','rust'];
+  const b = getBubbles(); const it = b.find(x => x.id === id); if (!it) return;
+  it.color = order[(order.indexOf(it.color) + 1) % order.length];
+  saveBubbles(b); renderBubbles();
+}
+
+function weekAsText(){
+  const b = getBubbles();
+  const open = b.filter(x => !x.done);
+  const done = b.filter(x => x.done);
+  let out = 'This week at The Hollow\n' + fmtDate(new Date()) + '\n\n';
+  if (open.length) { out += 'TO DO:\n' + open.map(x => '• ' + x.title + (x.source && x.source !== 'custom' ? ' (' + x.source.replace('z-','') + ')' : '')).join('\n') + '\n\n'; }
+  if (done.length) { out += 'DONE:\n' + done.map(x => '✓ ' + x.title).join('\n') + '\n\n'; }
+  out += '— sent from Bert 🤘';
+  return out;
+}
+function emailWeek(){
+  const subject = encodeURIComponent('This week at The Hollow — ' + fmtShort(new Date()));
+  const body = encodeURIComponent(weekAsText());
+  window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
+}
+function copyWeek(){
+  navigator.clipboard.writeText(weekAsText()).then(()=>showToast('Copied to clipboard'));
+}
+
+// ─── QUICK CATCH ────────────────────────────────────────────────────
+function getQuick(){ return load('quick', []); }
+function saveQuick(l){ save('quick', l); }
+function addQuick(){
+  const el = document.getElementById('quick-new'); const v = el.value.trim(); if (!v) return;
+  const l = getQuick(); l.unshift({ id: uid('q'), title: v, done: false });
+  saveQuick(l); el.value = ''; renderQuick();
+}
+function toggleQuick(id){ const l = getQuick(); const it = l.find(x => x.id === id); if (!it) return; it.done = !it.done; saveQuick(l); renderQuick(); }
+function deleteQuick(id){ saveQuick(getQuick().filter(x => x.id !== id)); renderQuick(); }
+function sendQuickToWeek(id){
+  const l = getQuick(); const it = l.find(x => x.id === id); if (!it) return;
+  addBubbleItem(it.title, 'custom', 'pink');
+  deleteQuick(id);
+}
+function renderQuick(){
+  const l = getQuick();
+  const host = document.getElementById('quick-list'); if (!host) return;
+  if (l.length === 0) { host.innerHTML = '<div class="empty">Nothing caught yet.</div>'; return; }
+  host.innerHTML = l.map(x => `
+    <div class="check-item${x.done?' done':''}">
+      <div class="cbox" onclick="toggleQuick('${x.id}')">${CHECK_SVG}</div>
+      <div class="body"><div class="t">${esc(x.title)}</div></div>
+      <div class="actions">
+        <button class="iconbtn" onclick="sendQuickToWeek('${x.id}')">→ week</button>
+        <button class="iconbtn" onclick="deleteQuick('${x.id}')">×</button>
+      </div>
+    </div>`).join('');
+}
+
+// ─── SOLAR JOBS ─────────────────────────────────────────────────────
+function getJobs(){ return load('jobs', []); }
+function saveJobs(j){ save('jobs', j); }
+function addJob(){
+  const name = document.getElementById('job-name').value.trim(); if (!name) { showToast('Name required'); return; }
+  const client = document.getElementById('job-client').value.trim();
+  const start = document.getElementById('job-start').value || null;
+  const status = document.getElementById('job-status').value;
+  const jobs = getJobs();
+  jobs.push({ id: uid('j'), name, client, start, status, created: todayKey(), todos: [], buys: [], materials: [] });
+  saveJobs(jobs);
+  ['job-name','job-client','job-start'].forEach(i => document.getElementById(i).value = '');
+  renderJobs(); showToast('Job added ☀️');
+}
+function deleteJob(id){
+  if (!confirm('Delete this job?')) return;
+  saveJobs(getJobs().filter(j => j.id !== id)); renderJobs();
+}
+function setJobStatus(id, status){
+  const jobs = getJobs(); const j = jobs.find(x => x.id === id); if (!j) return;
+  j.status = status; saveJobs(jobs); renderJobs();
+}
+function renameJob(id){
+  const jobs = getJobs(); const j = jobs.find(x => x.id === id); if (!j) return;
+  const n = prompt('Rename job:', j.name); if (!n) return;
+  j.name = n.trim() || j.name; saveJobs(jobs); renderJobs();
+}
+function addJobItem(jobId, listKey, input){
+  const v = input.value.trim(); if (!v) return;
+  const jobs = getJobs(); const j = jobs.find(x => x.id === jobId); if (!j) return;
+  j[listKey].push({ id: uid(listKey[0]), t: v, done: false });
+  saveJobs(jobs); input.value = ''; renderJobs();
+}
+function toggleJobItem(jobId, listKey, itemId){
+  const jobs = getJobs(); const j = jobs.find(x => x.id === jobId); if (!j) return;
+  const it = j[listKey].find(x => x.id === itemId); if (!it) return;
+  it.done = !it.done; saveJobs(jobs); renderJobs();
+}
+function deleteJobItem(jobId, listKey, itemId){
+  const jobs = getJobs(); const j = jobs.find(x => x.id === jobId); if (!j) return;
+  j[listKey] = j[listKey].filter(x => x.id !== itemId);
+  saveJobs(jobs); renderJobs();
+}
+function jobItemToWeek(jobId, listKey, itemId){
+  const jobs = getJobs(); const j = jobs.find(x => x.id === jobId); if (!j) return;
+  const it = j[listKey].find(x => x.id === itemId); if (!it) return;
+  const color = listKey === 'todos' ? 'sun' : (listKey === 'buys' ? 'sky' : 'grass');
+  addBubbleItem('[' + j.name + '] ' + it.t, 'job', color);
+}
+function renderJobs(){
+  const jobs = getJobs();
+  const host = document.getElementById('jobs-list');
+  const todayHost = document.getElementById('today-jobs');
+  if (host) {
+    if (jobs.length === 0) { host.innerHTML = '<div class="empty">No jobs yet. Add one above.</div>'; }
+    else { host.innerHTML = jobs.map(j => jobCardHtml(j, false)).join(''); }
+  }
+  if (todayHost) {
+    const active = jobs.filter(j => j.status !== 'done');
+    if (active.length === 0) { todayHost.innerHTML = '<div class="empty">No active jobs.</div>'; }
+    else { todayHost.innerHTML = active.slice(0,3).map(j => jobCardHtml(j, true)).join(''); }
+  }
+  const sj = document.getElementById('s-jobs'); if (sj) sj.textContent = jobs.filter(j => j.status !== 'done').length;
+}
+function jobCardHtml(j, compact){
+  const statusLabel = { planning:'Planning', inprogress:'In progress', done:'Done' }[j.status] || j.status;
+  const statusTag = { planning:'tag-sky', inprogress:'tag-sun', done:'tag-grass' }[j.status] || 'tag-sky';
+  const start = j.start ? `<div class="job-date">📅 ${fmtDate(parseDate(j.start))}</div>` : '';
+  if (compact) {
+    const openCount = j.todos.filter(x => !x.done).length + j.buys.filter(x => !x.done).length;
+    return `<div class="job-card status-${j.status}">
+      <div class="job-head">
+        <div>
+          <div class="job-name">${esc(j.name)}</div>
+          ${j.client ? `<div class="job-client">${esc(j.client)}</div>` : ''}
+          ${start}
+        </div>
+        <span class="tag ${statusTag}">${statusLabel}</span>
+      </div>
+      <div style="font-size:13px; color:var(--ink-60); margin-top:4px">${openCount} open item${openCount===1?'':'s'} · ${j.materials.length} materials tracked</div>
+    </div>`;
+  }
+  return `<div class="job-card status-${j.status}">
+    <div class="job-head">
+      <div>
+        <div class="job-name">${esc(j.name)}</div>
+        ${j.client ? `<div class="job-client">👤 ${esc(j.client)}</div>` : ''}
+        ${start}
+      </div>
+      <div style="display:flex; gap:6px; flex-wrap:wrap">
+        <select class="sel" onchange="setJobStatus('${j.id}', this.value)" style="font-size:12px; padding:5px 8px">
+          <option value="planning" ${j.status==='planning'?'selected':''}>Planning</option>
+          <option value="inprogress" ${j.status==='inprogress'?'selected':''}>In progress</option>
+          <option value="done" ${j.status==='done'?'selected':''}>Done</option>
+        </select>
+        <button class="iconbtn" onclick="renameJob('${j.id}')">rename</button>
+        <button class="iconbtn" onclick="deleteJob('${j.id}')">×</button>
+      </div>
+    </div>
+    <div class="job-lists">
+      ${miniListHtml(j, 'todos', '✅ To-do', 'What needs doing?')}
+      ${miniListHtml(j, 'buys',  '🛒 Buy list', 'Needed to buy…')}
+      ${miniListHtml(j, 'materials', '📦 Materials', 'Part name / size')}
+    </div>
+  </div>`;
+}
+function miniListHtml(j, key, label, ph){
+  const items = j[key] || [];
+  const rows = items.map(it => `
+    <div class="mini-item${it.done?' done':''}">
+      <span style="cursor:pointer" onclick="toggleJobItem('${j.id}','${key}','${it.id}')">${esc(it.t)}</span>
+      <span class="x" onclick="jobItemToWeek('${j.id}','${key}','${it.id}')" title="send to this week">→</span>
+      <span class="x" onclick="deleteJobItem('${j.id}','${key}','${it.id}')">×</span>
+    </div>`).join('') || '<div class="empty" style="font-size:14px; padding:.5rem">empty</div>';
+  return `<div class="mini-list">
+    <h4>${label} <span class="count">${items.filter(x=>!x.done).length}/${items.length}</span></h4>
+    ${rows}
+    <div class="mini-add">
+      <input type="text" placeholder="${ph}" onkeydown="if(event.key==='Enter')addJobItem('${j.id}','${key}', this)">
+      <button onclick="addJobItem('${j.id}','${key}', this.previousElementSibling)">+</button>
+    </div>
+  </div>`;
+}
+
+// ─── DUMP RUNS ──────────────────────────────────────────────────────
+function getDump(){ return load('dump', []); }
+function saveDump(d){ save('dump', d); }
+function getDumpInterval(){ return parseInt(load('dump-interval', 7)) || 7; }
+function saveDumpInterval(){
+  const v = parseInt(document.getElementById('dump-interval').value) || 7;
+  save('dump-interval', v); showToast('Nudge set to ' + v + ' days'); renderDump();
+}
+function addDump(){
+  const date = document.getElementById('dump-date').value || todayKey();
+  const type = document.getElementById('dump-type').value;
+  const note = document.getElementById('dump-note').value.trim();
+  const d = getDump();
+  d.unshift({ id: uid('d'), date, type, note });
+  saveDump(d);
+  document.getElementById('dump-note').value = '';
+  renderDump();
+  showToast('Nice, logged it 🗑️');
+}
+function deleteDump(id){ saveDump(getDump().filter(x => x.id !== id)); renderDump(); }
+function renderDump(){
+  const d = getDump();
+  const host = document.getElementById('dump-log');
+  const today = new Date();
+  const dayBig = document.getElementById('dump-days-big');
+  const sub = document.getElementById('dump-sub');
+  const interval = getDumpInterval();
+
+  // days since last TRASH run
+  const lastTrash = d.find(x => x.type === 'trash');
+  let days = null;
+  if (lastTrash) { days = daysBetween(parseDate(lastTrash.date), today); }
+
+  if (dayBig) {
+    if (days === null) { dayBig.textContent = '—'; sub.textContent = 'Log your first run below'; }
+    else if (days >= interval) { dayBig.textContent = days; sub.innerHTML = 'days since last trash · <strong style="color:var(--rust)">time to haul it 🚚</strong>'; }
+    else { dayBig.textContent = days; sub.textContent = `days since last trash · next nudge in ${interval-days} day${interval-days===1?'':'s'}`; }
+  }
+  const sd = document.getElementById('s-dump'); if (sd) sd.textContent = days === null ? '—' : days;
+
+  // log
+  const emojis = { trash:'🗑️', recycle:'♻️', compost:'🌱', scrap:'🔧' };
+  if (host) {
+    if (d.length === 0) { host.innerHTML = '<div class="empty">No runs logged yet.</div>'; }
+    else {
+      host.innerHTML = d.slice(0, 40).map(x => `
+        <div class="check-item">
+          <div style="font-size:22px">${emojis[x.type]||'🗑️'}</div>
+          <div class="body">
+            <div class="t">${x.type.charAt(0).toUpperCase()+x.type.slice(1)} run</div>
+            <div class="meta">${fmtDate(parseDate(x.date))}${x.note ? ' · ' + esc(x.note) : ''}</div>
+          </div>
+          <div class="actions"><button class="iconbtn" onclick="deleteDump('${x.id}')">×</button></div>
+        </div>`).join('');
+    }
+  }
+  // set intervals input
+  const ii = document.getElementById('dump-interval'); if (ii) ii.value = interval;
+  const dd = document.getElementById('dump-date'); if (dd && !dd.value) dd.value = todayKey();
+}
+
+// ─── VEHICLES ───────────────────────────────────────────────────────
+function getVehicles(){
+  const v = load('vehicles', []);
+  // normalize: ensure parts/service arrays exist on every vehicle
+  v.forEach(x => { if (!x.parts) x.parts = []; if (!x.service) x.service = []; if (!x.log) x.log = []; });
+  return v;
+}
+function saveVehicles(v){ save('vehicles', v); }
+function addVehicle(){
+  const name = document.getElementById('veh-name').value.trim(); if (!name) { showToast('Name required'); return; }
+  const model = document.getElementById('veh-model').value.trim();
+  const plate = document.getElementById('veh-plate').value.trim();
+  const vs = getVehicles();
+  vs.push({ id: uid('v'), name, model, plate, parts: [], log: [], service: [] });
+  saveVehicles(vs);
+  ['veh-name','veh-model','veh-plate'].forEach(i => document.getElementById(i).value = '');
+  renderVehicles(); showToast('Vehicle added 🚐');
+}
+function deleteVehicle(id){
+  if (!confirm('Delete this vehicle and all its records?')) return;
+  saveVehicles(getVehicles().filter(v => v.id !== id)); renderVehicles();
+}
+// Parts list — simple toggle "got / still need"
+function addVehPart(vid, input){
+  const v = input.value.trim(); if (!v) return;
+  const vs = getVehicles(); const veh = vs.find(x => x.id === vid); if (!veh) return;
+  veh.parts.push({ id: uid('p'), t: v, done: false });
+  saveVehicles(vs); input.value = ''; renderVehicles();
+}
+function toggleVehPart(vid, pid){
+  const vs = getVehicles(); const veh = vs.find(x => x.id === vid); if (!veh) return;
+  const p = veh.parts.find(x => x.id === pid); if (!p) return;
+  p.done = !p.done; saveVehicles(vs); renderVehicles();
+}
+function deleteVehPart(vid, pid){
+  const vs = getVehicles(); const veh = vs.find(x => x.id === vid); if (!veh) return;
+  veh.parts = veh.parts.filter(p => p.id !== pid); saveVehicles(vs); renderVehicles();
+}
+function editVehPart(vid, pid){
+  const vs = getVehicles(); const veh = vs.find(x => x.id === vid); if (!veh) return;
+  const p = veh.parts.find(x => x.id === pid); if (!p) return;
+  const n = prompt('Edit part:', p.t); if (n === null) return;
+  const val = n.trim(); if (!val) return;
+  p.t = val; saveVehicles(vs); renderVehicles();
+}
+// Maintenance log — completed work with date + miles
+function addMaint(id){
+  const vs = getVehicles(); const v = vs.find(x => x.id === id); if (!v) return;
+  const item = prompt('What did you do? (e.g. Oil change, Tire rotation)'); if (!item) return;
+  const miles = prompt('Miles (optional):') || '';
+  const date = prompt('Date (YYYY-MM-DD) or leave blank for today:') || todayKey();
+  v.log.unshift({ id: uid('m'), item: item.trim(), miles: miles.trim(), date });
+  saveVehicles(vs); renderVehicles(); showToast('Logged 🔧');
+}
+function deleteMaint(vid, mid){
+  const vs = getVehicles(); const v = vs.find(x => x.id === vid); if (!v) return;
+  v.log = v.log.filter(m => m.id !== mid); saveVehicles(vs); renderVehicles();
+}
+// Service needed — upcoming things
+function addService(id){
+  const vs = getVehicles(); const v = vs.find(x => x.id === id); if (!v) return;
+  const item = prompt('What service is needed? (e.g. Brakes inspected, New tires)'); if (!item) return;
+  const due = prompt('Due by (YYYY-MM-DD or "85k mi" — free text):') || '';
+  v.service.unshift({ id: uid('sv'), item: item.trim(), due: due.trim() });
+  saveVehicles(vs); renderVehicles(); showToast('Noted ⚠️');
+}
+function deleteService(vid, sid){
+  const vs = getVehicles(); const v = vs.find(x => x.id === vid); if (!v) return;
+  v.service = v.service.filter(s => s.id !== sid); saveVehicles(vs); renderVehicles();
+}
+function completeService(vid, sid){
+  const vs = getVehicles(); const v = vs.find(x => x.id === vid); if (!v) return;
+  const s = v.service.find(x => x.id === sid); if (!s) return;
+  const miles = prompt('Miles at service (optional):') || '';
+  v.log.unshift({ id: uid('m'), item: s.item, miles: miles.trim(), date: todayKey() });
+  v.service = v.service.filter(x => x.id !== sid);
+  saveVehicles(vs); renderVehicles(); showToast('Moved to maintenance ✓');
+}
+function renderVehicles(){
+  const vs = getVehicles();
+  const host = document.getElementById('vehicles-list');
+  if (!host) return;
+  if (vs.length === 0) { host.innerHTML = '<div class="empty">No vehicles yet. Add one above.</div>'; return; }
+  host.innerHTML = vs.map(v => `
+    <div class="vehicle-card">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap">
+        <div>
+          <div class="vehicle-name">${esc(v.name)}</div>
+          ${v.model ? `<div class="vehicle-sub">${esc(v.model)}${v.plate?' · '+esc(v.plate):''}</div>` : ''}
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap">
+          <button class="btn btn-sm btn-rust" onclick="addMaint('${v.id}')">+ Log maintenance</button>
+          <button class="btn btn-sm btn-sun" onclick="addService('${v.id}')">+ Service needed</button>
+          <button class="iconbtn" onclick="deleteVehicle('${v.id}')">×</button>
+        </div>
+      </div>
+      <div class="veh-lists">
+        ${vehPartsHtml(v)}
+        ${vehMaintHtml(v)}
+        ${vehServiceHtml(v)}
+      </div>
+    </div>`).join('');
+}
+function vehPartsHtml(v){
+  const rows = v.parts.map(p => `
+    <div class="mini-item${p.done?' done':''}">
+      <span style="cursor:pointer; flex:1" onclick="toggleVehPart('${v.id}','${p.id}')">${esc(p.t)}</span>
+      <span class="x" onclick="editVehPart('${v.id}','${p.id}')" title="edit">✎</span>
+      <span class="x" onclick="deleteVehPart('${v.id}','${p.id}')">×</span>
+    </div>`).join('') || '<div class="empty" style="font-size:14px; padding:.5rem">no parts tracked</div>';
+  return `<div class="mini-list">
+    <h4>🧰 Parts <span class="count">${v.parts.filter(p=>!p.done).length}/${v.parts.length}</span></h4>
+    ${rows}
+    <div class="mini-add">
+      <input type="text" placeholder="e.g. oil filter, brake pads" onkeydown="if(event.key==='Enter')addVehPart('${v.id}', this)">
+      <button onclick="addVehPart('${v.id}', this.previousElementSibling)">+</button>
+    </div>
+  </div>`;
+}
+function vehMaintHtml(v){
+  const rows = v.log.length === 0
+    ? '<div class="empty" style="font-size:14px; padding:.5rem">nothing logged</div>'
+    : v.log.slice(0, 8).map(m => `
+        <div class="maint-row">
+          <div style="flex:1; min-width:0">
+            <div class="maint-item">${esc(m.item)}</div>
+            <div class="maint-when">${fmtShort(parseDate(m.date))}${m.miles?' · '+esc(m.miles)+' mi':''}</div>
+          </div>
+          <button class="iconbtn" onclick="deleteMaint('${v.id}','${m.id}')">×</button>
+        </div>`).join('');
+  return `<div class="mini-list">
+    <h4>🔧 Maintenance <span class="count">${v.log.length} logged</span></h4>
+    ${rows}
+  </div>`;
+}
+function vehServiceHtml(v){
+  const rows = v.service.length === 0
+    ? '<div class="empty" style="font-size:14px; padding:.5rem">nothing pending</div>'
+    : v.service.map(s => `
+        <div class="maint-row">
+          <div style="flex:1; min-width:0">
+            <div class="maint-item">⚠️ ${esc(s.item)}</div>
+            ${s.due ? `<div class="maint-when">due ${esc(s.due)}</div>` : ''}
+          </div>
+          <button class="iconbtn" onclick="completeService('${v.id}','${s.id}')" title="mark done">✓</button>
+          <button class="iconbtn" onclick="deleteService('${v.id}','${s.id}')">×</button>
+        </div>`).join('');
+  return `<div class="mini-list">
+    <h4>⚠️ Service needed <span class="count">${v.service.length}</span></h4>
+    ${rows}
+  </div>`;
+}
+
+// ─── VISITORS ───────────────────────────────────────────────────────
+function getVisitors(){ return load('visitors', []); }
+function saveVisitors(v){ save('visitors', v); }
+function addVisitor(){
+  const name = document.getElementById('vis-name').value.trim(); if (!name) { showToast('Name required'); return; }
+  const arrive = document.getElementById('vis-arrive').value || null;
+  const depart = document.getElementById('vis-depart').value || null;
+  const note = document.getElementById('vis-note').value.trim();
+  const vs = getVisitors();
+  vs.push({ id: uid('vs'), name, arrive, depart, note });
+  saveVisitors(vs);
+  ['vis-name','vis-arrive','vis-depart','vis-note'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+  _calSelStart = null; _calSelEnd = null;
+  renderCalendar(); renderVisitors(); showToast('Visitor added ✌️');
+}
+function clearVisitorForm(){
+  ['vis-name','vis-arrive','vis-depart','vis-note'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+  _calSelStart = null; _calSelEnd = null; renderCalendar();
+}
+
+// ─── VISITOR CALENDAR ──────────────────────────────────────────────
+let _calMonth = (() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); })();
+let _calSelStart = null;
+let _calSelEnd = null;
+
+function calNav(dir){
+  if (dir === 0) _calMonth = (() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); })();
+  else _calMonth = new Date(_calMonth.getFullYear(), _calMonth.getMonth() + dir, 1);
+  renderCalendar();
+}
+function calTapDay(iso){
+  // two-tap range selection; third tap resets to new start
+  if (!_calSelStart || (_calSelStart && _calSelEnd)) {
+    _calSelStart = iso; _calSelEnd = null;
+  } else {
+    if (iso < _calSelStart) { _calSelEnd = _calSelStart; _calSelStart = iso; }
+    else { _calSelEnd = iso; }
+  }
+  // auto-fill form fields
+  const a = document.getElementById('vis-arrive'); if (a) a.value = _calSelStart || '';
+  const d = document.getElementById('vis-depart'); if (d) d.value = _calSelEnd || '';
+  renderCalendar();
+  updateCalSelLabel();
+  if (_calSelStart && _calSelEnd) {
+    const el = document.getElementById('vis-name'); if (el) el.focus();
+  }
+}
+function updateCalSelLabel(){
+  const el = document.getElementById('cal-sel-label'); if (!el) return;
+  if (!_calSelStart) el.textContent = 'tap a day to start';
+  else if (!_calSelEnd) el.textContent = 'arrive ' + fmtShort(parseDate(_calSelStart)) + ' · tap depart →';
+  else el.textContent = fmtShort(parseDate(_calSelStart)) + ' → ' + fmtShort(parseDate(_calSelEnd));
+}
+function renderCalendar(){
+  const host = document.getElementById('cal-grid'); if (!host) return;
+  const monthLbl = document.getElementById('cal-month');
+  if (monthLbl) monthLbl.textContent = _calMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+  const year = _calMonth.getFullYear(), month = _calMonth.getMonth();
+  const first = new Date(year, month, 1);
+  const dow0 = first.getDay(); // 0=Sun
+  const gridStart = new Date(year, month, 1 - dow0);
+  const todayIso = todayKey();
+  const vs = getVisitors();
+
+  // Visitor occupancy: map iso -> [{name, color}]
+  const occupancy = {};
+  vs.forEach((v, idx) => {
+    if (!v.arrive) return;
+    const a = parseDate(v.arrive);
+    const d = v.depart ? parseDate(v.depart) : a;
+    const palette = ['plum','pink','sky','grass','sun','rust'];
+    const color = palette[idx % palette.length];
+    for (let t = new Date(a); t <= d; t.setDate(t.getDate() + 1)) {
+      const key = dateKey(t);
+      if (!occupancy[key]) occupancy[key] = [];
+      occupancy[key].push({ name: v.name, color });
+    }
+  });
+
+  let html = '';
+  ['S','M','T','W','T','F','S'].forEach(d => html += `<div class="cal-dow">${d}</div>`);
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(gridStart); d.setDate(gridStart.getDate() + i);
+    const iso = dateKey(d);
+    const muted = d.getMonth() !== month;
+    const isToday = iso === todayIso;
+    let selCls = '';
+    if (_calSelStart && iso === _calSelStart) selCls = 'sel-start';
+    else if (_calSelEnd && iso === _calSelEnd) selCls = 'sel-end';
+    else if (_calSelStart && _calSelEnd && iso > _calSelStart && iso < _calSelEnd) selCls = 'sel-mid';
+    const chips = (occupancy[iso] || []).slice(0, 2).map(o => `<span class="chip c-${o.color}">${esc(o.name.slice(0, 10))}</span>`).join('');
+    const extra = (occupancy[iso] || []).length > 2 ? `<span class="chip">+${(occupancy[iso]||[]).length-2}</span>` : '';
+    html += `<div class="cal-day ${muted?'muted':''} ${isToday?'today':''} ${selCls}" onclick="calTapDay('${iso}')">
+      <div class="dnum">${d.getDate()}</div>
+      <div class="chips">${chips}${extra}</div>
+    </div>`;
+  }
+  host.innerHTML = html;
+  updateCalSelLabel();
+}
+function deleteVisitor(id){
+  if (!confirm('Remove this visitor?')) return;
+  saveVisitors(getVisitors().filter(v => v.id !== id)); renderVisitors();
+}
+function visitorStatus(v){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const a = v.arrive ? parseDate(v.arrive) : null;
+  const d = v.depart ? parseDate(v.depart) : null;
+  if (a && d && today >= a && today <= d) return 'here';
+  if (d && today > d) return 'past';
+  if (a && daysBetween(today, a) <= 7) return 'soon';
+  return 'scheduled';
+}
+function renderVisitors(){
+  const vs = getVisitors().slice().sort((a,b) => (a.arrive||'9999').localeCompare(b.arrive||'9999'));
+  const host = document.getElementById('visitors-list');
+  const todayHost = document.getElementById('today-visitors');
+  const build = (v) => {
+    const st = visitorStatus(v);
+    const dates = (v.arrive ? fmtShort(parseDate(v.arrive)) : '?') + ' → ' + (v.depart ? fmtShort(parseDate(v.depart)) : '?');
+    const stLabel = { here:'👥 Here now', soon:'🏃 Soon', past:'👋 Past', scheduled:'📆 Scheduled' }[st];
+    return `<div class="visitor-card ${st}">
+      <div class="visitor-body">
+        <div class="visitor-head">${esc(v.name)} <span style="font-size:11px; color:var(--ink-60); font-family:'DM Mono',monospace; margin-left:8px">${stLabel}</span></div>
+        <div class="visitor-when">${dates}</div>
+        ${v.note ? `<div class="visitor-note">🙌 ${esc(v.note)}</div>` : ''}
+      </div>
+      <div class="visitor-actions">
+        <button class="iconbtn" onclick="emailVisitor('${v.id}')">📧 send list</button>
+        <button class="iconbtn" onclick="deleteVisitor('${v.id}')">×</button>
+      </div>
+    </div>`;
+  };
+  if (host) {
+    if (vs.length === 0) { host.innerHTML = '<div class="empty">No visitors scheduled.</div>'; }
+    else { host.innerHTML = vs.map(build).join(''); }
+  }
+  const upcoming = vs.filter(v => visitorStatus(v) !== 'past');
+  if (todayHost) {
+    if (upcoming.length === 0) { todayHost.innerHTML = '<div class="empty">No one on the books.</div>'; }
+    else { todayHost.innerHTML = upcoming.slice(0,3).map(build).join(''); }
+  }
+  const sv = document.getElementById('s-visitors'); if (sv) sv.textContent = upcoming.length;
+}
+function emailVisitor(id){
+  const v = getVisitors().find(x => x.id === id); if (!v) return;
+  const subject = encodeURIComponent('The Hollow — your stay & the to-do list');
+  const helpLine = v.note ? `A little thing I'd love your help with:\n• ${v.note}\n\n` : '';
+  const body = encodeURIComponent(
+    `Hey ${v.name.split(' ')[0]},\n\nHere's the list for the week at The Hollow.\nIf you crush any of these, you're an actual legend.\n\n` +
+    helpLine +
+    weekAsText().split('\n').slice(2).join('\n')
+  );
+  window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
+}
+
+// ─── BRAIN DUMP + CALENDAR ──────────────────────────────────────────
+function getNotes(){ return load('notes', []); }
+function saveNotes(n){ save('notes', n); }
+function addNote(){
+  const el = document.getElementById('note-new'); const v = el.value.trim(); if (!v) return;
+  const n = getNotes(); n.unshift({ id: uid('n'), text: v, date: new Date().toISOString() });
+  saveNotes(n); el.value = ''; renderNotes(); showToast('Stuck to the wall 📌');
+}
+function deleteNote(id){ saveNotes(getNotes().filter(n => n.id !== id)); renderNotes(); }
+function renderNotes(){
+  const n = getNotes(); const host = document.getElementById('notes-list'); if (!host) return;
+  if (n.length === 0) { host.innerHTML = '<div class="empty">No sticky notes yet.</div>'; return; }
+  host.innerHTML = n.map(x => {
+    const d = new Date(x.date);
+    return `<div class="note-card">
+      <div class="note-date">
+        <span>${fmtDate(d)} · ${d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</span>
+        <span style="cursor:pointer" onclick="deleteNote('${x.id}')">×</span>
+      </div>
+      <div class="note-text">${esc(x.text)}</div>
+    </div>`;
+  }).join('');
+}
+// ─── GROCERY ────────────────────────────────────────────────────────
+const GR_CATS = {
+  produce: { emoji: '🥬', label: 'Produce' },
+  dairy:   { emoji: '🥛', label: 'Dairy/eggs' },
+  pantry:  { emoji: '🥫', label: 'Pantry' },
+  meat:    { emoji: '🥩', label: 'Meat/fish' },
+  frozen:  { emoji: '🧊', label: 'Frozen' },
+  bakery:  { emoji: '🥖', label: 'Bakery' },
+  drinks:  { emoji: '🍹', label: 'Drinks' },
+  household:{ emoji: '🧼', label: 'Household' },
+  other:   { emoji: '✨', label: 'Other' },
+};
+function getGrocery(){ return load('grocery', []); }
+function saveGrocery(g){ save('grocery', g); }
+function addGrocery(){
+  const el = document.getElementById('gr-new'); const v = el.value.trim(); if (!v) return;
+  const cat = document.getElementById('gr-cat').value;
+  const g = getGrocery();
+  g.push({ id: uid('g'), t: v, cat, done: false });
+  saveGrocery(g); el.value = ''; renderGrocery();
+}
+function toggleGrocery(id){
+  const g = getGrocery(); const it = g.find(x => x.id === id); if (!it) return;
+  it.done = !it.done; saveGrocery(g); renderGrocery();
+}
+function deleteGrocery(id){ saveGrocery(getGrocery().filter(x => x.id !== id)); renderGrocery(); }
+function editGrocery(id){
+  const g = getGrocery(); const it = g.find(x => x.id === id); if (!it) return;
+  const n = prompt('Edit item:', it.t); if (n === null) return;
+  const v = n.trim(); if (!v) return; it.t = v; saveGrocery(g); renderGrocery();
+}
+function clearGotGrocery(){ saveGrocery(getGrocery().filter(x => !x.done)); renderGrocery(); showToast('Cleared got'); }
+function clearAllGrocery(){ if (confirm('Clear the whole list?')) { saveGrocery([]); renderGrocery(); } }
+function renderGrocery(){
+  const g = getGrocery();
+  const host = document.getElementById('grocery-list'); if (!host) return;
+  const need = g.filter(x => !x.done);
+  const got = g.filter(x => x.done);
+  // group need by category
+  const byCat = {};
+  need.forEach(it => { (byCat[it.cat] = byCat[it.cat] || []).push(it); });
+  let html = '';
+  Object.keys(GR_CATS).forEach(key => {
+    if (!byCat[key]) return;
+    html += `<div class="section-label"><span class="emoji">${GR_CATS[key].emoji}</span> ${GR_CATS[key].label} <span class="hint">— ${byCat[key].length}</span></div>`;
+    html += byCat[key].map(it => `
+      <div class="check-item">
+        <div class="cbox" onclick="toggleGrocery('${it.id}')">${CHECK_SVG}</div>
+        <div class="body" onclick="toggleGrocery('${it.id}')"><div class="t">${esc(it.t)}</div></div>
+        <div class="actions">
+          <button class="iconbtn" onclick="editGrocery('${it.id}')">✎</button>
+          <button class="iconbtn" onclick="deleteGrocery('${it.id}')">×</button>
+        </div>
+      </div>`).join('');
+  });
+  if (got.length) {
+    html += `<div class="section-label"><span class="emoji">✅</span> Got <span class="hint">— ${got.length}</span></div>`;
+    html += got.map(it => `
+      <div class="check-item done">
+        <div class="cbox" onclick="toggleGrocery('${it.id}')">${CHECK_SVG}</div>
+        <div class="body" onclick="toggleGrocery('${it.id}')"><div class="t">${esc(it.t)}</div></div>
+        <div class="actions"><button class="iconbtn" onclick="deleteGrocery('${it.id}')">×</button></div>
+      </div>`).join('');
+  }
+  if (g.length === 0) html = '<div class="empty">Nothing on the list yet.</div>';
+  host.innerHTML = html;
+  document.getElementById('gr-need').textContent = need.length;
+  document.getElementById('gr-got').textContent = got.length;
+  document.getElementById('gr-total').textContent = g.length;
+  document.getElementById('gr-cats').textContent = Object.keys(byCat).length;
+}
+function groceryAsText(){
+  const g = getGrocery();
+  const need = g.filter(x => !x.done);
+  const got = g.filter(x => x.done);
+  let out = 'Grocery list — ' + fmtDate(new Date()) + '\n\n';
+  if (need.length === 0) { out += '(empty)\n'; }
+  else {
+    const byCat = {};
+    need.forEach(it => { (byCat[it.cat] = byCat[it.cat] || []).push(it); });
+    Object.keys(GR_CATS).forEach(key => {
+      if (!byCat[key]) return;
+      out += GR_CATS[key].emoji + ' ' + GR_CATS[key].label.toUpperCase() + '\n';
+      byCat[key].forEach(it => { out += '  • ' + it.t + '\n'; });
+      out += '\n';
+    });
+  }
+  if (got.length) { out += 'ALREADY GOT:\n' + got.map(it => '  ✓ ' + it.t).join('\n') + '\n\n'; }
+  out += '— sent from Bert 🛒';
+  return out;
+}
+function emailGrocery(){
+  const subject = encodeURIComponent('Grocery list — ' + fmtShort(new Date()));
+  const body = encodeURIComponent(groceryAsText());
+  window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
+}
+function copyGrocery(){ navigator.clipboard.writeText(groceryAsText()).then(()=>showToast('Copied')); }
+
+// ─── WELLNESS ───────────────────────────────────────────────────────
+const WELLNESS_CORE = [
+  { id: 'yoga',   title: 'Morning yoga', desc: '(minus feet stretch — you know why)', emoji: '🧘' },
+  { id: 'medit',  title: 'Meditation',    desc: 'Even 5 minutes counts.',            emoji: '🕉️' },
+];
+const DEFAULT_HOBBIES = [
+  { id: 'h-guitar', name: 'Guitar', emoji: '🎸' },
+  { id: 'h-read',   name: 'Read something', emoji: '📖' },
+  { id: 'h-out',    name: 'Time outside (not working)', emoji: '🌲' },
+];
+function getHobbies(){
+  let h = load('hobbies', null);
+  if (h === null) { h = structuredClone(DEFAULT_HOBBIES); save('hobbies', h); }
+  return h;
+}
+function saveHobbies(h){ save('hobbies', h); }
+function getWellnessDone(k){ return load('well-' + k, {}); }
+function saveWellnessDone(k, m){ save('well-' + k, m); }
+function toggleWellness(id){
+  const k = todayKey(); const m = getWellnessDone(k); m[id] = !m[id]; saveWellnessDone(k, m);
+  renderWellness();
+}
+function addHobby(){
+  const el = document.getElementById('new-hobby'); const v = el.value.trim(); if (!v) return;
+  const h = getHobbies(); h.push({ id: uid('h'), name: v, emoji: '✨' });
+  saveHobbies(h); el.value = ''; renderWellness();
+}
+function deleteHobby(id){
+  if (!confirm('Remove this hobby?')) return;
+  saveHobbies(getHobbies().filter(h => h.id !== id)); renderWellness();
+}
+function editHobby(id){
+  const h = getHobbies(); const it = h.find(x => x.id === id); if (!it) return;
+  const n = prompt('Edit hobby:', it.name); if (n === null) return;
+  const v = n.trim(); if (!v) return; it.name = v; saveHobbies(h); renderWellness();
+}
+function renderWellness(){
+  const coreHost = document.getElementById('wellness-core');
+  const hobHost = document.getElementById('wellness-hobbies');
+  if (!coreHost || !hobHost) return;
+  const done = getWellnessDone(todayKey());
+
+  coreHost.innerHTML = WELLNESS_CORE.map(it => `
+    <div class="check-item${done[it.id]?' done':''}" onclick="toggleWellness('${it.id}')">
+      <div class="cbox">${CHECK_SVG}</div>
+      <div class="body">
+        <div class="t">${it.emoji} ${esc(it.title)}</div>
+        <div class="meta">${esc(it.desc)}</div>
+      </div>
+    </div>`).join('');
+
+  const hobs = getHobbies();
+  hobHost.innerHTML = hobs.length === 0
+    ? '<div class="empty">No hobbies yet. Add one below.</div>'
+    : hobs.map(h => `
+        <div class="check-item${done[h.id]?' done':''}">
+          <div class="cbox" onclick="toggleWellness('${h.id}')">${CHECK_SVG}</div>
+          <div class="body" onclick="toggleWellness('${h.id}')"><div class="t">${h.emoji||'✨'} ${esc(h.name)}</div></div>
+          <div class="actions">
+            <button class="iconbtn" onclick="editHobby('${h.id}')">✎</button>
+            <button class="iconbtn" onclick="deleteHobby('${h.id}')">×</button>
+          </div>
+        </div>`).join('');
+
+  // load note
+  const noteEl = document.getElementById('wellness-note');
+  if (noteEl) {
+    const notes = load('wellness-notes', {});
+    noteEl.value = notes[todayKey()] || '';
+  }
+
+  // stats
+  const todayCount = Object.keys(done).filter(k => done[k]).length;
+  document.getElementById('wn-today').textContent = todayCount;
+
+  // streak + monthly + total
+  let streak = 0, monthly = 0, total = 0;
+  const now = new Date();
+  const monthStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  for (let i = 0; i < 400; i++) {
+    const d = new Date(now); d.setDate(now.getDate() - i);
+    const k = dateKey(d);
+    const m = load('well-' + k, null);
+    if (!m) { if (i === 0) continue; else break; }
+    const anyDone = Object.values(m).some(Boolean);
+    if (anyDone) total++;
+    if (k.startsWith(monthStr) && anyDone) monthly++;
+    if (i === 0) { if (anyDone) streak = 1; }
+    else {
+      if (anyDone && streak === i) streak++;
+      else if (!anyDone && i > 0) { /* break streak */ }
+    }
+  }
+  // cleaner streak: iterate until first empty day
+  streak = 0;
+  for (let i = 0; i < 400; i++) {
+    const d = new Date(now); d.setDate(now.getDate() - i);
+    const k = dateKey(d);
+    const m = load('well-' + k, null);
+    const anyDone = m && Object.values(m).some(Boolean);
+    if (anyDone) streak++;
+    else if (i > 0) break;
+    else continue; // today not done yet — don't break streak
+  }
+  document.getElementById('wn-streak').textContent = streak;
+  document.getElementById('wn-month').textContent = monthly;
+  document.getElementById('wn-total').textContent = total;
+}
+function saveWellnessNote(){
+  const el = document.getElementById('wellness-note'); if (!el) return;
+  const notes = load('wellness-notes', {});
+  notes[todayKey()] = el.value;
+  save('wellness-notes', notes);
+  const msg = document.getElementById('wellness-note-msg');
+  if (msg) { msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 1500); }
+}
+
+// ─── JOURNAL ────────────────────────────────────────────────────────
+const JOURNAL_PROMPTS = [
+  "What's in your head today?",
+  "What's heavy? What's light?",
+  "One thing you're proud of from the week.",
+  "Who do you owe a phone call or a hug?",
+  "What's the Hollow teaching you lately?",
+  "If you had one extra free hour today, what would it be?",
+  "What do you keep avoiding? Name it.",
+  "What's working — don't stop doing that.",
+  "Where did you feel most like yourself this week?",
+  "Who supported you lately? Did they hear it?",
+  "What's one thing future-you would thank present-you for?",
+  "If your body had a voice right now, what would it say?",
+  "Something small you noticed and loved this week.",
+  "What's one hard truth you're sitting with?",
+  "Write about a favorite show, job, or grow you ever pulled off.",
+];
+function getJournal(){ return load('journal', []); }
+function saveJournal(j){ save('journal', j); }
+function addJournalEntry(){
+  const el = document.getElementById('journal-text'); const v = el.value.trim();
+  if (!v) { showToast('Write something first'); return; }
+  const promptEl = document.getElementById('journal-prompt');
+  const j = getJournal();
+  j.unshift({ id: uid('j'), date: new Date().toISOString(), text: v, prompt: promptEl ? promptEl.textContent : '' });
+  saveJournal(j);
+  el.value = '';
+  save('journal-draft', '');
+  renderJournal();
+  showToast('Saved 📓');
+}
+function deleteJournalEntry(id){
+  if (!confirm('Delete this entry?')) return;
+  saveJournal(getJournal().filter(j => j.id !== id)); renderJournal();
+}
+function editJournalEntry(id){
+  const j = getJournal(); const it = j.find(x => x.id === id); if (!it) return;
+  const n = prompt('Edit entry:', it.text); if (n === null) return;
+  it.text = n.trim() || it.text; saveJournal(j); renderJournal();
+}
+function clearJournalDraft(){
+  const el = document.getElementById('journal-text'); if (el) el.value = '';
+  save('journal-draft', '');
+}
+function rollJournalPrompt(){
+  const idx = Math.floor(Math.random() * JOURNAL_PROMPTS.length);
+  save('journal-prompt-idx-' + todayKey(), idx);
+  const el = document.getElementById('journal-prompt'); if (el) el.textContent = JOURNAL_PROMPTS[idx];
+}
+function renderJournal(){
+  const dEl = document.getElementById('journal-today-date');
+  if (dEl) dEl.textContent = fmtDate(new Date()).toUpperCase();
+
+  // rotating prompt (stable per day)
+  const promptEl = document.getElementById('journal-prompt');
+  if (promptEl) {
+    let idx = load('journal-prompt-idx-' + todayKey(), null);
+    if (idx === null) { idx = Math.floor(Math.random() * JOURNAL_PROMPTS.length); save('journal-prompt-idx-' + todayKey(), idx); }
+    promptEl.textContent = JOURNAL_PROMPTS[idx];
+  }
+
+  // restore draft
+  const ta = document.getElementById('journal-text');
+  if (ta && !ta.value) { const draft = load('journal-draft', ''); if (draft) ta.value = draft; }
+  if (ta && !ta._bertDraftBound) {
+    ta.addEventListener('input', () => save('journal-draft', ta.value));
+    ta._bertDraftBound = true;
+  }
+
+  const j = getJournal();
+  const host = document.getElementById('journal-list');
+  if (host) {
+    if (j.length === 0) host.innerHTML = '<div class="empty">No entries yet. Write the first one above.</div>';
+    else host.innerHTML = j.map(e => {
+      const d = new Date(e.date);
+      const when = fmtDate(d) + ' · ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      return `<div class="note-card" style="transform:none">
+        <div class="note-date">
+          <span>${when}</span>
+          <span style="display:flex; gap:8px">
+            <span style="cursor:pointer" onclick="editJournalEntry('${e.id}')">✎</span>
+            <span style="cursor:pointer" onclick="deleteJournalEntry('${e.id}')">×</span>
+          </span>
+        </div>
+        ${e.prompt ? `<div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-60); margin-bottom:6px; letter-spacing:.04em; font-style:italic">re: ${esc(e.prompt)}</div>` : ''}
+        <div class="note-text">${esc(e.text)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // stats
+  const totEl = document.getElementById('jn-total'); if (totEl) totEl.textContent = j.length;
+  const now = new Date();
+  const monthStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  const monthCount = j.filter(e => e.date.startsWith(monthStr)).length;
+  const mEl = document.getElementById('jn-month'); if (mEl) mEl.textContent = monthCount;
+  const wordCount = j.reduce((sum, e) => sum + (e.text ? e.text.trim().split(/\s+/).length : 0), 0);
+  const wEl = document.getElementById('jn-words'); if (wEl) wEl.textContent = wordCount;
+  // streak: consecutive days (ending today or yesterday) with at least one entry
+  const datesWithEntries = new Set(j.map(e => e.date.slice(0,10)));
+  let streak = 0;
+  for (let i = 0; i < 400; i++) {
+    const d = new Date(now); d.setDate(now.getDate() - i);
+    if (datesWithEntries.has(dateKey(d))) streak++;
+    else if (i > 0) break;
+  }
+  const sEl = document.getElementById('jn-streak'); if (sEl) sEl.textContent = streak;
+}
+
+// ─── BAND ───────────────────────────────────────────────────────────
+function getBandName(){ return load('band-name', ''); }
+function saveBandName(){
+  const v = document.getElementById('band-name').value.trim();
+  save('band-name', v); showToast('Saved');
+}
+function getShows(){ return load('shows', []); }
+function saveShows(s){ save('shows', s); }
+function addShow(){
+  const name = document.getElementById('show-name').value.trim(); if (!name) { showToast('Name?'); return; }
+  const venue = document.getElementById('show-venue').value.trim();
+  const date = document.getElementById('show-date').value || null;
+  const time = document.getElementById('show-time').value || '';
+  const note = document.getElementById('show-note').value.trim();
+  const s = getShows();
+  s.push({ id: uid('sh'), name, venue, date, time, note });
+  saveShows(s);
+  ['show-name','show-venue','show-date','show-time','show-note'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+  renderBand(); showToast('Show booked 🔥');
+}
+function deleteShow(id){ if (!confirm('Delete this show?')) return; saveShows(getShows().filter(s => s.id !== id)); renderBand(); }
+function getReh(){ return load('rehearsals', []); }
+function saveReh(r){ save('rehearsals', r); }
+function addReh(){
+  const date = document.getElementById('reh-date').value || null;
+  if (!date) { showToast('Date?'); return; }
+  const time = document.getElementById('reh-time').value || '';
+  const loc = document.getElementById('reh-loc').value.trim();
+  const note = document.getElementById('reh-note').value.trim();
+  const r = getReh();
+  r.push({ id: uid('rh'), date, time, loc, note });
+  saveReh(r);
+  ['reh-date','reh-time','reh-loc','reh-note'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+  renderBand(); showToast('Rehearsal on the books 🥁');
+}
+function deleteReh(id){ if (!confirm('Delete this rehearsal?')) return; saveReh(getReh().filter(r => r.id !== id)); renderBand(); }
+function sendShowToWeek(id){
+  const s = getShows().find(x => x.id === id); if (!s) return;
+  const label = 'Show: ' + s.name + (s.date ? ' (' + fmtShort(parseDate(s.date)) + ')' : '');
+  addBubbleItem(label, 'band', 'rust');
+}
+function addShowToGCal(id){
+  const s = getShows().find(x => x.id === id); if (!s || !s.date) { showToast('Needs a date'); return; }
+  const ymd = s.date.replace(/-/g,'');
+  let dates;
+  if (s.time) {
+    const [hh,mm] = s.time.split(':');
+    const start = ymd + 'T' + hh.padStart(2,'0') + mm.padStart(2,'0') + '00';
+    const endH = ((parseInt(hh)+2) % 24).toString().padStart(2,'0'); // default 2hr
+    const end = ymd + 'T' + endH + mm.padStart(2,'0') + '00';
+    dates = start + '/' + end;
+  } else {
+    const d = parseDate(s.date); const next = new Date(d); next.setDate(next.getDate()+1);
+    dates = ymd + '/' + dateKey(next).replace(/-/g,'');
+  }
+  const title = 'Show: ' + s.name + (s.venue ? ' @ ' + s.venue : '');
+  const url = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(title) + '&dates=' + dates + (s.note ? '&details=' + encodeURIComponent(s.note) : '') + (s.venue ? '&location=' + encodeURIComponent(s.venue) : '');
+  window.open(url, '_blank');
+}
+function renderBand(){
+  const nameEl = document.getElementById('band-name'); if (nameEl) nameEl.value = getBandName();
+  const today = new Date(); today.setHours(0,0,0,0);
+  const upcoming = (arr) => arr.slice().sort((a,b) => (a.date||'9999').localeCompare(b.date||'9999'));
+  // shows
+  const sh = getShows();
+  const shHost = document.getElementById('shows-list');
+  if (shHost) {
+    if (sh.length === 0) shHost.innerHTML = '<div class="empty">No shows booked yet.</div>';
+    else shHost.innerHTML = upcoming(sh).map(s => {
+      const d = s.date ? parseDate(s.date) : null;
+      const past = d && d < today;
+      const when = d ? fmtDate(d) + (s.time ? ' · ' + s.time : '') : 'TBD';
+      return `<div class="check-item${past?' done':''}" style="align-items:center">
+        <div style="font-size:24px">🔥</div>
+        <div class="body">
+          <div class="t">${esc(s.name)} ${s.venue ? '<span style="color:var(--ink-60)">· '+esc(s.venue)+'</span>' : ''}</div>
+          <div class="meta">${when}${s.note ? ' · '+esc(s.note) : ''}</div>
+        </div>
+        <div class="actions">
+          <button class="iconbtn" onclick="sendShowToWeek('${s.id}')">→ week</button>
+          <button class="iconbtn" onclick="addShowToGCal('${s.id}')">📆</button>
+          <button class="iconbtn" onclick="deleteShow('${s.id}')">×</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  // rehearsals
+  const reh = getReh();
+  const rhHost = document.getElementById('reh-list');
+  if (rhHost) {
+    if (reh.length === 0) rhHost.innerHTML = '<div class="empty">No rehearsals scheduled.</div>';
+    else rhHost.innerHTML = upcoming(reh).map(r => {
+      const d = r.date ? parseDate(r.date) : null;
+      const past = d && d < today;
+      const when = d ? fmtDate(d) + (r.time ? ' · ' + r.time : '') : 'TBD';
+      return `<div class="check-item${past?' done':''}" style="align-items:center">
+        <div style="font-size:24px">🥁</div>
+        <div class="body">
+          <div class="t">${when}${r.loc ? ' · '+esc(r.loc) : ''}</div>
+          ${r.note ? `<div class="meta">${esc(r.note)}</div>` : ''}
+        </div>
+        <div class="actions">
+          <button class="iconbtn" onclick="deleteReh('${r.id}')">×</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ─── FEATURE REQUEST ────────────────────────────────────────────────
+function openFeatureReq(){
+  document.getElementById('fr-modal').classList.add('show');
+  setTimeout(() => document.getElementById('fr-text').focus(), 50);
+}
+function closeFeatureReq(){ document.getElementById('fr-modal').classList.remove('show'); }
+function sendFeatureReq(){
+  const text = document.getElementById('fr-text').value.trim();
+  const from = document.getElementById('fr-from').value.trim();
+  if (!text) { showToast('Say something first'); return; }
+  const subject = encodeURIComponent('Bert feature request' + (from ? ' — ' + from : ''));
+  const body = encodeURIComponent(
+    text + '\n\n—\n' +
+    (from ? 'From: ' + from + '\n' : '') +
+    'Sent from Bert · ' + fmtDate(new Date())
+  );
+  window.location.href = 'mailto:msmascio@gmail.com?subject=' + subject + '&body=' + body;
+  setTimeout(() => { document.getElementById('fr-text').value = ''; closeFeatureReq(); showToast('Thanks — opening email…'); }, 200);
+}
+
+function openGCal(){
+  const title = document.getElementById('cal-title').value.trim();
+  const date = document.getElementById('cal-date').value;
+  const time = document.getElementById('cal-time').value;
+  const detail = document.getElementById('cal-detail').value.trim();
+  if (!title) { showToast('Event title?'); return; }
+  let dates = '';
+  if (date) {
+    const ymd = date.replace(/-/g,'');
+    if (time) {
+      const [hh,mm] = time.split(':');
+      const start = ymd + 'T' + hh.padStart(2,'0') + mm.padStart(2,'0') + '00';
+      // add 1 hour end
+      const endH = ((parseInt(hh)+1) % 24).toString().padStart(2,'0');
+      const end = ymd + 'T' + endH + mm.padStart(2,'0') + '00';
+      dates = '&dates=' + start + '/' + end;
+    } else {
+      // all-day
+      const d = parseDate(date); const next = new Date(d); next.setDate(next.getDate()+1);
+      dates = '&dates=' + ymd + '/' + dateKey(next).replace(/-/g,'');
+    }
+  }
+  const url = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(title) + dates + (detail ? '&details=' + encodeURIComponent(detail) : '');
+  window.open(url, '_blank');
+}
+function openGCalHome(){ window.open('https://calendar.google.com', '_blank'); }
+
+// ─── AVATAR PICKER ──────────────────────────────────────────────────
+const BERT_SAYINGS = [
+  "Well howdy darling!",
+  "That there is a how-ya-doin'",
+  "I am the concrete mitigation unit.",
+  "OFF THE MOUNTAIN!!!",
+  "Oh dat shit broke.",
+];
+function sayBert(line){
+  const el = document.getElementById('bert-speech'); if (!el) return;
+  const text = line || BERT_SAYINGS[Math.floor(Math.random() * BERT_SAYINGS.length)];
+  el.textContent = text;
+  // restart animation
+  el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  // bounce every avatar that's visible
+  document.querySelectorAll('.bert-av-big, .sidebar-logo .bert-av').forEach(av => {
+    av.classList.remove('bounced'); void av.offsetWidth; av.classList.add('bounced');
+    setTimeout(() => av.classList.remove('bounced'), 800);
+  });
+  clearTimeout(window._bertSpeechTimer);
+  window._bertSpeechTimer = setTimeout(() => el.classList.remove('show'), 3200);
+}
+function pickBert(id){
+  save('bert-avatar-id', id);
+  applyBert(id);
+  document.querySelectorAll('.av-picker .ap-opt').forEach(el => {
+    el.classList.toggle('selected', el.dataset.av === id);
+  });
+  sayBert();
+}
+function applyBert(id){
+  document.querySelectorAll('.bert-av-use use').forEach(u => {
+    u.setAttribute('href', '#' + id);
+    // fallback for xlink (older browsers)
+    u.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + id);
+  });
+}
+function restoreBert(){
+  const id = load('bert-avatar-id', 'bert-avatar');
+  applyBert(id);
+  document.querySelectorAll('.av-picker .ap-opt').forEach(el => {
+    el.classList.toggle('selected', el.dataset.av === id);
+  });
+  // if they've already picked, start the picker collapsed
+  if (load('bert-avatar-id', null) !== null) {
+    const p = document.getElementById('av-picker'); if (p) p.classList.add('collapsed');
+    const t = document.getElementById('av-toggle'); if (t) t.textContent = 'change ↓';
+  }
+}
+function toggleAvPicker(){
+  const p = document.getElementById('av-picker'); if (!p) return;
+  p.classList.toggle('collapsed');
+  const t = document.getElementById('av-toggle');
+  if (t) t.textContent = p.classList.contains('collapsed') ? 'change ↓' : 'hide ↑';
+}
+
+// ─── GOOGLE CALENDAR ────────────────────────────────────────────────
+const GOOGLE_SCOPE = 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/drive.appdata openid profile email';
+function getGCfg(){ return load('g-cfg', { clientId: '', token: '', expires: 0 }); }
+function saveGCfg(c){ save('g-cfg', c); }
+function gIsConnected(){ const c = getGCfg(); return !!(c.token && c.expires > Date.now()); }
+function gSaveClientId(){
+  const v = document.getElementById('g-client-id').value.trim();
+  const c = getGCfg(); c.clientId = v; saveGCfg(c);
+  showToast('Client ID saved'); renderGoogleStatus();
+}
+function gConnect(){
+  const c = getGCfg();
+  if (!c.clientId) {
+    const pasted = document.getElementById('g-client-id').value.trim();
+    if (pasted) { c.clientId = pasted; saveGCfg(c); }
+    else { showToast('Paste a Client ID first'); return; }
+  }
+  if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
+    showToast('Google script still loading…'); setTimeout(gConnect, 400); return;
+  }
+  try {
+    const tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: c.clientId,
+      scope: GOOGLE_SCOPE,
+      callback: async (resp) => {
+        if (resp && resp.access_token) {
+          const cfg = getGCfg();
+          cfg.token = resp.access_token;
+          cfg.expires = Date.now() + ((resp.expires_in || 3600) * 1000);
+          saveGCfg(cfg);
+          // fetch user profile
+          try {
+            const pr = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: 'Bearer ' + cfg.token }});
+            if (pr.ok) {
+              const profile = await pr.json();
+              save('g-profile', { name: profile.name, email: profile.email, picture: profile.picture });
+            }
+          } catch {}
+          showToast('Signed in ✅');
+          renderGoogleStatus();
+          renderProfile();
+          renderCloudStatus();
+          fetchGEvents();
+        } else {
+          showToast('Auth failed');
+        }
+      },
+      error_callback: (err) => { showToast('Google: ' + (err && err.message ? err.message : 'auth error')); },
+    });
+    tokenClient.requestAccessToken();
+  } catch (e) { showToast('Bad Client ID'); console.error(e); }
+}
+function gDisconnect(){
+  const c = getGCfg(); c.token = ''; c.expires = 0; saveGCfg(c);
+  save('g-events', []);
+  save('g-profile', null);
+  renderGoogleStatus(); renderGEvents(); renderProfile(); renderCloudStatus();
+  showToast('Signed out');
+}
+
+// ─── CLOUD SAVE (Google Drive appdata) ──────────────────────────────
+const BERT_CLOUD_FILE = 'bert-data.json';
+const CLOUD_SKIP_PREFIXES = ['g-token','g-expires','g-events','g-cfg','g-profile','bert-mig-','journal-draft','bert-daily-','journal-prompt-idx-','cloud-last-'];
+function shouldSkipKey(k){ return CLOUD_SKIP_PREFIXES.some(p => k.startsWith(p)); }
+async function gDriveFindFile(){
+  const token = getGCfg().token;
+  const res = await fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&fields=files(id,name,modifiedTime)', {
+    headers: { Authorization: 'Bearer ' + token }
+  });
+  if (!res.ok) throw new Error('list ' + res.status);
+  const list = await res.json();
+  return (list.files || []).find(f => f.name === BERT_CLOUD_FILE);
+}
+async function gDriveSave(){
+  if (!gIsConnected()) { showToast('Sign in first'); return; }
+  const token = getGCfg().token;
+  // Snapshot of localStorage (excluding transient/migration keys)
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (!k || shouldSkipKey(k)) continue;
+    data[k] = localStorage.getItem(k);
+  }
+  const payload = { version: 1, savedAt: new Date().toISOString(), data };
+  try {
+    const existing = await gDriveFindFile();
+    if (existing) {
+      const r = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${existing.id}?uploadType=media`, {
+        method: 'PATCH',
+        headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!r.ok) throw new Error('patch ' + r.status);
+    } else {
+      const boundary = 'bert' + Date.now();
+      const metadata = { name: BERT_CLOUD_FILE, parents: ['appDataFolder'], mimeType: 'application/json' };
+      const body = `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(payload)}\r\n--${boundary}--`;
+      const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + token, 'Content-Type': `multipart/related; boundary=${boundary}` },
+        body
+      });
+      if (!r.ok) throw new Error('create ' + r.status);
+    }
+    save('cloud-last-save', new Date().toISOString());
+    renderCloudStatus();
+    showToast('Saved to cloud ☁️');
+  } catch (e) { console.error(e); showToast('Save failed'); }
+}
+async function gDriveLoad(){
+  if (!gIsConnected()) { showToast('Sign in first'); return; }
+  if (!confirm('Load from cloud? This will replace your current local data.')) return;
+  const token = getGCfg().token;
+  try {
+    const existing = await gDriveFindFile();
+    if (!existing) { showToast('No cloud save found'); return; }
+    const res = await fetch(`https://www.googleapis.com/drive/v3/files/${existing.id}?alt=media`, {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('get ' + res.status);
+    const payload = await res.json();
+    if (!payload || !payload.data) { showToast('Cloud data is empty'); return; }
+    // preserve Google auth/session keys
+    const preserve = {};
+    ['g-token','g-expires','g-cfg','g-profile','g-events','cloud-last-save','cloud-last-load'].forEach(k => {
+      const v = localStorage.getItem(k); if (v !== null) preserve[k] = v;
+    });
+    // wipe non-skip keys
+    const toRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && !shouldSkipKey(k)) toRemove.push(k);
+    }
+    toRemove.forEach(k => localStorage.removeItem(k));
+    // apply cloud data
+    Object.keys(payload.data).forEach(k => localStorage.setItem(k, payload.data[k]));
+    // restore preserved
+    Object.keys(preserve).forEach(k => localStorage.setItem(k, preserve[k]));
+    save('cloud-last-load', new Date().toISOString());
+    showToast('Loaded from cloud ☁️');
+    renderAll();
+    renderCloudStatus();
+  } catch (e) { console.error(e); showToast('Load failed'); }
+}
+function renderProfile(){
+  const el = document.getElementById('sidebar-profile'); if (!el) return;
+  const p = load('g-profile', null);
+  if (p && gIsConnected()) {
+    el.innerHTML = `
+      ${p.picture ? `<img src="${esc(p.picture)}" referrerpolicy="no-referrer" alt="" style="width:32px; height:32px; border-radius:50%; border:2px solid rgba(43,33,24,0.15); flex-shrink:0">` : ''}
+      <div style="min-width:0; flex:1">
+        <div style="font-size:12px; font-weight:700; color:var(--ink); line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${esc(p.name || '')}</div>
+        <div style="font-size:10px; color:rgba(43,33,24,0.55); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${esc(p.email || '')}</div>
+      </div>`;
+    el.style.display = 'flex';
+  } else {
+    el.style.display = 'none';
+  }
+}
+function renderCloudStatus(){
+  const el = document.getElementById('cloud-status'); if (!el) return;
+  const lastSave = load('cloud-last-save', null);
+  const lastLoad = load('cloud-last-load', null);
+  if (!gIsConnected()) {
+    el.innerHTML = '<span style="color:var(--ink-60)">Sign in with Google above to enable cloud save.</span>';
+    return;
+  }
+  const lines = [];
+  if (lastSave) { const d = new Date(lastSave); lines.push('Last saved: ' + fmtShort(d) + ' · ' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})); }
+  if (lastLoad) { const d = new Date(lastLoad); lines.push('Last loaded: ' + fmtShort(d) + ' · ' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})); }
+  if (lines.length === 0) lines.push('No cloud save yet.');
+  el.innerHTML = '<span style="color:var(--grass); font-weight:600">✓ Ready to sync</span> <span style="font-family:\'DM Mono\',monospace; font-size:11px; color:var(--ink-60); display:block; margin-top:4px">' + lines.join(' · ') + '</span>';
+}
+async function fetchGEvents(){
+  if (!gIsConnected()) { showToast('Connect first'); return; }
+  const c = getGCfg();
+  const now = new Date().toISOString();
+  const max = new Date(); max.setDate(max.getDate() + 14);
+  const url = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
+    + '?timeMin=' + encodeURIComponent(now)
+    + '&timeMax=' + encodeURIComponent(max.toISOString())
+    + '&singleEvents=true&orderBy=startTime&maxResults=15';
+  try {
+    const res = await fetch(url, { headers: { Authorization: 'Bearer ' + c.token } });
+    if (!res.ok) {
+      if (res.status === 401) { gDisconnect(); showToast('Token expired — reconnect'); return; }
+      showToast('Fetch failed (' + res.status + ')'); return;
+    }
+    const data = await res.json();
+    save('g-events', data.items || []);
+    renderGEvents();
+    showToast('Events refreshed');
+  } catch (e) {
+    console.error(e); showToast('Network error');
+  }
+}
+function renderGoogleStatus(){
+  const el = document.getElementById('g-status'); if (!el) return;
+  const c = getGCfg();
+  if (!c.clientId) el.innerHTML = '<span style="color:var(--ink-60)">Not set up yet — paste a Client ID below.</span>';
+  else if (gIsConnected()) {
+    const mins = Math.max(0, Math.floor((c.expires - Date.now()) / 60000));
+    el.innerHTML = `<span style="color:var(--grass); font-weight:600">✓ Connected</span> <span style="color:var(--ink-60); font-family:'DM Mono',monospace; font-size:11px">— token expires in ${mins} min</span>`;
+  } else el.innerHTML = '<span style="color:var(--rust); font-weight:600">Not connected</span> <span style="color:var(--ink-60); font-size:12px">— hit Connect</span>';
+  const idEl = document.getElementById('g-client-id');
+  if (idEl && !idEl.value && c.clientId) idEl.value = c.clientId;
+}
+function renderGEvents(){
+  const host = document.getElementById('today-gevents'); if (!host) return;
+  const hint = document.getElementById('today-gevents-hint');
+  if (!gIsConnected()) {
+    host.innerHTML = '';
+    if (hint) hint.textContent = '— connect Google in Brain dump';
+    return;
+  }
+  if (hint) hint.textContent = '';
+  const events = load('g-events', []);
+  if (events.length === 0) { host.innerHTML = '<div class="empty">Nothing on Google Calendar for the next 2 weeks.</div>'; return; }
+  host.innerHTML = events.slice(0, 6).map(e => {
+    const start = e.start.dateTime || e.start.date;
+    const dt = new Date(start);
+    const when = fmtShort(dt) + (e.start.dateTime ? ' · ' + dt.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : ' (all day)');
+    const link = e.htmlLink ? `<a href="${esc(e.htmlLink)}" target="_blank" style="color:var(--sky); text-decoration:none; font-size:11px; margin-left:8px">open ↗</a>` : '';
+    return `<div class="check-item" style="align-items:center">
+      <div style="font-size:20px">📆</div>
+      <div class="body">
+        <div class="t">${esc(e.summary || '(untitled)')}${link}</div>
+        <div class="meta">${when}${e.location ? ' · '+esc(e.location) : ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── TAB NAV ────────────────────────────────────────────────────────
+function switchTab(name, btn){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('panel-' + name); if (panel) panel.classList.add('active');
+  document.querySelectorAll('.nav-item, .mobile-nav-btn').forEach(n => n.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('[data-tab="'+name+'"]').forEach(n => n.classList.add('active'));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function findNavBtn(name){ return document.querySelector('[data-tab="'+name+'"]'); }
+
+// ─── TODAY MISC ─────────────────────────────────────────────────────
+const HOWDY_LINES = [
+  "Let's get after it.",
+  "Slow is smooth, smooth is fast.",
+  "Coffee, then the hard thing.",
+  "Bert's got the list. You got the muscle.",
+  "Good day to fix something.",
+  "The Hollow isn't gonna run itself.",
+  "One job, one zone, one thing.",
+  "You've juggled more than this. Let's go.",
+];
+const BERT_DAILY = [
+  "One job, one zone, one thing.",
+  "Whatever's heaviest — do that first.",
+  "The panels don't install themselves.",
+  "Water the ladies. Check on Baby Momma. Eat something.",
+  "If it takes under 2 minutes, just do it.",
+  "Text the client before they text you.",
+  "Dump run overdue? Go get it.",
+  "A tidy porch is a tidy mind.",
+  "Solar calc > vibes. Do the math.",
+  "One materials list is worth ten mental notes.",
+  "You're the only you the Hollow has.",
+  "Check trichomes. Check the sky. Check yourself.",
+  "Dreads tight. Head clear. Let's go.",
+  "If you're stuck, write it down and keep walking.",
+  "Bert believes in you. Also Bert is a website.",
+];
+function setWelcome(){
+  const l = document.getElementById('welcome-line'); if (!l) return;
+  const idx = new Date().getDate() % HOWDY_LINES.length;
+  l.textContent = HOWDY_LINES[idx];
+  const h = new Date().getHours();
+  const headline = document.getElementById('howdy-text');
+  const wave = document.getElementById('howdy-wave');
+  if (headline && wave) {
+    if (h >= 5 && h < 12)        { headline.textContent = 'Good morning, good lookin\''; wave.textContent = '☕'; }
+    else if (h >= 12 && h < 17)  { headline.textContent = 'Howdy, Ari';                  wave.textContent = '🤘'; }
+    else                         { headline.textContent = "It's Alpenglow time";        wave.textContent = '🌄'; }
+  }
+  const td = document.getElementById('today-date');
+  if (td) td.textContent = fmtDate(new Date()).toUpperCase();
+  setBertDaily();
+  renderBrainCount();
+}
+function setBertDaily(){
+  const msg = document.getElementById('bert-daily-msg'); if (!msg) return;
+  const key = 'bert-daily-' + todayKey();
+  let idx = load(key, null);
+  if (idx === null) { idx = Math.floor(Math.random() * BERT_DAILY.length); save(key, idx); }
+  msg.textContent = BERT_DAILY[idx];
+  const sub = document.getElementById('bert-daily-sub');
+  if (sub) sub.textContent = '— Bert, ' + fmtDate(new Date());
+}
+function rollBertDaily(){
+  const msg = document.getElementById('bert-daily-msg'); if (!msg) return;
+  let idx = Math.floor(Math.random() * BERT_DAILY.length);
+  save('bert-daily-' + todayKey(), idx);
+  msg.textContent = BERT_DAILY[idx];
+}
+function addBrainQuick(){
+  const el = document.getElementById('brain-quick-input'); if (!el) return;
+  const v = el.value.trim(); if (!v) return;
+  const n = getNotes(); n.unshift({ id: uid('n'), text: v, date: new Date().toISOString() });
+  saveNotes(n); el.value = ''; renderNotes(); renderBrainCount(); showToast('Stuck to the wall 📌');
+}
+function renderBrainCount(){
+  const el = document.getElementById('brain-count'); if (!el) return;
+  const n = getNotes().length;
+  el.textContent = n + (n === 1 ? ' in the pile' : ' in the pile');
+}
+
+// ─── INIT ───────────────────────────────────────────────────────────
+function renderAll(){
+  setWelcome();
+  renderZones();
+  renderBubbles();
+  renderQuick();
+  renderJobs();
+  renderGrocery();
+  renderDump();
+  renderVehicles();
+  renderVisitors();
+  renderCalendar();
+  renderWellness();
+  renderJournal();
+  renderBand();
+  renderNotes();
+  renderBrainCount();
+  renderGoogleStatus();
+  renderGEvents();
+  renderProfile();
+  renderCloudStatus();
+  restoreBert();
+  // If connected, silently refresh in background
+  if (gIsConnected()) { fetchGEventsQuiet(); }
+}
+async function fetchGEventsQuiet(){
+  if (!gIsConnected()) return;
+  const c = getGCfg();
+  const now = new Date().toISOString();
+  const max = new Date(); max.setDate(max.getDate() + 14);
+  const url = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
+    + '?timeMin=' + encodeURIComponent(now)
+    + '&timeMax=' + encodeURIComponent(max.toISOString())
+    + '&singleEvents=true&orderBy=startTime&maxResults=15';
+  try {
+    const res = await fetch(url, { headers: { Authorization: 'Bearer ' + c.token } });
+    if (!res.ok) {
+      if (res.status === 401) gDisconnect();
+      return;
+    }
+    const data = await res.json();
+    save('g-events', data.items || []);
+    renderGEvents();
+  } catch {}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderAll();
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  }
+});
+</script>
+
+</body>
+</html>
