@@ -3045,9 +3045,17 @@ const BERT_SAYINGS = [
   "OFF THE MOUNTAIN!!!",
   "Oh dat shit broke.",
 ];
+// round-robin cycle — every saying gets shown once before any repeat
+let _bertSaidQueue = [];
+function nextBertSaying(){
+  if (_bertSaidQueue.length === 0) {
+    _bertSaidQueue = BERT_SAYINGS.slice().sort(() => Math.random() - 0.5);
+  }
+  return _bertSaidQueue.shift();
+}
 function sayBert(line){
   const el = document.getElementById('bert-speech'); if (!el) return;
-  const text = line || BERT_SAYINGS[Math.floor(Math.random() * BERT_SAYINGS.length)];
+  const text = line || nextBertSaying();
   el.textContent = text;
   // restart animation
   el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
