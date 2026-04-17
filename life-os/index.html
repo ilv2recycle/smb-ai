@@ -415,6 +415,22 @@ body {
         </div>
       </div>
 
+      <div class="section-label">Daily reflection <span class="hint">— two questions, end of day</span></div>
+      <div class="ref-card ref-1">
+        <div class="ref-num">01</div>
+        <div class="ref-label">What's one thing I did well today?</div>
+        <textarea class="ta" id="reflect-well" placeholder="Small counts. Name it specifically."></textarea>
+      </div>
+      <div class="ref-card ref-2">
+        <div class="ref-num">02</div>
+        <div class="ref-label">What's one thing I need to do better?</div>
+        <textarea class="ta" id="reflect-better" placeholder="One thing. Not a list. Not self-attack — just honest."></textarea>
+      </div>
+      <div class="btn-row" style="margin-top:8px;margin-bottom:1rem">
+        <button class="btn btn-sm" onclick="saveReflection()">Save reflection</button>
+        <span id="reflect-saved-msg" style="display:none;font-family:'DM Mono',monospace;font-size:11px;color:var(--sage);letter-spacing:.04em;align-self:center">Saved.</span>
+      </div>
+
       <div class="section-label">Night routine <span class="hint">— wind down well</span></div>
       <div id="list-night"></div>
 
@@ -1040,6 +1056,9 @@ function renderToday() {
 
   // gratitude input rows
   renderGratitudeInputs();
+
+  // daily reflection
+  loadTodayReflection();
 }
 
 function renderTodaySupps(){ /* re-render the three supp lists */ renderToday(); }
@@ -1061,6 +1080,27 @@ function saveGratitude() {
   all[todayKey()] = { items, date: new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) };
   saveJSON('gratitude', all);
   showToast('Gratitude saved.');
+}
+
+function saveReflection() {
+  const well = document.getElementById('reflect-well').value.trim();
+  const better = document.getElementById('reflect-better').value.trim();
+  const all = loadJSON('reflections', {});
+  all[todayKey()] = { well, better, date: new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) };
+  saveJSON('reflections', all);
+  const msg = document.getElementById('reflect-saved-msg');
+  msg.style.display = 'inline';
+  setTimeout(()=>msg.style.display='none', 2000);
+  showToast('Reflection saved.');
+}
+
+function loadTodayReflection() {
+  const entry = loadJSON('reflections', {})[todayKey()];
+  if (!entry) return;
+  const wellEl = document.getElementById('reflect-well');
+  const betterEl = document.getElementById('reflect-better');
+  if (wellEl) wellEl.value = entry.well || '';
+  if (betterEl) betterEl.value = entry.better || '';
 }
 
 function resetToday() {
@@ -1904,7 +1944,11 @@ function renderRecipes(){
 function openCoaching(){
   const doneMap = loadJSON('done-'+todayKey(), {});
   const n = NONNEG.filter(p => doneMap[p.id]).map(p => p.title).join(', ') || 'none yet';
-  const q = `Today I completed these non-negotiables: ${n}. Give me a short, grounded coaching reflection — what to carry into the rest of my day. I'm Taurus Sun, Scorpio rising, Pisces Moon, Generator 6/2 Sacral authority, North Node in Aries 6th house.`;
+  const r = loadJSON('reflections', {})[todayKey()] || {};
+  const reflectionBlock = (r.well || r.better)
+    ? `\n\nMY REFLECTION:\n- One thing I did well: ${r.well || '(not answered)'}\n- One thing I need to do better: ${r.better || '(not answered)'}`
+    : '';
+  const q = `Today I completed these non-negotiables: ${n}.${reflectionBlock}\n\nGive me a short, grounded coaching reflection — what to carry into the rest of my day and into tomorrow. I'm Taurus Sun, Scorpio rising, Pisces Moon, Generator 6/2 Sacral authority, North Node in Aries 6th house.`;
   window.open('https://claude.ai/new?q='+encodeURIComponent(q),'_blank');
 }
 
