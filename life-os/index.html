@@ -213,6 +213,44 @@ body {
 .wt-count { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--gold); letter-spacing: .08em; margin-left: auto; font-weight: 400; }
 .wt-hint { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 12px; color: var(--ink-60); font-weight: 400; }
 
+/* simple supplement list */
+.supp-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--rl); cursor: pointer; user-select: none; transition: all .15s; margin-bottom: 5px; }
+.supp-item:hover { border-color: var(--ink-30); }
+.supp-item.taken { border-color: rgba(74,102,80,0.35); background: rgba(74,102,80,0.04); }
+.supp-item .sbox { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--ink-30); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .18s; }
+.supp-item.taken .sbox { background: var(--sage); border-color: var(--sage); }
+.supp-item .sbox svg { display: none; }
+.supp-item.taken .sbox svg { display: block; }
+.supp-item .sname { font-size: 13px; color: var(--ink); font-weight: 500; flex: 1; }
+.supp-item.taken .sname { color: var(--sage); }
+.supp-item .ttime { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; background: var(--ink-05); color: var(--ink-60); flex-shrink: 0; }
+.supp-item .snote { font-size: 11px; color: var(--ink-30); line-height: 1.4; margin-top: 2px; }
+
+/* tag picker (migraine form) */
+.tag-picker { display: flex; flex-wrap: wrap; gap: 5px; }
+.tag-pick { padding: 6px 12px; border-radius: 20px; border: 1px solid var(--ink-10); background: var(--cream); font-size: 12px; color: var(--ink-60); cursor: pointer; transition: all .15s; user-select: none; }
+.tag-pick:hover { border-color: var(--ink-30); color: var(--ink); }
+.tag-pick.selected { background: var(--rust); color: white; border-color: var(--rust); }
+
+/* migraine entry cards */
+.mig-entry { background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--rl); padding: 14px 16px; margin-bottom: 8px; position: relative; overflow: hidden; }
+.mig-entry::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.mig-sev-1::before, .mig-sev-2::before, .mig-sev-3::before { background: var(--gold); }
+.mig-sev-4::before, .mig-sev-5::before, .mig-sev-6::before { background: var(--gold-light); }
+.mig-sev-7::before, .mig-sev-8::before { background: var(--rust); }
+.mig-sev-9::before, .mig-sev-10::before { background: #6B1F1F; }
+.mig-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; flex-wrap: wrap; gap: 6px; }
+.mig-date { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-60); letter-spacing: .06em; }
+.mig-sev { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--rust); font-weight: 400; }
+.mig-sev-small { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-30); letter-spacing: .06em; margin-left: 6px; }
+.mig-row { font-size: 12px; color: var(--ink-60); line-height: 1.6; margin-top: 3px; }
+.mig-row strong { color: var(--ink); font-weight: 500; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; margin-right: 6px; }
+.mig-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.mig-tag { font-size: 10px; padding: 2px 8px; border-radius: 20px; background: rgba(139,74,47,0.1); color: var(--rust); }
+.mig-notes-text { font-size: 12px; color: var(--ink-60); line-height: 1.5; margin-top: 6px; font-style: italic; }
+.mig-delete { position: absolute; top: 10px; right: 10px; background: transparent; border: none; color: var(--ink-30); cursor: pointer; padding: 4px 8px; font-size: 14px; }
+.mig-delete:hover { color: var(--rust); }
+
 /* supplements weekly chart */
 .supp-chart { display: grid; grid-template-columns: 1fr repeat(7, minmax(28px, 40px)); gap: 4px 6px; align-items: center; background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--rl); padding: 14px 16px; margin-bottom: 1rem; }
 .supp-chart-head { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--ink-30); letter-spacing: .08em; text-align: center; line-height: 1.2; padding: 4px 0; }
@@ -689,14 +727,63 @@ body {
         <div class="rl-week" id="plunge-week"></div>
       </div>
 
-      <div class="section-label">Supplements · this week <span class="hint">— tap a dot to mark taken</span></div>
-      <div id="supp-chart"></div>
+      <div class="section-label">Supplements · today <span class="hint">— tap to check off</span></div>
+      <div id="supp-today-list"></div>
+      <div id="supp-today-count" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-30);letter-spacing:.06em;margin-top:6px;margin-bottom:1rem"></div>
 
       <div class="section-label">Configure supplements</div>
       <div id="supp-config"></div>
       <div class="btn-row">
         <button class="btn btn-sm" onclick="addSupplement()">+ Add supplement</button>
         <button class="btn btn-sm" onclick="resetSupps()">Reset to defaults</button>
+      </div>
+
+      <div class="section-label">Migraine tracker <span class="hint">— log when one hits · spot patterns</span></div>
+
+      <div class="stats-row" id="mig-stats"></div>
+
+      <div class="card">
+        <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--ink);margin-bottom:10px">Log a migraine</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div>
+            <label style="font-size:11px;color:var(--ink-60);display:block;margin-bottom:3px">Date</label>
+            <input class="txt" id="mig-date" type="date">
+          </div>
+          <div>
+            <label style="font-size:11px;color:var(--ink-60);display:block;margin-bottom:3px">Time started</label>
+            <input class="txt" id="mig-time" type="time">
+          </div>
+        </div>
+        <div style="margin-bottom:10px">
+          <label style="font-size:11px;color:var(--ink-60);display:block;margin-bottom:6px">Severity · <span id="mig-severity-val">5</span> / 10</label>
+          <input id="mig-severity" type="range" min="1" max="10" value="5" oninput="document.getElementById('mig-severity-val').textContent=this.value" style="width:100%">
+        </div>
+        <div style="margin-bottom:10px">
+          <label style="font-size:11px;color:var(--ink-60);display:block;margin-bottom:4px">Location</label>
+          <div id="mig-location" class="tag-picker"></div>
+        </div>
+        <div style="margin-bottom:10px">
+          <label style="font-size:11px;color:var(--ink-60);display:block;margin-bottom:4px">Symptoms</label>
+          <div id="mig-symptoms" class="tag-picker"></div>
+        </div>
+        <div style="margin-bottom:10px">
+          <label style="font-size:11px;color:var(--ink-60);display:block;margin-bottom:4px">Suspected triggers</label>
+          <div id="mig-triggers" class="tag-picker"></div>
+        </div>
+        <input class="txt" id="mig-meds" placeholder="Meds taken (e.g. ibuprofen 600mg, triptan)" style="margin-bottom:6px">
+        <input class="txt" id="mig-duration" type="number" min="0" step="0.5" placeholder="Duration (hours) — leave blank if ongoing" style="margin-bottom:6px">
+        <textarea class="ta" id="mig-notes" placeholder="Notes — what helped, what didn't, context…" style="min-height:60px"></textarea>
+        <div class="btn-row">
+          <button class="btn btn-gold btn-sm" onclick="saveMigraine()">Log migraine</button>
+          <button class="btn btn-sm" onclick="resetMigForm()">Clear</button>
+        </div>
+      </div>
+
+      <div class="section-label">Recent migraines</div>
+      <div id="mig-log"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-sm" onclick="openMigraineCoach()">Look for patterns with Claude ↗</button>
       </div>
     </div>
 
@@ -1653,10 +1740,16 @@ function renderBody() {
 
   renderWorkoutWeek();
   renderAllTrackers();
-  renderSuppChart();
+  renderSuppTodayList();
   renderSuppConfig();
   loadWorkoutNote();
   renderWorkoutNoteLog();
+  renderMigPickers();
+  renderMigLog();
+  renderMigStats();
+  // Default migraine date/time to now if empty
+  const md = document.getElementById('mig-date'); if (md && !md.value) md.value = todayKey();
+  const mt = document.getElementById('mig-time'); if (mt && !mt.value) mt.value = new Date().toTimeString().slice(0,5);
 }
 
 function renderWorkoutWeek() {
@@ -1729,45 +1822,171 @@ function toggleDateFlag(kind, key) {
   renderWorkoutWeek();
 }
 
-// Supplements weekly chart
-function renderSuppChart() {
-  const el = document.getElementById('supp-chart');
+// Simple supplement list for today
+function renderSuppTodayList() {
+  const el = document.getElementById('supp-today-list');
   if (!el) return;
   const supps = getSupps();
-  const now = new Date();
-  const dow = now.getDay();
-  const days = [];
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(now); d.setDate(now.getDate() - dow + i);
-    days.push(d);
-  }
-  let html = '<div class="supp-chart-head name">Supplement</div>';
-  days.forEach(d => {
-    const isToday = d.toDateString() === now.toDateString();
-    html += `<div class="supp-chart-head" style="${isToday?'color:var(--gold);font-weight:500':''}">${DOW[d.getDay()].slice(0,2).toUpperCase()}<br>${d.getDate()}</div>`;
-  });
-  if (supps.length === 0) {
-    el.innerHTML = html + '<div style="grid-column:1/-1;padding:1rem;text-align:center" class="empty">No supplements configured.</div>';
-    return;
-  }
-  supps.forEach(s => {
-    html += `<div class="supp-row-name">${escapeHtml(s.name)}<span class="stime">${s.time||''}</span></div>`;
-    days.forEach(d => {
-      const k = dateKey(d);
-      const m = loadJSON('supp-done-'+k, {});
-      const taken = !!m[s.id];
-      const isToday = d.toDateString() === now.toDateString();
-      html += `<div class="supp-cell"><div class="supp-dot${taken?' taken':''}${isToday?' today':''}" onclick="toggleSuppDay('${s.id}','${k}')">${taken?'✓':''}</div></div>`;
-    });
-  });
-  el.innerHTML = html;
+  if (supps.length === 0) { el.innerHTML = '<div class="empty">No supplements configured.</div>'; return; }
+  const taken = loadJSON('supp-done-'+todayKey(), {});
+  const timeOrder = { morning:0, day:1, evening:2 };
+  const sorted = [...supps].sort((a,b) => (timeOrder[a.time]||0) - (timeOrder[b.time]||0));
+  el.innerHTML = sorted.map(s => `
+    <div class="supp-item${taken[s.id]?' taken':''}" onclick="toggleSuppTakenToday('${s.id}')">
+      <div class="sbox">${CHECK_SVG}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="sname">${escapeHtml(s.name)}</span>
+          <span class="ttime">${s.time||''}</span>
+        </div>
+        ${s.note?`<div class="snote">${escapeHtml(s.note)}</div>`:''}
+      </div>
+    </div>`).join('');
+  const countEl = document.getElementById('supp-today-count');
+  const takenCount = supps.filter(s => taken[s.id]).length;
+  if (countEl) countEl.textContent = `${takenCount} / ${supps.length} TAKEN TODAY`;
 }
-function toggleSuppDay(suppId, key) {
-  const m = loadJSON('supp-done-'+key, {});
+function toggleSuppTakenToday(suppId) {
+  const m = loadJSON('supp-done-'+todayKey(), {});
   m[suppId] = !m[suppId];
-  saveJSON('supp-done-'+key, m);
-  renderSuppChart();
-  if (key === todayKey()) renderToday();
+  saveJSON('supp-done-'+todayKey(), m);
+  renderSuppTodayList();
+  renderToday();
+}
+
+// Backward-compat alias (other code still references renderSuppChart)
+function renderSuppChart() { renderSuppTodayList(); }
+
+// ═══════════════════ MIGRAINE TRACKER ═══════════════════
+const MIG_LOCATIONS = ['Left temple','Right temple','Forehead','Behind eye','Back of head','Full head','Other'];
+const MIG_SYMPTOMS  = ['Nausea','Vomiting','Aura','Light sensitivity','Sound sensitivity','Smell sensitivity','Dizziness','Blurred vision','Numbness','Fatigue'];
+const MIG_TRIGGERS  = ['Stress','Poor sleep','Dehydration','Hormonal / cycle','Food','Alcohol','Caffeine withdrawal','Weather','Screen time','Skipped meal','Perfume / smell','Bright light','Unknown'];
+
+function getMigraines(){ return loadJSON('migraines', []); }
+function saveMigraines(m){ saveJSON('migraines', m); }
+
+let migSelected = { location: [], symptoms: [], triggers: [] };
+
+function renderMigPickers() {
+  const mk = (field, opts) => opts.map(o => `<span class="tag-pick${migSelected[field].includes(o)?' selected':''}" onclick="toggleMigTag('${field}','${o.replace(/'/g,"\\'")}')">${o}</span>`).join('');
+  const l = document.getElementById('mig-location'); if (l) l.innerHTML = mk('location', MIG_LOCATIONS);
+  const s = document.getElementById('mig-symptoms'); if (s) s.innerHTML = mk('symptoms', MIG_SYMPTOMS);
+  const t = document.getElementById('mig-triggers'); if (t) t.innerHTML = mk('triggers', MIG_TRIGGERS);
+}
+function toggleMigTag(field, val) {
+  const arr = migSelected[field];
+  const i = arr.indexOf(val);
+  if (i >= 0) arr.splice(i,1); else arr.push(val);
+  renderMigPickers();
+}
+
+function saveMigraine() {
+  const date = document.getElementById('mig-date').value || todayKey();
+  const time = document.getElementById('mig-time').value || new Date().toTimeString().slice(0,5);
+  const severity = parseInt(document.getElementById('mig-severity').value);
+  const meds = document.getElementById('mig-meds').value.trim();
+  const durationRaw = document.getElementById('mig-duration').value;
+  const duration = durationRaw ? parseFloat(durationRaw) : null;
+  const notes = document.getElementById('mig-notes').value.trim();
+
+  const entry = {
+    id: 'mig-'+Date.now(),
+    date, time, severity,
+    location: [...migSelected.location],
+    symptoms: [...migSelected.symptoms],
+    triggers: [...migSelected.triggers],
+    meds, duration, notes,
+    cycleDay: getCycleDay() || null,
+  };
+  const arr = getMigraines();
+  arr.unshift(entry);
+  saveMigraines(arr);
+  resetMigForm();
+  renderMigLog();
+  renderMigStats();
+  showToast('Migraine logged.');
+}
+
+function resetMigForm() {
+  document.getElementById('mig-date').value = todayKey();
+  document.getElementById('mig-time').value = new Date().toTimeString().slice(0,5);
+  document.getElementById('mig-severity').value = 5;
+  document.getElementById('mig-severity-val').textContent = 5;
+  document.getElementById('mig-meds').value = '';
+  document.getElementById('mig-duration').value = '';
+  document.getElementById('mig-notes').value = '';
+  migSelected = { location: [], symptoms: [], triggers: [] };
+  renderMigPickers();
+}
+
+function deleteMigraine(id) {
+  if (!confirm('Delete this migraine entry?')) return;
+  saveMigraines(getMigraines().filter(m => m.id !== id));
+  renderMigLog();
+  renderMigStats();
+}
+
+function renderMigLog() {
+  const el = document.getElementById('mig-log');
+  if (!el) return;
+  const arr = getMigraines().slice(0, 30);
+  if (arr.length === 0) { el.innerHTML = '<div class="empty">No migraines logged — keep it that way.</div>'; return; }
+  el.innerHTML = arr.map(m => {
+    const [y,mo,d] = (m.date||'').split('-').map(Number);
+    const dateDisp = y ? new Date(y,mo-1,d).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) : m.date;
+    const tags = [...(m.location||[]), ...(m.symptoms||[])];
+    return `<div class="mig-entry mig-sev-${m.severity}">
+      <button class="mig-delete" onclick="deleteMigraine('${m.id}')">×</button>
+      <div class="mig-top">
+        <div><span class="mig-sev">${m.severity}</span><span class="mig-sev-small">/10</span></div>
+        <div class="mig-date">${dateDisp} · ${m.time||''}${m.cycleDay?' · cycle day '+m.cycleDay:''}${m.duration?' · '+m.duration+'h':''}</div>
+      </div>
+      ${tags.length?`<div class="mig-tags">${tags.map(t=>`<span class="mig-tag">${escapeHtml(t)}</span>`).join('')}</div>`:''}
+      ${(m.triggers||[]).length?`<div class="mig-row"><strong>Triggers</strong>${m.triggers.map(escapeHtml).join(', ')}</div>`:''}
+      ${m.meds?`<div class="mig-row"><strong>Meds</strong>${escapeHtml(m.meds)}</div>`:''}
+      ${m.notes?`<div class="mig-notes-text">"${escapeHtml(m.notes)}"</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function renderMigStats() {
+  const el = document.getElementById('mig-stats');
+  if (!el) return;
+  const arr = getMigraines();
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const thisMonth = arr.filter(m => {
+    const [y,mo,d] = (m.date||'').split('-').map(Number);
+    return y && new Date(y,mo-1,d) >= monthStart;
+  });
+  const avgSev = thisMonth.length ? (thisMonth.reduce((s,m) => s + (m.severity||0), 0) / thisMonth.length).toFixed(1) : '0';
+  const lastMig = arr[0];
+  let daysSince = '—';
+  if (lastMig) {
+    const [y,mo,d] = lastMig.date.split('-').map(Number);
+    const lastDate = new Date(y,mo-1,d);
+    const today = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    daysSince = daysBetween(lastDate, today);
+    if (daysSince < 0) daysSince = 0;
+  }
+  // most common trigger
+  const trigCounts = {};
+  arr.forEach(m => (m.triggers||[]).forEach(t => { trigCounts[t] = (trigCounts[t]||0)+1; }));
+  const topTrigger = Object.entries(trigCounts).sort((a,b) => b[1]-a[1])[0];
+  const topTriggerText = topTrigger ? topTrigger[0].split(' ')[0] : '—';
+  el.innerHTML = `
+    <div class="stat-card"><div class="n">${thisMonth.length}</div><div class="l">This month</div></div>
+    <div class="stat-card"><div class="n">${avgSev}</div><div class="l">Avg severity</div></div>
+    <div class="stat-card"><div class="n">${daysSince}</div><div class="l">Days since last</div></div>
+    <div class="stat-card"><div class="n" style="font-size:18px">${topTriggerText}</div><div class="l">Top trigger</div></div>`;
+}
+
+function openMigraineCoach() {
+  const arr = getMigraines().slice(0, 20);
+  if (arr.length === 0) { showToast('No migraines logged yet.'); return; }
+  const lines = arr.map(m => `${m.date} ${m.time||''} · severity ${m.severity}/10${m.cycleDay?' · cycle day '+m.cycleDay:''}${m.duration?' · '+m.duration+'h':''} · loc: ${(m.location||[]).join(', ')||'—'} · sym: ${(m.symptoms||[]).join(', ')||'—'} · trig: ${(m.triggers||[]).join(', ')||'—'}${m.meds?' · meds: '+m.meds:''}${m.notes?' · "'+m.notes+'"':''}`).join('\n');
+  const q = `Here are my last ${arr.length} migraines. I'm a 39yo woman with a regular cycle, trying to identify patterns and triggers. Please look for: cycle-day correlation, trigger patterns, severity trends, medication effectiveness. Be direct — tell me what you notice even if I won't like it.\n\n${lines}`;
+  window.open('https://claude.ai/new?q='+encodeURIComponent(q),'_blank');
 }
 
 // Workout notes
