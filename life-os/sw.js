@@ -1,6 +1,6 @@
 // Minimal offline cache for Throughline
-const CACHE = 'throughline-v1';
-const ASSETS = ['./', './index.html', './manifest.json'];
+const CACHE = 'throughline-v2';
+const ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './sync.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).catch(()=>{}));
