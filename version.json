@@ -1,12 +1,12 @@
 {
-  "version": "v260417.05 12:42p",
-  "release": 28,
-  "sha": "2b0b428",
-  "fullSha": "2b0b42833cf08afc6334b14cde80ab26dc2deb39",
+  "version": "v260418.01 9:26a",
+  "release": 29,
+  "sha": "35e40c2",
+  "fullSha": "35e40c243abd227f8444ac30fe3f6ffa6c3a599c",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
   "machine": "runnervmeorf1",
-  "pushedAt": "2026-04-17 17:42:26+00",
-  "commits": [{"sha":"2b0b428","message":"Bert: alpenglow app icon (#50)","author":"ilv2recycle"}]
+  "pushedAt": "2026-04-18 14:26:33+00",
+  "commits": [{"sha":"35e40c2","message":"Throughline icon: gold ankh on ink background (#51)","author":"ilv2recycle"}]
 }
