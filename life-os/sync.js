@@ -31,7 +31,7 @@
   // Static Throughline keys
   const STATIC_KEYS = new Set([
     'quick-list','todos','todo-cats','supps','cycle','recipes','migraines',
-    'gratitude','reflections','archetype-notes',
+    'gratitude','reflections','archetype-notes','journal-entries',
     'slow-food-log','forage-log','creativity-log','integrity-log','connection-log',
     'creativity-focus','permaculture-notes',
     'goal-career','goal-home','goal-vehicle',

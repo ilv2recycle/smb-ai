@@ -425,6 +425,20 @@ body {
 .journal-textarea { width: 100%; border: 1px solid var(--ink-10); border-radius: var(--rl); padding: 16px 18px; font-size: 14px; font-family: 'Cormorant Garamond', serif; color: var(--ink); background: var(--warm-white); resize: vertical; min-height: 180px; line-height: 1.7; transition: border-color .15s; }
 .journal-textarea:focus { outline: none; border-color: var(--ink-30); }
 
+/* Journal log */
+.journal-entry { background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--rl); padding: 14px 18px; margin-bottom: 8px; cursor: pointer; transition: border-color .15s; position: relative; }
+.journal-entry:hover { border-color: var(--ink-30); }
+.journal-entry .je-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; gap: 8px; flex-wrap: wrap; }
+.journal-entry .je-date { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: .06em; }
+.journal-entry .je-prompt { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 13px; color: var(--ink-60); flex: 1; }
+.journal-entry .je-preview { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--ink); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.journal-entry .je-full { display: none; font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--ink); line-height: 1.7; white-space: pre-wrap; margin-top: 8px; }
+.journal-entry.open .je-preview { display: none; }
+.journal-entry.open .je-full { display: block; }
+.journal-entry.open { border-color: var(--ink-30); }
+.journal-entry .je-actions { display: none; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--ink-10); gap: 6px; flex-wrap: wrap; }
+.journal-entry.open .je-actions { display: flex; }
+
 /* mobile */
 .mobile-nav { display: none; background: var(--ink); padding: .75rem 1rem; position: sticky; top: 0; z-index: 200; gap: 6px; overflow-x: auto; white-space: nowrap; }
 .mobile-nav-btn { padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: rgba(255,255,255,0.6); font-family: 'Instrument Sans', sans-serif; flex-shrink: 0; }
@@ -1105,12 +1119,22 @@ body {
         <button class="btn" onclick="newPrompt()">New prompt</button>
       </div>
 
-      <textarea class="journal-textarea" id="journal-text" placeholder="Write here — follow the thought wherever it goes..."></textarea>
+      <textarea class="journal-textarea" id="journal-text" placeholder="Write here — follow the thought wherever it goes..." oninput="scheduleJournalDraft()"></textarea>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-30);letter-spacing:.04em;margin-top:4px;text-align:right" id="journal-draft-status"></div>
 
-      <div class="btn-row">
+      <div class="btn-row" style="align-items:center">
+        <button class="btn btn-gold" id="journal-save-btn" onclick="saveJournalEntry()">Save entry</button>
         <button class="btn" onclick="clearJournal()">Clear</button>
-        <button class="btn btn-gold" onclick="openJournalReflect()">Reflect with Claude ↗</button>
+        <button class="btn" onclick="openJournalReflect()">Reflect with Claude ↗</button>
       </div>
+
+      <hr class="divider">
+
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        <div class="section-label" style="margin-top:0;margin-bottom:0">Past entries <span class="hint" id="journal-count"></span></div>
+        <input class="txt" id="journal-search" placeholder="Search entries…" oninput="renderJournalLog()" style="max-width:240px;font-size:12px;padding:6px 10px">
+      </div>
+      <div id="journal-log"></div>
     </div>
 
     <!-- ── RECIPES ── (footer added after all panels) -->
@@ -2762,7 +2786,147 @@ const PROMPTS = [
 let promptIdx = Math.floor(Math.random()*PROMPTS.length);
 function renderPrompt(){ const p = PROMPTS[promptIdx]; document.getElementById('prompt-text').textContent = p.text; document.getElementById('prompt-attr').textContent = p.attr; }
 function newPrompt(){ promptIdx = (promptIdx+1)%PROMPTS.length; renderPrompt(); }
-function clearJournal(){ document.getElementById('journal-text').value = ''; }
+function clearJournal(){
+  const el = document.getElementById('journal-text');
+  if (el) el.value = '';
+  localStorage.removeItem('journal-draft');
+  updateJournalDraftStatus();
+}
+
+// ── Draft autosave ─────────────────────────────────
+let journalDraftTimer = null;
+function scheduleJournalDraft() {
+  clearTimeout(journalDraftTimer);
+  journalDraftTimer = setTimeout(() => {
+    const el = document.getElementById('journal-text');
+    if (!el) return;
+    const text = el.value;
+    if (text.trim()) {
+      localStorage.setItem('journal-draft', JSON.stringify({ text, prompt: PROMPTS[promptIdx].text, attr: PROMPTS[promptIdx].attr, savedAt: Date.now() }));
+      updateJournalDraftStatus('Draft saved');
+    } else {
+      localStorage.removeItem('journal-draft');
+      updateJournalDraftStatus('');
+    }
+  }, 800);
+}
+function updateJournalDraftStatus(msg) {
+  const el = document.getElementById('journal-draft-status');
+  if (!el) return;
+  if (msg !== undefined) { el.textContent = msg; return; }
+  const draft = loadJSON('journal-draft', null);
+  el.textContent = draft ? 'Draft auto-saved' : '';
+}
+function loadJournalDraft() {
+  const draft = loadJSON('journal-draft', null);
+  if (!draft) return;
+  const ta = document.getElementById('journal-text');
+  if (ta && !ta.value) {
+    ta.value = draft.text || '';
+    // Restore the prompt that was active when the draft was made
+    if (draft.prompt) {
+      const i = PROMPTS.findIndex(p => p.text === draft.prompt);
+      if (i >= 0) { promptIdx = i; renderPrompt(); }
+    }
+    updateJournalDraftStatus('Draft restored');
+  }
+}
+
+// ── Save ──────────────────────────────────────────
+function saveJournalEntry() {
+  const text = document.getElementById('journal-text').value.trim();
+  if (!text) { showToast('Write something first.'); return; }
+  const entries = loadJSON('journal-entries', []);
+  const now = new Date();
+  entries.unshift({
+    id: 'j-'+Date.now(),
+    date: todayKey(),
+    dateDisp: now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}) + ' · ' + now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),
+    prompt: PROMPTS[promptIdx].text,
+    promptAttr: PROMPTS[promptIdx].attr,
+    text,
+    savedAt: now.toISOString(),
+  });
+  saveJSON('journal-entries', entries);
+  document.getElementById('journal-text').value = '';
+  localStorage.removeItem('journal-draft');
+  updateJournalDraftStatus('');
+  renderJournalLog();
+  // Flash button feedback
+  const btn = document.getElementById('journal-save-btn');
+  if (btn) {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Saved';
+    setTimeout(() => { btn.textContent = orig; }, 1800);
+  }
+  showToast('Entry saved.');
+  newPrompt(); // Roll a new prompt for the next one
+}
+
+// ── Render log ─────────────────────────────────────
+function renderJournalLog() {
+  const el = document.getElementById('journal-log');
+  if (!el) return;
+  const entries = loadJSON('journal-entries', []);
+  const countEl = document.getElementById('journal-count');
+  const searchEl = document.getElementById('journal-search');
+  const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
+  const filtered = q
+    ? entries.filter(e => (e.text + ' ' + (e.prompt||'') + ' ' + (e.dateDisp||e.date||'')).toLowerCase().includes(q))
+    : entries;
+
+  if (countEl) countEl.textContent = filtered.length === entries.length
+    ? (entries.length ? '— ' + entries.length : '')
+    : `— ${filtered.length} of ${entries.length}`;
+
+  if (entries.length === 0) { el.innerHTML = '<div class="empty">No entries yet. Write one above.</div>'; return; }
+  if (filtered.length === 0) { el.innerHTML = '<div class="empty">No entries match.</div>'; return; }
+
+  el.innerHTML = filtered.map(e => `
+    <div class="journal-entry" id="je-${e.id}" onclick="toggleJournalEntry('${e.id}', event)">
+      <div class="je-top">
+        <div class="je-date">${escapeHtml(e.dateDisp || e.date)}</div>
+        ${e.prompt ? `<div class="je-prompt">"${escapeHtml(e.prompt)}"</div>` : ''}
+      </div>
+      <div class="je-preview">${escapeHtml(e.text)}</div>
+      <div class="je-full">${escapeHtml(e.text)}</div>
+      <div class="je-actions" onclick="event.stopPropagation()">
+        <button class="btn btn-sm" onclick="reflectOnJournalEntry('${e.id}')">Reflect on this entry ↗</button>
+        <button class="btn btn-sm" onclick="copyJournalEntry('${e.id}')">Copy</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteJournalEntry('${e.id}')">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+function toggleJournalEntry(id, ev) {
+  const entry = document.getElementById('je-'+id);
+  if (!entry) return;
+  // Close others for a cleaner list view
+  document.querySelectorAll('.journal-entry.open').forEach(e => { if (e.id !== 'je-'+id) e.classList.remove('open'); });
+  entry.classList.toggle('open');
+}
+
+function deleteJournalEntry(id) {
+  if (!confirm('Delete this entry? Cannot be undone.')) return;
+  saveJSON('journal-entries', loadJSON('journal-entries', []).filter(e => e.id !== id));
+  renderJournalLog();
+  showToast('Deleted.');
+}
+
+function copyJournalEntry(id) {
+  const entry = loadJSON('journal-entries', []).find(e => e.id === id);
+  if (!entry) return;
+  const text = `${entry.dateDisp}\n\nPrompt: ${entry.prompt}\n\n${entry.text}`;
+  navigator.clipboard.writeText(text).then(() => showToast('Copied.'));
+}
+
+function reflectOnJournalEntry(id) {
+  const entry = loadJSON('journal-entries', []).find(e => e.id === id);
+  if (!entry) return;
+  const q = `Journal entry from ${entry.dateDisp}.\n\nPrompt: "${entry.prompt}"\n\nMy entry:\n${entry.text}\n\nGive me a short, honest coaching reflection on this. I'm Taurus Sun, Scorpio rising, Pisces Moon, Generator 6/2 with North Node in Aries. Don't just validate.`;
+  window.open('https://claude.ai/new?q='+encodeURIComponent(q),'_blank');
+}
+
 function openJournalReflect(){
   const txt = document.getElementById('journal-text').value.trim();
   const p = PROMPTS[promptIdx];
@@ -2951,6 +3115,8 @@ function init(){
   resetDecision();
   renderFeel();
   renderPrompt();
+  loadJournalDraft();
+  renderJournalLog();
   renderRecipes();
   // vision
   getVisionStart();
@@ -2982,6 +3148,7 @@ window.rerenderAll = function() {
     loadGoals();
     renderFeel();
     renderRecipes();
+    renderJournalLog();
     buildVisionDots();
     loadTodayVision();
     renderVisionLog();
