@@ -92,6 +92,22 @@ body {
 .mantra-source { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
 .mantra-text { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 300; font-style: italic; color: var(--warm-white); line-height: 1.6; letter-spacing: .01em; }
 
+/* Cosmic weather card */
+.cosmic-card { background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--rl); padding: 14px 18px; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
+.cosmic-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gold) 0%, var(--plum) 50%, var(--blue-ink) 100%); }
+.cosmic-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 6px; }
+.cosmic-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-30); }
+.cosmic-day { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 14px; color: var(--ink-60); }
+.cosmic-rows { display: flex; flex-direction: column; gap: 8px; }
+.cosmic-row { display: flex; align-items: baseline; gap: 10px; padding: 6px 0; border-top: 1px solid var(--ink-10); }
+.cosmic-row:first-child { border-top: none; padding-top: 0; }
+.cosmic-glyph { font-size: 18px; width: 22px; text-align: center; flex-shrink: 0; line-height: 1; }
+.cosmic-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-30); width: 56px; flex-shrink: 0; padding-top: 4px; }
+.cosmic-body { flex: 1; font-size: 13px; color: var(--ink); line-height: 1.5; }
+.cosmic-body .sub { display: block; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 13px; color: var(--ink-60); margin-top: 2px; line-height: 1.5; }
+.cosmic-body .retro { color: var(--rust); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .04em; }
+.cosmic-foot { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--ink-30); letter-spacing: .06em; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--ink-10); font-style: italic; text-transform: none; }
+
 /* generic card */
 .card { background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--rl); padding: 16px 18px; margin-bottom: 10px; }
 .card h3 { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; margin-bottom: 6px; }
@@ -584,6 +600,8 @@ body {
         <div class="mantra-source">North Node · Aries in 6th</div>
         <div class="mantra-text">Stop waiting to be picked. Build self-trust. Lean into independence and decisive action. Your path is through the details and the daily work.</div>
       </div>
+
+      <div class="cosmic-card" id="cosmic-card"></div>
 
       <div class="stats-row">
         <div class="stat-card"><div class="n" id="s-done">0</div><div class="l">Done today</div></div>
@@ -1303,6 +1321,153 @@ function getCycleDay() {
   const diff = daysBetween(start, today);
   return ((diff % c.length) + c.length) % c.length + 1;
 }
+// ═══════════════════ COSMIC WEATHER ═══════════════════
+const ZODIAC_SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+const ZODIAC_ELEMENT = {
+  Aries:'fire', Leo:'fire', Sagittarius:'fire',
+  Taurus:'earth', Virgo:'earth', Capricorn:'earth',
+  Gemini:'air', Libra:'air', Aquarius:'air',
+  Cancer:'water', Scorpio:'water', Pisces:'water',
+};
+const ZODIAC_MICRO = {
+  Aries: 'Initiate. Brave first move.',
+  Taurus: 'Ground. Slow pleasure. Build.',
+  Gemini: 'Learn. Converse. Cross-pollinate.',
+  Cancer: 'Tend. Feel. Come home to yourself.',
+  Leo: 'Shine. Create. Be witnessed.',
+  Virgo: 'Refine. Serve. Tend the craft.',
+  Libra: 'Balance. Partner. Make beautiful.',
+  Scorpio: 'Dive deep. Transform. Alchemize.',
+  Sagittarius: 'Expand. Seek. Tell the truth.',
+  Capricorn: 'Structure. Commit. Climb.',
+  Aquarius: 'Reimagine. Belong to many. Disrupt kindly.',
+  Pisces: 'Dream. Merge. Let the waters teach.',
+};
+
+function zodiacFromLong(longitude) {
+  const idx = Math.floor(((longitude % 360) + 360) % 360 / 30);
+  return ZODIAC_SIGNS[idx];
+}
+
+function getSunSign(d = new Date()) {
+  // Approx: Sun at 0° Aries on ~March 20 (spring equinox)
+  const year = d.getFullYear();
+  const spring = new Date(Date.UTC(year, 2, 20, 12, 0, 0));
+  const days = (d - spring) / 86400000;
+  const longitude = days * 0.9856473; // Sun's mean motion
+  return zodiacFromLong(longitude);
+}
+
+function getMoonSignData(d = new Date()) {
+  // Reference: Jan 1, 2000 12:00 UT, Moon at approximate ecliptic longitude 218°
+  const ref = new Date(Date.UTC(2000, 0, 1, 12, 0, 0));
+  const days = (d - ref) / 86400000;
+  const longitude = ((218 + days * 13.176358) % 360 + 360) % 360;
+  const sign = zodiacFromLong(longitude);
+  const degInSign = Math.floor(longitude % 30);
+  return { sign, degree: degInSign };
+}
+
+const DAY_RULER = [
+  { day:'Sunday',    planet:'Sun',     micro:'Vitality. Clear intent. Lead with purpose.' },
+  { day:'Monday',    planet:'Moon',    micro:'Tend. Receive. Trust your waters.' },
+  { day:'Tuesday',   planet:'Mars',    micro:'Act. Assert. Move the thing.' },
+  { day:'Wednesday', planet:'Mercury', micro:'Speak. Write. Arrange.' },
+  { day:'Thursday',  planet:'Jupiter', micro:'Expand. Say yes. Teach and be taught.' },
+  { day:'Friday',    planet:'Venus',   micro:'Love. Make beautiful. Reconcile.' },
+  { day:'Saturday',  planet:'Saturn',  micro:'Structure. Complete. Be the elder.' },
+];
+
+// Approximate retrograde windows for 2026 — for precise dates, consult a real ephemeris
+const RETROGRADES_2026 = [
+  { planet:'Mercury', start:'2026-02-25', end:'2026-03-19' },
+  { planet:'Mercury', start:'2026-06-29', end:'2026-07-24' },
+  { planet:'Mercury', start:'2026-10-24', end:'2026-11-13' },
+  { planet:'Jupiter', start:'2025-10-11', end:'2026-02-10' },
+  { planet:'Jupiter', start:'2026-11-12', end:'2027-03-11' },
+  { planet:'Saturn',  start:'2026-06-27', end:'2026-11-14' },
+  { planet:'Uranus',  start:'2025-09-06', end:'2026-02-04' },
+  { planet:'Uranus',  start:'2026-08-13', end:'2027-01-12' },
+  { planet:'Neptune', start:'2026-06-30', end:'2026-12-06' },
+  { planet:'Pluto',   start:'2026-05-05', end:'2026-10-14' },
+];
+
+function getActiveRetrogrades(d = new Date()) {
+  const today = d.toISOString().slice(0,10);
+  return RETROGRADES_2026.filter(r => r.start <= today && today <= r.end);
+}
+
+const PLANET_GLYPHS = {
+  Sun:'☉', Moon:'☽', Mercury:'☿', Venus:'♀', Mars:'♂',
+  Jupiter:'♃', Saturn:'♄', Uranus:'♅', Neptune:'♆', Pluto:'♇'
+};
+
+function renderCosmicCard() {
+  const el = document.getElementById('cosmic-card');
+  if (!el) return;
+  const now = new Date();
+  const dow = now.getDay();
+  const ruler = DAY_RULER[dow];
+  const moonPhase = getMoonPhase(now);
+  const moonData = getMoonSignData(now);
+  const sunSign = getSunSign(now);
+  const retros = getActiveRetrogrades(now);
+
+  const sunMicro = ZODIAC_MICRO[sunSign];
+  const moonMicro = ZODIAC_MICRO[moonData.sign];
+
+  let html = `
+    <div class="cosmic-head">
+      <div class="cosmic-title">Cosmic Weather</div>
+      <div class="cosmic-day">${now.toLocaleDateString('en-US',{weekday:'long'})} · ruled by ${ruler.planet} ${PLANET_GLYPHS[ruler.planet]||''}</div>
+    </div>
+    <div class="cosmic-rows">
+      <div class="cosmic-row">
+        <div class="cosmic-glyph">${moonPhase.emoji}</div>
+        <div class="cosmic-label">Moon</div>
+        <div class="cosmic-body">
+          ${moonPhase.name} in ${moonData.sign} <span style="color:var(--ink-30);font-family:'DM Mono',monospace;font-size:11px">· ${moonData.degree}°</span>
+          <span class="sub">${moonMicro}</span>
+        </div>
+      </div>
+      <div class="cosmic-row">
+        <div class="cosmic-glyph">☉</div>
+        <div class="cosmic-label">Sun</div>
+        <div class="cosmic-body">
+          In ${sunSign}
+          <span class="sub">${sunMicro}</span>
+        </div>
+      </div>
+      <div class="cosmic-row">
+        <div class="cosmic-glyph">${PLANET_GLYPHS[ruler.planet]||'·'}</div>
+        <div class="cosmic-label">Day</div>
+        <div class="cosmic-body">
+          ${ruler.day} · ${ruler.planet}'s day
+          <span class="sub">${ruler.micro}</span>
+        </div>
+      </div>`;
+
+  if (retros.length) {
+    const retroItems = retros.map(r => {
+      const endDate = new Date(r.end + 'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      return `<div class="retro">${PLANET_GLYPHS[r.planet]||''} ${r.planet} retrograde · ends ${endDate}</div>`;
+    }).join('');
+    html += `
+      <div class="cosmic-row">
+        <div class="cosmic-glyph" style="color:var(--rust)">℞</div>
+        <div class="cosmic-label">Retro</div>
+        <div class="cosmic-body">${retroItems}</div>
+      </div>`;
+  }
+
+  html += `
+    </div>
+    <div class="cosmic-foot">Computed positions are approximate · for exact aspects &amp; transits consult a real ephemeris</div>
+  `;
+
+  el.innerHTML = html;
+}
+
 // Moon phase — astronomical approximation
 function getMoonPhase(d = new Date()) {
   const c = new Date(d);
@@ -1427,6 +1592,9 @@ function renderToday() {
 
   // quick list
   renderQuick();
+
+  // cosmic weather
+  renderCosmicCard();
 }
 
 function renderTodaySupps(){ /* re-render the three supp lists */ renderToday(); }
