@@ -177,7 +177,23 @@ body {
 .iconbtn { background: transparent; border: 1px solid var(--ink-10); border-radius: var(--r); padding: 4px 8px; cursor: pointer; font-size: 11px; color: var(--ink-60); }
 .iconbtn:hover { border-color: var(--ink-30); color: var(--ink); }
 
-.todo-add { display: grid; grid-template-columns: 1fr 140px 130px auto; gap: 6px; margin-top: 8px; margin-bottom: 1rem; }
+.todo-add { display: grid; grid-template-columns: 1fr 130px 115px 130px auto; gap: 6px; margin-top: 8px; margin-bottom: 1rem; }
+
+/* view toggle */
+.view-toggle { display: inline-flex; gap: 0; background: var(--warm-white); border: 1px solid var(--ink-10); border-radius: var(--rl); padding: 3px; margin-bottom: 1rem; }
+.vt-btn { padding: 7px 14px; border: none; background: transparent; font-size: 12px; font-family: 'Instrument Sans', sans-serif; color: var(--ink-60); cursor: pointer; border-radius: var(--r); letter-spacing: .01em; }
+.vt-btn.active { background: var(--ink); color: var(--gold-light); }
+.vt-btn:not(.active):hover { color: var(--ink); }
+
+/* day section */
+.day-group { margin-bottom: 1rem; }
+.day-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; padding-bottom: 4px; }
+.day-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--ink); }
+.day-name.today { color: var(--gold); }
+.day-name .d-sub { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-30); letter-spacing: .08em; margin-left: 6px; text-transform: uppercase; }
+.day-count { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-30); letter-spacing: .08em; }
+.day-tag { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--ink-30); letter-spacing: .1em; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; background: var(--ink-05); margin-right: 6px; }
+.day-tag.today { background: var(--gold-pale); color: var(--gold); }
 .cat-head { display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; margin-bottom: 6px; }
 .cat-title { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 400; color: var(--ink); }
 .cat-count { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-30); letter-spacing: .08em; }
@@ -703,13 +719,28 @@ body {
       <div class="todo-add">
         <input class="txt" id="new-todo-title" placeholder="What needs to happen?">
         <select class="sel" id="new-todo-cat"></select>
+        <select class="sel" id="new-todo-day">
+          <option value="">Any day</option>
+          <option value="mon">Monday</option>
+          <option value="tue">Tuesday</option>
+          <option value="wed">Wednesday</option>
+          <option value="thu">Thursday</option>
+          <option value="fri">Friday</option>
+          <option value="sat">Saturday</option>
+          <option value="sun">Sunday</option>
+        </select>
         <input class="txt" id="new-todo-due" type="date">
         <button class="btn btn-gold btn-sm" onclick="addTodo()">Add</button>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
         <input class="txt" id="new-cat-name" placeholder="New category…" style="max-width:200px">
         <button class="btn btn-sm" onclick="addCategory()">+ Category</button>
-        <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-30);margin-left:auto">Items carry over each day until you close them.</span>
+        <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-30);margin-left:auto">Day is optional. Items carry over until closed.</span>
+      </div>
+
+      <div class="view-toggle">
+        <button class="vt-btn active" id="vt-cat" onclick="setTodoView('cat')">By category</button>
+        <button class="vt-btn" id="vt-day" onclick="setTodoView('day')">By day of week</button>
       </div>
 
       <div id="todo-list"></div>
@@ -1765,77 +1796,155 @@ function updateStreakUI(){
 }
 
 // ═══════════════════ TODO RENDER ═══════════════════
+const DAY_CODE = ['sun','mon','tue','wed','thu','fri','sat'];
+const DAY_FULL = { mon:'Monday', tue:'Tuesday', wed:'Wednesday', thu:'Thursday', fri:'Friday', sat:'Saturday', sun:'Sunday' };
+const DAY_ORDER = ['mon','tue','wed','thu','fri','sat','sun'];
+
+function getTodoView() { return localStorage.getItem('todo-view') || 'cat'; }
+function setTodoView(mode) {
+  localStorage.setItem('todo-view', mode);
+  document.getElementById('vt-cat').classList.toggle('active', mode === 'cat');
+  document.getElementById('vt-day').classList.toggle('active', mode === 'day');
+  renderTodos();
+}
+
+function todoStats(todos) {
+  const now = new Date();
+  const today = todayKey();
+  let openCount = 0, overdue = 0, stale = 0, doneWeek = 0;
+  const todayD = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const weekAgo = new Date(now); weekAgo.setDate(now.getDate()-7);
+  todos.forEach(t => {
+    if (!t.completed) openCount++;
+    const [cy,cm,cd] = (t.created||today).split('-').map(Number);
+    const age = daysBetween(new Date(cy,cm-1,cd), todayD);
+    if (!t.completed && age >= 7) stale++;
+    if (t.due && !t.completed) {
+      const [dy,dm,dd] = t.due.split('-').map(Number);
+      const diff = daysBetween(todayD, new Date(dy,dm-1,dd));
+      if (diff < 0 || diff === 0) overdue++;
+    }
+    if (t.completed) {
+      const [ey,em,ed] = t.completed.split('-').map(Number);
+      if (new Date(ey,em-1,ed) >= weekAgo) doneWeek++;
+    }
+  });
+  return { openCount, overdue, stale, doneWeek };
+}
+
+function renderTodoItem(t, now) {
+  const todayD = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const [cy,cm,cd] = (t.created||todayKey()).split('-').map(Number);
+  const age = daysBetween(new Date(cy,cm-1,cd), todayD);
+  let dueHtml = '', dueCls = '';
+  if (t.due) {
+    const [dy,dm,dd] = t.due.split('-').map(Number);
+    const dueDate = new Date(dy,dm-1,dd);
+    const diff = daysBetween(todayD, dueDate);
+    if (!t.completed) {
+      if (diff < 0) { dueCls='overdue'; dueHtml=`due ${-diff}d ago`; }
+      else if (diff === 0) { dueCls='overdue'; dueHtml='due TODAY'; }
+      else if (diff <= 3) { dueCls='soon'; dueHtml=`due in ${diff}d`; }
+      else { dueHtml=`due ${fmtDate(dueDate)}`; }
+    } else { dueHtml = `was due ${fmtDate(dueDate)}`; }
+  }
+  const ageCls = (!t.completed && age >= 7) ? 'stale' : '';
+  const ageHtml = age > 0 ? `on list ${age}d` : 'new today';
+  const pri = t.priority === 'high' ? '<span class="tag tag-overdue" style="margin-right:6px">★ high</span>' : '';
+  const todayCode = DAY_CODE[now.getDay()];
+  const dayHtml = t.day ? `<span class="day-tag${t.day===todayCode?' today':''}">${t.day}</span>` : '';
+  return `<div class="todo-row${t.completed?' done':''}">
+    <div class="todo-check" onclick="toggleTodo('${t.id}')">${CHECK_SVG}</div>
+    <div class="todo-body">
+      <div class="ttitle">${pri}${dayHtml}${escapeHtml(t.title)}</div>
+      <div class="tmeta">
+        ${dueHtml?`<span class="due ${dueCls}">${dueHtml}</span>`:''}
+        <span class="age ${ageCls}">${ageHtml}</span>
+      </div>
+    </div>
+    <div class="todo-actions">
+      <button class="iconbtn" onclick="editTodo('${t.id}')">edit</button>
+      <button class="iconbtn" onclick="deleteTodo('${t.id}')">×</button>
+    </div>
+  </div>`;
+}
+
+function renderByDay(todos, now) {
+  const todayCode = DAY_CODE[now.getDay()];
+  const byDay = {};
+  DAY_ORDER.forEach(d => { byDay[d] = []; });
+  const unassigned = [];
+  todos.forEach(t => {
+    if (window._hideDone && t.completed) return;
+    if (t.day && DAY_ORDER.includes(t.day)) byDay[t.day].push(t);
+    else unassigned.push(t);
+  });
+  let html = '';
+  DAY_ORDER.forEach(d => {
+    const items = byDay[d];
+    if (items.length === 0) return;
+    const isToday = d === todayCode;
+    const openItems = items.filter(t => !t.completed).length;
+    html += `<div class="day-group">
+      <div class="day-head">
+        <div class="day-name${isToday?' today':''}">${DAY_FULL[d]}${isToday?'<span class="d-sub">today</span>':''}</div>
+        <div class="day-count">${openItems} open · ${items.length} total</div>
+      </div>
+      ${items.map(t => renderTodoItem(t, now)).join('')}
+    </div>`;
+  });
+  if (unassigned.length > 0) {
+    const open = unassigned.filter(t => !t.completed).length;
+    html += `<div class="day-group">
+      <div class="day-head">
+        <div class="day-name" style="color:var(--ink-60)">Anytime<span class="d-sub">no day</span></div>
+        <div class="day-count">${open} open · ${unassigned.length} total</div>
+      </div>
+      ${unassigned.map(t => renderTodoItem(t, now)).join('')}
+    </div>`;
+  }
+  return html || '<div class="empty">No tasks. Add one above.</div>';
+}
+
 function renderTodos() {
   const cats = getCats();
   const todos = getTodos() || [];
   const sel = document.getElementById('new-todo-cat');
-  sel.innerHTML = cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  if (sel) sel.innerHTML = cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
 
-  const today = todayKey();
-  let openCount = 0, overdue = 0, stale = 0, doneWeek = 0;
+  // stats
+  const { openCount, overdue, stale, doneWeek } = todoStats(todos);
+  document.getElementById('td-open').textContent = openCount;
+  document.getElementById('td-overdue').textContent = overdue;
+  document.getElementById('td-stale').textContent = stale;
+  document.getElementById('td-done-week').textContent = doneWeek;
+
   const now = new Date();
+  const view = getTodoView();
+  document.getElementById('vt-cat').classList.toggle('active', view === 'cat');
+  document.getElementById('vt-day').classList.toggle('active', view === 'day');
 
+  if (view === 'day') {
+    document.getElementById('todo-list').innerHTML = renderByDay(todos, now);
+    return;
+  }
+
+  // Category view
   let html = '';
   cats.forEach(cat => {
     const items = todos.filter(t => t.cat === cat.id);
     if (items.length === 0 && !window._showEmpty) return;
     const openItems = items.filter(t => !t.completed);
     const doneItems = items.filter(t => t.completed);
-    const itemsHtml = items.map(t => {
-      if (t.completed && window._hideDone) return '';
-      if (!t.completed) openCount++;
-      const [cy,cm,cd] = (t.created||today).split('-').map(Number);
-      const age = daysBetween(new Date(cy,cm-1,cd), new Date(now.getFullYear(),now.getMonth(),now.getDate()));
-      if (!t.completed && age >= 7) stale++;
-      let dueHtml = '';
-      let dueCls = '';
-      if (t.due) {
-        const [dy,dm,dd] = t.due.split('-').map(Number);
-        const dueDate = new Date(dy,dm-1,dd);
-        const todayD = new Date(now.getFullYear(),now.getMonth(),now.getDate());
-        const diff = daysBetween(todayD, dueDate);
-        if (!t.completed) {
-          if (diff < 0) { overdue++; dueCls='overdue'; dueHtml=`due ${-diff}d ago`; }
-          else if (diff === 0) { dueCls='overdue'; dueHtml='due TODAY'; }
-          else if (diff <= 3) { dueCls='soon'; dueHtml=`due in ${diff}d`; }
-          else { dueHtml=`due ${fmtDate(dueDate)}`; }
-        } else {
-          dueHtml = `was due ${fmtDate(dueDate)}`;
-        }
-      }
-      if (t.completed) {
-        const [ey,em,ed] = t.completed.split('-').map(Number);
-        const cDate = new Date(ey,em-1,ed);
-        const weekAgo = new Date(now); weekAgo.setDate(now.getDate()-7);
-        if (cDate >= weekAgo) doneWeek++;
-      }
-      const ageCls = (!t.completed && age >= 7) ? 'stale' : '';
-      const ageHtml = age > 0 ? `on list ${age}d` : 'new today';
-      const pri = t.priority === 'high' ? '<span class="tag tag-overdue" style="margin-right:6px">★ high</span>' : '';
-      return `<div class="todo-row${t.completed?' done':''}">
-        <div class="todo-check" onclick="toggleTodo('${t.id}')">${CHECK_SVG}</div>
-        <div class="todo-body">
-          <div class="ttitle">${pri}${escapeHtml(t.title)}</div>
-          <div class="tmeta">
-            ${dueHtml?`<span class="due ${dueCls}">${dueHtml}</span>`:''}
-            <span class="age ${ageCls}">${ageHtml}</span>
-          </div>
-        </div>
-        <div class="todo-actions">
-          <button class="iconbtn" onclick="editTodo('${t.id}')">edit</button>
-          <button class="iconbtn" onclick="deleteTodo('${t.id}')">×</button>
-        </div>
-      </div>`;
-    }).join('');
+    const itemsHtml = items
+      .filter(t => !(window._hideDone && t.completed))
+      .map(t => renderTodoItem(t, now))
+      .join('');
     html += `<div class="cat-head"><div class="cat-title">${cat.name}</div><div class="cat-count">${openItems.length} open · ${doneItems.length} done</div></div>`;
-    html += items.length ? itemsHtml : '<div class="empty">Nothing here yet.</div>';
+    html += itemsHtml || '<div class="empty">Nothing here yet.</div>';
   });
 
   document.getElementById('todo-list').innerHTML = html || '<div class="empty">No tasks. Add one above.</div>';
-  document.getElementById('td-open').textContent = openCount;
-  document.getElementById('td-overdue').textContent = overdue;
-  document.getElementById('td-stale').textContent = stale;
-  document.getElementById('td-done-week').textContent = doneWeek;
 }
 
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
@@ -1843,13 +1952,16 @@ function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;'
 function addTodo() {
   const title = document.getElementById('new-todo-title').value.trim();
   const cat = document.getElementById('new-todo-cat').value;
+  const dayEl = document.getElementById('new-todo-day');
+  const day = dayEl ? (dayEl.value || null) : null;
   const due = document.getElementById('new-todo-due').value || null;
   if (!title) { showToast('Title required.'); return; }
   const todos = getTodos() || [];
-  todos.push({ id:'td-'+Date.now(), cat, title, due, priority:'normal', created: todayKey(), completed: null });
+  todos.push({ id:'td-'+Date.now(), cat, day, title, due, priority:'normal', created: todayKey(), completed: null });
   saveTodos(todos);
   document.getElementById('new-todo-title').value = '';
   document.getElementById('new-todo-due').value = '';
+  if (dayEl) dayEl.value = '';
   renderTodos();
   showToast('Added.');
 }
@@ -1887,6 +1999,11 @@ function editTodo(id) {
   const newTitle = prompt('Edit task:', t.title);
   if (newTitle === null) return;
   t.title = newTitle.trim() || t.title;
+  const newDay = prompt('Day of week (mon/tue/wed/thu/fri/sat/sun or blank):', t.day || '');
+  if (newDay !== null) {
+    const d = newDay.trim().toLowerCase();
+    t.day = DAY_ORDER.includes(d) ? d : null;
+  }
   const newDue = prompt('Due date (YYYY-MM-DD or blank):', t.due || '');
   if (newDue !== null) t.due = newDue.trim() || null;
   const pri = prompt('Priority (normal / high):', t.priority || 'normal');
