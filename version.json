@@ -1,12 +1,12 @@
 {
-  "version": "v260418.03 4:34p",
-  "release": 31,
-  "sha": "94ab116",
-  "fullSha": "94ab1168aa9ccf18e718b661b46887b8e4f086b8",
+  "version": "v260423.01 2:33p",
+  "release": 32,
+  "sha": "23f5d18",
+  "fullSha": "23f5d1877a78c2aa7d36a4e4f6d5f3fcf1c64520",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
   "machine": "runnervmeorf1",
-  "pushedAt": "2026-04-18 21:34:36+00",
-  "commits": [{"sha":"94ab116","message":"Journal: save + browse past entries + draft autosave (#53)","author":"ilv2recycle"}]
+  "pushedAt": "2026-04-23 19:33:53+00",
+  "commits": [{"sha":"23f5d18","message":"PWA: auto-detect new versions, prompt to reload (#54)","author":"ilv2recycle"}]
 }
