@@ -3129,11 +3129,41 @@ function init(){
 
 init();
 
-// Register service worker for PWA
+// Register service worker for PWA — with update detection
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(()=>{});
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      // Poll for updates every 30 minutes while the app is open
+      setInterval(() => reg.update().catch(()=>{}), 30 * 60 * 1000);
+      // When a new worker arrives, prompt to reload
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showUpdateBanner();
+          }
+        });
+      });
+    }).catch(()=>{});
+    // Reload when the active worker changes (new version took over)
+    let reloadTriggered = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (reloadTriggered) return;
+      reloadTriggered = true;
+      // Small delay so any in-flight save can finish
+      setTimeout(() => window.location.reload(), 400);
+    });
   });
+}
+
+function showUpdateBanner() {
+  if (document.getElementById('update-banner')) return;
+  const bar = document.createElement('div');
+  bar.id = 'update-banner';
+  bar.style.cssText = 'position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--gold-light);padding:11px 20px;border-radius:var(--r);font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:1000;display:flex;gap:12px;align-items:center;';
+  bar.innerHTML = '<span>New version available</span><button style="background:var(--gold-light);color:var(--ink);border:none;padding:6px 14px;border-radius:var(--r);cursor:pointer;font-weight:500;font-size:12px" onclick="window.location.reload()">Reload</button>';
+  document.body.appendChild(bar);
 }
 
 // ═══════════════════ SYNC BAR ═══════════════════
