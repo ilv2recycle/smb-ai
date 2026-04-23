@@ -1,12 +1,12 @@
 {
-  "version": "v260423.01 2:33p",
-  "release": 32,
-  "sha": "23f5d18",
-  "fullSha": "23f5d1877a78c2aa7d36a4e4f6d5f3fcf1c64520",
+  "version": "v260423.02 2:44p",
+  "release": 33,
+  "sha": "e766169",
+  "fullSha": "e766169273d78cfb2e2d7e971f39e7e8e188ea76",
   "actor": "ilv2recycle",
   "source": "github-pages-deploy",
   "model": "ci",
   "machine": "runnervmeorf1",
-  "pushedAt": "2026-04-23 19:33:53+00",
-  "commits": [{"sha":"23f5d18","message":"PWA: auto-detect new versions, prompt to reload (#54)","author":"ilv2recycle"}]
+  "pushedAt": "2026-04-23 19:44:19+00",
+  "commits": [{"sha":"e766169","message":"To-Do: day-of-week assignment + toggle between category and day views (#55)","author":"ilv2recycle"}]
 }
