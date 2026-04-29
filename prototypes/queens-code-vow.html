@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="robots" content="noindex, nofollow, noarchive" />
+<meta name="googlebot" content="noindex, nofollow" />
+<title>Lay Down Your Sword — The Queen's Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cream: #f7f1e8;
+    --cream-2: #efe6d5;
+    --ink: #1e1914;
+    --ink-soft: #3b332b;
+    --wine: #6b1f2a;
+    --wine-deep: #4a131c;
+    --gold: #b88a3e;
+    --gold-soft: #d8b87a;
+    --rose: #c98b7a;
+    --line: #d9cdb6;
+    --shadow: 0 1px 2px rgba(30,25,20,.06), 0 8px 24px rgba(30,25,20,.06);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink); }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
+  h1, h2, h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
+  h1 { font-size: clamp(2.25rem, 5vw, 3.75rem); line-height: 1.1; margin: 0 0 .5rem; }
+  h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); line-height: 1.15; margin: 0 0 1rem; }
+  h3 { font-size: 1.25rem; margin: 0 0 .5rem; }
+  p { margin: 0 0 1rem; }
+  a { color: var(--wine); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color .2s; }
+  a:hover { border-bottom-color: var(--wine); }
+
+  /* Layout */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem); }
+  .narrow { max-width: 680px; margin: 0 auto; }
+  section { padding: clamp(3rem, 7vw, 6rem) 0; }
+
+  /* Top bar */
+  header.top {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(247, 241, 232, .88);
+    backdrop-filter: saturate(1.2) blur(8px);
+    -webkit-backdrop-filter: saturate(1.2) blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .top-inner { display: flex; align-items: center; justify-content: space-between; padding: 1rem clamp(1rem, 4vw, 2.5rem); max-width: 1100px; margin: 0 auto; }
+  .wordmark { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; letter-spacing: .02em; color: var(--ink); }
+  .wordmark em { font-style: italic; color: var(--wine); }
+  .top nav a { margin-left: 1.5rem; color: var(--ink-soft); font-size: .875rem; letter-spacing: .02em; border: 0; }
+  .top nav a:hover { color: var(--wine); }
+  @media (max-width: 640px) { .top nav { display: none; } }
+
+  /* Hero */
+  .hero { text-align: center; padding: clamp(4rem, 10vw, 8rem) 0 clamp(3rem, 6vw, 5rem); position: relative; overflow: hidden; }
+  .hero .eyebrow { font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; }
+  .hero h1 em { font-style: italic; color: var(--wine); }
+  .hero .lead { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.15rem, 2vw, 1.4rem); color: var(--ink-soft); font-style: italic; margin: 1rem auto 2rem; max-width: 560px; }
+  .sword {
+    width: 220px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--gold-soft) 50%, var(--gold) 80%, transparent);
+    margin: 2.5rem auto 0; position: relative;
+  }
+  .sword::before, .sword::after {
+    content: ""; position: absolute; top: 50%; width: 10px; height: 10px;
+    background: var(--gold); border-radius: 50%; transform: translateY(-50%);
+  }
+  .sword::before { left: 0; }
+  .sword::after { right: 0; }
+
+  /* Buttons */
+  .btn {
+    display: inline-block; padding: .9rem 1.75rem;
+    background: var(--wine); color: var(--cream);
+    font-family: 'Inter', sans-serif; font-weight: 500; font-size: .9rem; letter-spacing: .08em; text-transform: uppercase;
+    border: 0; border-radius: 2px; cursor: pointer;
+    transition: background .2s, transform .1s;
+  }
+  .btn:hover { background: var(--wine-deep); border-bottom: 0; }
+  .btn:active { transform: translateY(1px); }
+  .btn.ghost { background: transparent; color: var(--wine); border: 1px solid var(--wine); }
+  .btn.ghost:hover { background: var(--wine); color: var(--cream); border-bottom: 1px solid var(--wine); }
+  .btn.small { padding: .55rem 1rem; font-size: .75rem; }
+
+  /* The Vow panel */
+  .vow-panel {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: clamp(2rem, 5vw, 3.5rem);
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .vow-panel::before {
+    content: "❝"; position: absolute; top: -.5rem; left: 1.5rem;
+    font-family: 'Cormorant Garamond', serif; font-size: 4rem; color: var(--gold); line-height: 1;
+  }
+  .vow-text { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; line-height: 1.7; color: var(--ink-soft); }
+  .vow-text p + p { margin-top: 1rem; }
+  .vow-text strong { color: var(--wine); font-weight: 600; }
+  .vow-actions { display: flex; gap: 1rem; justify-content: center; margin-top: 2.5rem; flex-wrap: wrap; }
+
+  /* Wall of commitments */
+  .wall {
+    background: linear-gradient(180deg, var(--cream) 0%, var(--cream-2) 100%);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .wall-header { text-align: center; margin-bottom: 3rem; }
+  .counter { font-family: 'Cormorant Garamond', serif; font-size: 3rem; color: var(--wine); font-weight: 500; }
+  .counter-label { font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); }
+  .marquee {
+    display: flex; gap: 1.25rem;
+    animation: scroll 60s linear infinite;
+    width: max-content;
+  }
+  .marquee:hover { animation-play-state: paused; }
+  .marquee-wrap { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .commitment-card {
+    background: #fff; border: 1px solid var(--line); border-radius: 4px;
+    padding: 1.25rem 1.5rem; width: 280px; flex-shrink: 0;
+    box-shadow: var(--shadow);
+  }
+  .commitment-card .name { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; color: var(--ink); font-weight: 500; }
+  .commitment-card .meta { font-size: .75rem; color: var(--ink-soft); letter-spacing: .05em; margin-top: .125rem; }
+  .commitment-card .note { font-style: italic; color: var(--ink-soft); font-size: .9rem; margin-top: .75rem; line-height: 1.5; border-top: 1px solid var(--line); padding-top: .75rem; }
+  .commitment-card .badge { display: inline-block; font-size: .65rem; text-transform: uppercase; letter-spacing: .2em; color: var(--gold); margin-top: .5rem; }
+
+  /* Profile prompt */
+  .profile-prompt {
+    text-align: center;
+    background: #fff; border: 1px solid var(--line); border-radius: 4px;
+    padding: 2rem; margin: 3rem auto 0; max-width: 580px;
+  }
+
+  /* Book clubs */
+  .clubs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 2.5rem; }
+  .club-card {
+    background: #fff; border: 1px solid var(--line); border-radius: 4px;
+    padding: 1.5rem; display: flex; flex-direction: column; gap: .5rem;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .club-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .club-card .city { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--ink); }
+  .club-card .host { font-size: .875rem; color: var(--ink-soft); }
+  .club-card .tag { display: inline-block; font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; padding: .2rem .5rem; background: var(--cream-2); color: var(--ink-soft); border-radius: 2px; margin-top: .25rem; align-self: flex-start; }
+  .club-card .next { font-size: .8rem; color: var(--wine); margin-top: .5rem; font-weight: 500; }
+  .club-card .join-btn { margin-top: 1rem; }
+  .clubs-cta { display: flex; gap: 1rem; justify-content: center; margin-top: 3rem; flex-wrap: wrap; }
+
+  /* Filters */
+  .search-row { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
+  .search-row input, .search-row select {
+    padding: .65rem .85rem; border: 1px solid var(--line); background: #fff; border-radius: 2px;
+    font-family: inherit; font-size: .875rem; color: var(--ink); min-width: 200px;
+  }
+  .search-row input:focus, .search-row select:focus { outline: 2px solid var(--gold-soft); outline-offset: -1px; border-color: var(--gold); }
+
+  /* Footer */
+  footer { background: var(--wine-deep); color: var(--cream); padding: 3rem 0; text-align: center; }
+  footer .serif { font-size: 1.5rem; margin-bottom: .5rem; font-style: italic; }
+  footer p { color: rgba(247,241,232,.7); font-size: .85rem; }
+  footer a { color: var(--gold-soft); border: 0; }
+
+  /* Modal */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(30,25,20,.55);
+    display: none; align-items: center; justify-content: center;
+    z-index: 50; padding: 1rem;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--cream); border-radius: 4px; max-width: 520px; width: 100%;
+    padding: 2.5rem; box-shadow: 0 20px 60px rgba(0,0,0,.3); max-height: 90vh; overflow-y: auto;
+    position: relative;
+  }
+  .modal h2 { margin-bottom: .25rem; }
+  .modal .sub { color: var(--ink-soft); font-style: italic; margin-bottom: 1.5rem; font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; }
+  .modal label { display: block; font-size: .75rem; letter-spacing: .15em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: .4rem; margin-top: 1rem; }
+  .modal input, .modal textarea, .modal select {
+    width: 100%; padding: .7rem .85rem; border: 1px solid var(--line); background: #fff; border-radius: 2px;
+    font-family: inherit; font-size: .95rem; color: var(--ink);
+  }
+  .modal textarea { min-height: 88px; resize: vertical; font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; }
+  .modal .check { display: flex; gap: .5rem; align-items: flex-start; margin-top: 1rem; font-size: .85rem; color: var(--ink-soft); }
+  .modal .check input { width: auto; margin-top: .25rem; }
+  .modal .actions { display: flex; gap: .75rem; margin-top: 1.75rem; justify-content: flex-end; }
+  .modal .close { position: absolute; top: 1rem; right: 1rem; background: none; border: 0; font-size: 1.5rem; cursor: pointer; color: var(--ink-soft); }
+
+  /* Confirmation state */
+  .confirmed { text-align: center; }
+  .confirmed .seal {
+    width: 80px; height: 80px; margin: 0 auto 1.5rem;
+    background: var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--cream); font-size: 2.5rem; font-family: serif;
+  }
+
+  /* Decorative */
+  .ornament { text-align: center; color: var(--gold); font-size: 1.5rem; letter-spacing: 1rem; margin: 2rem 0; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="wordmark">The <em>Queen's</em> Code</div>
+    <nav>
+      <a href="#vow">The Vow</a>
+      <a href="#wall">Commitments</a>
+      <a href="#clubs">Book Clubs</a>
+      <a href="#" onclick="openModal('signin'); return false;">Sign In</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow">Chapter Three · A Passage</div>
+    <h1>Is it time to <em>lay down</em> your sword?</h1>
+    <p class="lead serif">This is the Vow that Kimberlee and Karen take. If you are ready to take it too, you are invited into a circle of women who have done the same.</p>
+    <a href="#vow" class="btn">Read the Vow</a>
+    <div class="sword" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- THE VOW -->
+<section id="vow">
+  <div class="container narrow">
+    <div class="vow-panel">
+      <h2 class="serif" style="text-align:center; font-style: italic;">Laying Down the Sword</h2>
+      <div class="ornament">· · ·</div>
+      <div class="vow-text">
+        <p>I acknowledge that I have been armed — with criticism, with comparison, with the need to be right — and that these weapons have wounded the men in my life and, in the end, myself.</p>
+        <p>Today, of my own free will, I lay down my sword.</p>
+        <p>I vow to <strong>look for the good reasons</strong> behind what I do not yet understand. I vow to <strong>receive</strong> before I instruct. I vow to <strong>extend the benefit of the doubt</strong> when my old habits would draw a blade instead.</p>
+        <p>I make this commitment not because it is easy, but because I want something more beautiful than being right. I want to be <strong>in partnership</strong>. I want to be free.</p>
+        <p style="text-align:right; font-style: italic; margin-top: 2rem;">— The Queen's Code</p>
+      </div>
+      <div class="vow-actions">
+        <button class="btn" onclick="openModal('vow')">I am ready. Take the Vow.</button>
+        <a href="#wall" class="btn ghost">See who else has</a>
+      </div>
+    </div>
+    <p style="text-align:center; color: var(--ink-soft); font-size: .85rem; margin-top: 1.5rem; font-style: italic;">
+      The Vow is private by default. You choose what, if anything, to share on the wall.
+    </p>
+  </div>
+</section>
+
+<!-- WALL OF COMMITMENTS -->
+<section class="wall" id="wall">
+  <div class="container">
+    <div class="wall-header">
+      <div class="counter-label">Meet the women who have made the commitment</div>
+      <div class="counter" id="counter">2,847</div>
+      <p class="serif" style="font-style: italic; color: var(--ink-soft); margin-top: .5rem;">… and counting. You are not alone in this.</p>
+    </div>
+  </div>
+
+  <div class="marquee-wrap">
+    <div class="marquee" id="marquee"><!-- filled by JS --></div>
+  </div>
+
+  <div class="container">
+    <div class="profile-prompt">
+      <h3 class="serif" style="font-style: italic;">Want a profile of your own?</h3>
+      <p style="color: var(--ink-soft); font-size: .95rem;">Create a gentle profile to track your journey, connect with a book club, or share reflections with other Queens — only with those you choose.</p>
+      <button class="btn ghost small" onclick="openModal('profile')">Create my profile</button>
+    </div>
+  </div>
+</section>
+
+<!-- BOOK CLUBS -->
+<section id="clubs">
+  <div class="container">
+    <div style="text-align: center; max-width: 620px; margin: 0 auto;">
+      <div class="counter-label">Circles of Queens</div>
+      <h2>Start or join a <em style="font-style: italic; color: var(--wine);">local book club</em></h2>
+      <p class="serif" style="color: var(--ink-soft); font-size: 1.15rem; font-style: italic;">Read the book together. Take the Vow together. Witness each other's becoming.</p>
+      <div class="search-row">
+        <input type="text" placeholder="Enter city or ZIP" id="clubSearch" />
+        <select id="clubFormat">
+          <option>In person or virtual</option>
+          <option>In person only</option>
+          <option>Virtual only</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="clubs-grid" id="clubsGrid"><!-- filled by JS --></div>
+
+    <div class="clubs-cta">
+      <button class="btn" onclick="openModal('startClub')">Start a club in your city</button>
+      <a href="#" class="btn ghost" onclick="event.preventDefault(); alert('Host guide coming soon — a gentle packet with how to open, how to close, and what to read when.');">Read the host guide</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="serif">The Queen's Code</div>
+    <p>A companion to the book by <a href="https://www.alisonarmstrong.com" target="_blank" rel="noopener">Alison Armstrong</a>.</p>
+    <p style="margin-top: 1rem; font-size: .75rem;">Prototype · Not affiliated with the publisher · Concept v0.1</p>
+  </div>
+</footer>
+
+<!-- MODALS -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal" id="modalBody"><!-- filled by JS --></div>
+</div>
+
+<script>
+  // ------- Seed data -------
+  const SEED_NAMES = [
+    ["Elena","Austin, TX","this month","I want to be in partnership more than I want to be right."],
+    ["Margaret","Edinburgh, UK","this week",""],
+    ["Priya","Mumbai, IN","today","For my father, my brother, and my husband — I lay it down."],
+    ["Jessica","Portland, OR","last week",""],
+    ["Aïcha","Dakar, SN","3 days ago","Je dépose mon épée."],
+    ["Carmen","Barcelona, ES","today",""],
+    ["Rachel","Brooklyn, NY","this month","Chapter 3 broke something open."],
+    ["Hannah","Cape Town, ZA","last week",""],
+    ["Yuki","Kyoto, JP","this week","I had no idea I was armed."],
+    ["Dominique","Montreal, CA","today",""],
+    ["Sofia","Rome, IT","this month",""],
+    ["Amara","Lagos, NG","2 days ago","For my sons — I want them to see a different kind of woman."],
+    ["Linda","Denver, CO","last week",""],
+    ["Noor","Dubai, AE","today",""],
+    ["Beatriz","São Paulo, BR","this month","Depondo a espada, de uma vez por todas."],
+  ];
+
+  const SEED_CLUBS = [
+    { city: "Austin, TX", host: "Hosted by Elena R.", format: "In person", members: 8, next: "Opens May 3 · Chapter 1–3" },
+    { city: "Brooklyn, NY", host: "Hosted by Rachel K.", format: "In person", members: 6, next: "Opens May 10 · Chapter 1–2" },
+    { city: "Virtual · Sunday evenings", host: "Hosted by Margaret A.", format: "Virtual", members: 14, next: "Weekly · Ch. 4 next" },
+    { city: "London, UK", host: "Hosted by Poppy S.", format: "In person", members: 5, next: "Opens May 18" },
+    { city: "Portland, OR", host: "Hosted by Jessica M.", format: "In person", members: 9, next: "Opens May 6" },
+    { city: "Virtual · Weekday mornings", host: "Hosted by Carmen V.", format: "Virtual", members: 11, next: "Weekly · Ch. 2 next" },
+  ];
+
+  // ------- Render wall -------
+  function renderWall() {
+    const items = [...SEED_NAMES, ...SEED_NAMES]; // duplicate for seamless loop
+    const marquee = document.getElementById('marquee');
+    marquee.innerHTML = items.map(([name, loc, when, note]) => `
+      <div class="commitment-card">
+        <div class="name">${name}</div>
+        <div class="meta">${loc} · ${when}</div>
+        ${note ? `<div class="note">"${note}"</div>` : `<span class="badge">Kept private</span>`}
+      </div>
+    `).join('');
+  }
+
+  // ------- Render clubs -------
+  function renderClubs(filter = "") {
+    const grid = document.getElementById('clubsGrid');
+    const f = filter.toLowerCase();
+    const list = SEED_CLUBS.filter(c => !f || c.city.toLowerCase().includes(f));
+    grid.innerHTML = list.map(c => `
+      <div class="club-card">
+        <div class="city">${c.city}</div>
+        <div class="host">${c.host}</div>
+        <span class="tag">${c.format} · ${c.members} Queens</span>
+        <div class="next">${c.next}</div>
+        <button class="btn ghost small join-btn" onclick="openModal('joinClub', '${c.city.replace(/'/g, "\\'")}')">Request to join</button>
+      </div>
+    `).join('') || `<p style="grid-column:1/-1; text-align:center; color: var(--ink-soft);">No circles yet in that city — <a href="#" onclick="openModal('startClub'); return false;">be the first to start one</a>.</p>`;
+  }
+
+  document.getElementById('clubSearch').addEventListener('input', e => renderClubs(e.target.value));
+
+  // ------- Modals -------
+  const modal = document.getElementById('modal');
+  const modalBody = document.getElementById('modalBody');
+
+  function openModal(kind, arg) {
+    modalBody.innerHTML = MODALS[kind](arg);
+    modal.classList.add('open');
+  }
+  function closeModal() { modal.classList.remove('open'); }
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+  const MODALS = {
+    vow: () => `
+      <button class="close" onclick="closeModal()">×</button>
+      <h2 class="serif" style="font-style: italic;">Take the Vow</h2>
+      <div class="sub">This is a commitment you make to yourself.</div>
+      <form onsubmit="event.preventDefault(); confirmVow(this);">
+        <label>First name (or the name you'd like on the wall)</label>
+        <input required name="name" placeholder="Elena" />
+        <label>City</label>
+        <input name="city" placeholder="Austin, TX" />
+        <label>A reflection to share, if you wish</label>
+        <textarea name="note" placeholder="What called you to lay it down?"></textarea>
+        <div class="check">
+          <input type="checkbox" id="share" checked />
+          <label for="share" style="text-transform:none; letter-spacing:0; color:var(--ink); margin:0;">Post my commitment to the wall. I can keep my reflection private if I prefer.</label>
+        </div>
+        <div class="check">
+          <input type="checkbox" id="clubs-opt" />
+          <label for="clubs-opt" style="text-transform:none; letter-spacing:0; color:var(--ink); margin:0;">Let me know when a book club opens near me.</label>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn ghost small" onclick="closeModal()">Not yet</button>
+          <button type="submit" class="btn">I take the Vow</button>
+        </div>
+      </form>
+    `,
+    profile: () => `
+      <button class="close" onclick="closeModal()">×</button>
+      <h2 class="serif" style="font-style: italic;">Create your profile</h2>
+      <div class="sub">A private space to track your journey.</div>
+      <label>Name</label><input placeholder="Your name" />
+      <label>Email</label><input type="email" placeholder="you@email.com" />
+      <label>City</label><input placeholder="Austin, TX" />
+      <div class="check"><input type="checkbox" checked /><label style="text-transform:none; letter-spacing:0; color:var(--ink); margin:0;">I agree to the community guidelines — respect, no proselytizing, no selling.</label></div>
+      <div class="actions">
+        <button class="btn ghost small" onclick="closeModal()">Cancel</button>
+        <button class="btn" onclick="closeModal(); setTimeout(()=>alert('Welcome. Your Queen is forming.'), 200);">Create profile</button>
+      </div>
+    `,
+    startClub: () => `
+      <button class="close" onclick="closeModal()">×</button>
+      <h2 class="serif" style="font-style: italic;">Start a club</h2>
+      <div class="sub">Be the one who opens the door.</div>
+      <label>Your name</label><input placeholder="Your name" />
+      <label>City (or "Virtual")</label><input placeholder="Nashville, TN" />
+      <label>Format</label>
+      <select><option>In person</option><option>Virtual</option><option>Hybrid</option></select>
+      <label>When do you want to start?</label><input placeholder="e.g. First Sunday of the month" />
+      <label>Max circle size</label>
+      <select><option>6</option><option>8</option><option>10</option><option>12</option></select>
+      <div class="actions">
+        <button class="btn ghost small" onclick="closeModal()">Cancel</button>
+        <button class="btn" onclick="closeModal(); setTimeout(()=>alert('Your club is drafted. We\\'ll send you the host guide and help you invite your first members.'), 200);">Open the circle</button>
+      </div>
+    `,
+    joinClub: (city) => `
+      <button class="close" onclick="closeModal()">×</button>
+      <h2 class="serif" style="font-style: italic;">Join ${city}</h2>
+      <div class="sub">The host will review your note and welcome you in.</div>
+      <label>Your name</label><input placeholder="Your name" />
+      <label>Email</label><input type="email" />
+      <label>A short note to the host</label>
+      <textarea placeholder="Why you'd like to join this circle."></textarea>
+      <div class="actions">
+        <button class="btn ghost small" onclick="closeModal()">Cancel</button>
+        <button class="btn" onclick="closeModal(); setTimeout(()=>alert('Request sent. The host will respond within a few days.'), 200);">Request to join</button>
+      </div>
+    `,
+    signin: () => `
+      <button class="close" onclick="closeModal()">×</button>
+      <h2 class="serif" style="font-style: italic;">Welcome back</h2>
+      <div class="sub">Sign in to your Queen's profile.</div>
+      <label>Email</label><input type="email" />
+      <label>Password</label><input type="password" />
+      <div class="actions">
+        <button class="btn ghost small" onclick="closeModal()">Cancel</button>
+        <button class="btn" onclick="closeModal();">Sign in</button>
+      </div>
+    `,
+  };
+
+  function confirmVow(form) {
+    const data = new FormData(form);
+    const name = data.get('name');
+    const city = data.get('city') || '';
+    const note = data.get('note') || '';
+    const share = form.querySelector('#share').checked;
+
+    if (share) {
+      // Prepend to marquee
+      const card = document.createElement('div');
+      card.className = 'commitment-card';
+      card.innerHTML = `
+        <div class="name">${name}</div>
+        <div class="meta">${city || 'Parts unknown'} · just now</div>
+        ${note ? `<div class="note">"${note}"</div>` : `<span class="badge">Kept private</span>`}
+      `;
+      card.style.boxShadow = '0 0 0 2px var(--gold)';
+      document.getElementById('marquee').prepend(card);
+      // Bump counter
+      const c = document.getElementById('counter');
+      c.textContent = (parseInt(c.textContent.replace(/,/g,'')) + 1).toLocaleString();
+    }
+
+    modalBody.innerHTML = `
+      <div class="confirmed">
+        <div class="seal">✓</div>
+        <h2 class="serif" style="font-style: italic;">The sword is laid down.</h2>
+        <p class="serif" style="font-size: 1.15rem; color: var(--ink-soft); font-style: italic;">
+          Welcome, ${name}. You have joined a circle of women choosing partnership over being right.
+        </p>
+        <p style="color: var(--ink-soft); font-size: .9rem; margin-top: 1.5rem;">
+          You'll receive a quiet note by email — a printable copy of your Vow, and an invitation to a local book club when one opens near you.
+        </p>
+        <div class="actions" style="justify-content:center;">
+          <button class="btn" onclick="closeModal();">Close</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // ------- Init -------
+  renderWall();
+  renderClubs();
+</script>
+
+</body>
+</html>
