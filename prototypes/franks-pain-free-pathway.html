@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="robots" content="noindex, nofollow, noarchive" />
+<meta name="googlebot" content="noindex, nofollow" />
+<title>Frank's Pain Free Pathway</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f4f7f8;
+    --card: #ffffff;
+    --ink: #0f1f2a;
+    --ink-soft: #4a5a66;
+    --muted: #7a8894;
+    --teal: #1f7a8c;
+    --teal-deep: #135c6c;
+    --sage: #88a096;
+    --sand: #e8ddc7;
+    --warm: #d97757;
+    --line: #dde4e8;
+    --good: #2f9e6e;
+    --shadow: 0 1px 2px rgba(15,31,42,.05), 0 6px 20px rgba(15,31,42,.06);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+  body { font-family: 'Inter', -apple-system, sans-serif; font-weight: 400; line-height: 1.55; font-size: 16px; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; letter-spacing: -.01em; margin: 0; }
+  h1 { font-size: clamp(2.25rem, 5vw, 3.5rem); line-height: 1.1; }
+  h2 { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.2; margin-bottom: .75rem; }
+  h3 { font-size: 1.15rem; margin-bottom: .5rem; }
+  p { margin: 0 0 1rem; color: var(--ink-soft); }
+  a { color: var(--teal); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* Layout */
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2rem); }
+
+  /* Header */
+  header.top {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(244, 247, 248, .9);
+    backdrop-filter: saturate(1.2) blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .top-inner { display: flex; align-items: center; justify-content: space-between; padding: .9rem clamp(1rem, 4vw, 2rem); max-width: 1180px; margin: 0 auto; }
+  .brand { display: flex; align-items: center; gap: .65rem; }
+  .brand-mark {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--teal), var(--sage));
+    display: grid; place-items: center; color: white; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.2rem;
+  }
+  .wordmark { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; }
+  .wordmark em { font-style: italic; color: var(--teal); }
+  nav.top-nav a { margin-left: 1.25rem; color: var(--ink-soft); font-size: .875rem; }
+  nav.top-nav a:hover { color: var(--teal); text-decoration: none; }
+  @media (max-width: 720px) { nav.top-nav { display: none; } }
+
+  /* Hero */
+  .hero { padding: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(1.5rem, 4vw, 2.5rem); }
+  .hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+  @media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; } }
+  .eyebrow { font-size: .75rem; letter-spacing: .25em; text-transform: uppercase; color: var(--warm); margin-bottom: 1rem; font-weight: 600; }
+  .hero h1 em { font-style: italic; color: var(--teal); }
+  .hero .lead { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.1rem, 1.8vw, 1.3rem); color: var(--ink-soft); font-style: italic; margin: 1rem 0 1.75rem; max-width: 540px; }
+  .cta-row { display: flex; gap: .75rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .75rem 1.25rem; border-radius: 10px;
+    font-size: .9rem; font-weight: 500; border: 0;
+    transition: transform .15s, box-shadow .15s, background .2s;
+  }
+  .btn-primary { background: var(--teal); color: white; }
+  .btn-primary:hover { background: var(--teal-deep); transform: translateY(-1px); box-shadow: var(--shadow); }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn-ghost:hover { background: white; border-color: var(--teal); }
+
+  /* Hero illustration card */
+  .hero-card {
+    background: linear-gradient(160deg, white, #eef4f5);
+    border: 1px solid var(--line);
+    border-radius: 18px; padding: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  .pulse { display: flex; align-items: center; gap: .65rem; font-size: .85rem; color: var(--ink-soft); margin-bottom: 1rem; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 0 rgba(47,158,110,.6); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(47,158,110,.5); } 70% { box-shadow: 0 0 0 12px rgba(47,158,110,0); } 100% { box-shadow: 0 0 0 0 rgba(47,158,110,0); } }
+  .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin-top: 1rem; }
+  .stat { background: white; border: 1px solid var(--line); border-radius: 12px; padding: .75rem; text-align: center; }
+  .stat .num { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--teal); }
+  .stat .lbl { font-size: .7rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+
+  /* Section */
+  section { padding: clamp(2rem, 4vw, 3.25rem) 0; }
+  .section-title { text-align: center; margin-bottom: 2rem; }
+  .section-title .eyebrow { display: inline-block; }
+
+  /* Cards / grid */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  @media (max-width: 860px) { .grid-3 { grid-template-columns: 1fr; } .grid-2 { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1.25rem; box-shadow: var(--shadow);
+  }
+  .card .icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: #e9f1f2; color: var(--teal);
+    display: grid; place-items: center; margin-bottom: .75rem; font-size: 1.1rem;
+  }
+  .card h3 { color: var(--ink); }
+  .card p { font-size: .92rem; margin: 0; }
+
+  /* Upload zone */
+  .upload {
+    border: 2px dashed var(--sage); border-radius: 16px; padding: 2rem 1.5rem;
+    text-align: center; background: white; transition: background .2s, border-color .2s;
+  }
+  .upload.drag { background: #f0f6f5; border-color: var(--teal); }
+  .upload .big-plus { font-size: 2rem; color: var(--teal); margin-bottom: .5rem; }
+  .upload-types { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem; }
+  .chip { background: #eef3f4; color: var(--ink-soft); padding: .3rem .7rem; border-radius: 999px; font-size: .75rem; }
+
+  .file-list { margin-top: 1rem; display: flex; flex-direction: column; gap: .5rem; }
+  .file-item {
+    display: flex; align-items: center; justify-content: space-between;
+    background: white; border: 1px solid var(--line); border-radius: 10px; padding: .65rem .9rem;
+    font-size: .9rem;
+  }
+  .file-item .meta { color: var(--muted); font-size: .8rem; }
+  .file-item .badge { background: #e6f4ec; color: var(--good); font-size: .7rem; padding: .15rem .5rem; border-radius: 999px; }
+  .remove { background: transparent; border: 0; color: var(--muted); font-size: 1rem; }
+  .remove:hover { color: var(--warm); }
+
+  /* Chat */
+  .chat-wrap { background: white; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+  .chat-head { padding: 1rem 1.25rem; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: .75rem; background: linear-gradient(180deg, #f7fafa, white); }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--sage)); color: white; display: grid; place-items: center; font-family: 'Cormorant Garamond', serif; font-style: italic; }
+  .chat-title { font-weight: 600; font-size: .95rem; }
+  .chat-sub { font-size: .75rem; color: var(--muted); }
+  .chat-body { padding: 1.25rem; height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: .75rem; background: #fafcfc; }
+  .msg { max-width: 85%; padding: .7rem .95rem; border-radius: 14px; font-size: .92rem; line-height: 1.5; }
+  .msg.bot { background: white; border: 1px solid var(--line); border-bottom-left-radius: 4px; align-self: flex-start; color: var(--ink); }
+  .msg.user { background: var(--teal); color: white; border-bottom-right-radius: 4px; align-self: flex-end; }
+  .msg.bot strong { color: var(--teal-deep); }
+  .typing { display: inline-flex; gap: 4px; padding: .35rem 0; }
+  .typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: bounce 1.2s infinite; }
+  .typing span:nth-child(2) { animation-delay: .2s; }
+  .typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-4px); opacity: 1; } }
+  .chat-foot { padding: .85rem; border-top: 1px solid var(--line); display: flex; gap: .5rem; background: white; }
+  .chat-foot input {
+    flex: 1; border: 1px solid var(--line); border-radius: 10px; padding: .7rem .9rem;
+    font-family: inherit; font-size: .92rem; outline: none; transition: border-color .15s;
+  }
+  .chat-foot input:focus { border-color: var(--teal); }
+  .quick-row { display: flex; gap: .5rem; flex-wrap: wrap; padding: 0 1.25rem 1rem; background: #fafcfc; }
+  .quick {
+    background: white; border: 1px solid var(--line); border-radius: 999px;
+    padding: .35rem .8rem; font-size: .78rem; color: var(--ink-soft); cursor: pointer;
+  }
+  .quick:hover { border-color: var(--teal); color: var(--teal); }
+
+  /* Pain log */
+  .pain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 720px) { .pain-grid { grid-template-columns: 1fr; } }
+  .scale { display: flex; gap: .35rem; flex-wrap: wrap; margin: .5rem 0 1rem; }
+  .scale button {
+    width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--line);
+    background: white; font-weight: 600; color: var(--ink-soft);
+  }
+  .scale button.active { background: var(--teal); color: white; border-color: var(--teal); }
+  label.field { font-size: .8rem; color: var(--ink-soft); display: block; margin-bottom: .35rem; }
+  textarea, select {
+    width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: .65rem .8rem;
+    font-family: inherit; font-size: .9rem; outline: none; background: white;
+  }
+  textarea { min-height: 80px; resize: vertical; }
+  .log-list { margin-top: 1rem; display: flex; flex-direction: column; gap: .5rem; }
+  .log-entry { background: #fafcfc; border: 1px solid var(--line); border-radius: 10px; padding: .65rem .9rem; font-size: .88rem; display: flex; justify-content: space-between; gap: 1rem; }
+  .log-entry .when { color: var(--muted); font-size: .78rem; }
+  .pill { display: inline-block; padding: .15rem .55rem; border-radius: 999px; font-size: .72rem; font-weight: 600; }
+  .pill.lo { background: #e6f4ec; color: var(--good); }
+  .pill.md { background: #fff3e0; color: #b25c12; }
+  .pill.hi { background: #fde7e7; color: #b1342f; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 1.5rem; }
+  .timeline::before { content: ""; position: absolute; left: 6px; top: 4px; bottom: 4px; width: 2px; background: var(--line); }
+  .tl-item { position: relative; padding-bottom: 1.25rem; }
+  .tl-item::before { content: ""; position: absolute; left: -1.5rem; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: white; border: 3px solid var(--teal); }
+  .tl-date { font-size: .75rem; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+  .tl-title { font-weight: 600; margin: .15rem 0; }
+
+  /* Privacy footer */
+  .privacy-note {
+    background: #fff8ef; border: 1px solid #f1e2c5; border-radius: 12px;
+    padding: 1rem 1.25rem; font-size: .85rem; color: var(--ink-soft);
+    display: flex; gap: .75rem; align-items: flex-start;
+  }
+  .privacy-note .lock { font-size: 1.2rem; }
+
+  footer { padding: 2rem 0 3rem; text-align: center; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); margin-top: 2rem; }
+  footer em { font-family: 'Cormorant Garamond', serif; color: var(--teal); }
+
+  .proto-badge {
+    position: fixed; bottom: 1rem; right: 1rem; z-index: 30;
+    background: var(--warm); color: white; padding: .35rem .75rem;
+    border-radius: 999px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+    box-shadow: var(--shadow);
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="brand-mark">F</div>
+      <div class="wordmark">Frank's <em>Pain Free Pathway</em></div>
+    </div>
+    <nav class="top-nav">
+      <a href="#records">Records</a>
+      <a href="#assistant">Assistant</a>
+      <a href="#log">Pain Log</a>
+      <a href="#timeline">Timeline</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">A Companion for Healing</div>
+        <h1>A gentler path back to <em>walking without pain.</em></h1>
+        <p class="lead">Upload your medical records, surgeries, and notes — and let your personal companion help you organize, understand, and move forward, one step at a time.</p>
+        <div class="cta-row">
+          <button class="btn btn-primary" onclick="document.getElementById('records').scrollIntoView({behavior:'smooth'})">Upload records →</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('assistant').scrollIntoView({behavior:'smooth'})">Talk to your companion</button>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="pulse"><span class="dot"></span> Your pathway is private and encrypted</div>
+        <h3 style="font-family:'Cormorant Garamond',serif; color:var(--ink);">Today's snapshot</h3>
+        <p style="font-size:.9rem; margin:.25rem 0 .5rem;">A quiet check-in with where you are right now.</p>
+        <div class="stat-row">
+          <div class="stat"><div class="num">3</div><div class="lbl">Surgeries logged</div></div>
+          <div class="stat"><div class="num">7</div><div class="lbl">Doctors</div></div>
+          <div class="stat"><div class="num">12</div><div class="lbl">Records</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Records -->
+  <section id="records">
+    <div class="section-title">
+      <div class="eyebrow">Step One</div>
+      <h2>Upload Frank's medical records</h2>
+      <p>Imaging, operative reports, doctor's notes, prescription lists — anything we can put in one place.</p>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="upload" id="dropzone">
+          <div class="big-plus">＋</div>
+          <div style="font-weight:600; color:var(--ink);">Drop files here, or click to browse</div>
+          <p style="font-size:.85rem; margin:.5rem 0 0;">PDFs of MRIs, CT scans, surgical reports, lab results, prescription lists, photos of handwritten notes.</p>
+          <div class="upload-types">
+            <span class="chip">PDF</span>
+            <span class="chip">JPG / PNG</span>
+            <span class="chip">DICOM</span>
+            <span class="chip">DOCX</span>
+            <span class="chip">Audio notes</span>
+          </div>
+          <input type="file" id="file-input" multiple style="display:none" />
+        </div>
+        <div class="file-list" id="file-list">
+          <div class="file-item">
+            <div>
+              <div>L4-L5 MRI Report — Aug 2024.pdf</div>
+              <div class="meta">Dr. Patel · Spine Center · 1.2 MB</div>
+            </div>
+            <span class="badge">✓ Processed</span>
+          </div>
+          <div class="file-item">
+            <div>
+              <div>Operative Note — Lumbar Fusion 2023.pdf</div>
+              <div class="meta">St. Vincent's Hospital · 3.4 MB</div>
+            </div>
+            <span class="badge">✓ Processed</span>
+          </div>
+          <div class="file-item">
+            <div>
+              <div>Physical Therapy Plan.docx</div>
+              <div class="meta">Movement Health Clinic · 88 KB</div>
+            </div>
+            <span class="badge">✓ Processed</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3" style="grid-template-columns:1fr; gap:1rem;">
+        <div class="card">
+          <div class="icon">🧠</div>
+          <h3>Plain-English summaries</h3>
+          <p>Every report is translated into language Frank can read at the kitchen table — no medical jargon walls.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🔍</div>
+          <h3>Connects the dots</h3>
+          <p>The companion looks across all of Frank's records to spot patterns: medications that overlap, treatments that were tried, what might be worth asking next.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🤝</div>
+          <h3>Built for second opinions</h3>
+          <p>Generate a clean one-page summary to share with a new doctor, so Frank never has to re-tell the whole story from scratch.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Assistant -->
+  <section id="assistant">
+    <div class="section-title">
+      <div class="eyebrow">Your Companion</div>
+      <h2>Ask anything. Get a kind, careful answer.</h2>
+      <p>This is a private conversation. The companion has read everything you've uploaded.</p>
+    </div>
+
+    <div class="chat-wrap">
+      <div class="chat-head">
+        <div class="avatar">P</div>
+        <div>
+          <div class="chat-title">Pathway</div>
+          <div class="chat-sub">Frank's healing companion · always here</div>
+        </div>
+      </div>
+      <div class="chat-body" id="chat">
+        <div class="msg bot">Hi Frank — I'm so glad you're here. I've read through your records: the 2023 lumbar fusion, the August MRI, and the recent PT plan from Movement Health. <br><br>How are you feeling <strong>today</strong>? You can also ask me anything about your records or what you might bring up at your next appointment.</div>
+      </div>
+      <div class="quick-row" id="quick-row">
+        <button class="quick" data-q="Summarize my last MRI in plain English">Summarize my last MRI in plain English</button>
+        <button class="quick" data-q="What questions should I ask my next doctor?">Questions for my next doctor?</button>
+        <button class="quick" data-q="Walk me through gentle movements I could try today">Gentle movements for today</button>
+        <button class="quick" data-q="Make a one-page summary I can hand to a new doctor">One-page summary for a new doctor</button>
+      </div>
+      <form class="chat-foot" id="chat-form">
+        <input type="text" id="chat-input" placeholder="Ask Pathway anything…" autocomplete="off" />
+        <button type="submit" class="btn btn-primary">Send</button>
+      </form>
+    </div>
+
+    <div style="margin-top:1rem;" class="privacy-note">
+      <span class="lock">🔒</span>
+      <div><strong>Important:</strong> Pathway is a companion, not a doctor. It will never diagnose or replace medical care — it organizes Frank's information and helps him show up to appointments more prepared.</div>
+    </div>
+  </section>
+
+  <!-- Pain Log -->
+  <section id="log">
+    <div class="section-title">
+      <div class="eyebrow">Daily Check-In</div>
+      <h2>How is the pain today, Frank?</h2>
+      <p>Logging just thirty seconds a day builds the picture every doctor wishes they had.</p>
+    </div>
+
+    <div class="card">
+      <div class="pain-grid">
+        <div>
+          <label class="field">Pain level (0 – 10)</label>
+          <div class="scale" id="scale">
+            <button data-v="0">0</button><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button>
+            <button data-v="4">4</button><button data-v="5">5</button><button data-v="6">6</button><button data-v="7">7</button>
+            <button data-v="8">8</button><button data-v="9">9</button><button data-v="10">10</button>
+          </div>
+
+          <label class="field">Where is the pain?</label>
+          <select id="location">
+            <option>Lower back</option>
+            <option>Right leg / sciatica</option>
+            <option>Left leg / sciatica</option>
+            <option>Hip</option>
+            <option>Neck / upper back</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="field">What did you do today?</label>
+          <textarea id="notes" placeholder="A short walk to the mailbox, slept poorly, took the prescribed muscle relaxer at 9am…"></textarea>
+          <button class="btn btn-primary" id="log-save" style="margin-top:.5rem;">Save today's check-in</button>
+        </div>
+      </div>
+
+      <div class="log-list" id="log-list">
+        <div class="log-entry">
+          <div>
+            <span class="pill md">5</span> &nbsp; Lower back, achy after morning walk. Took medication at 9am.
+          </div>
+          <span class="when">Yesterday</span>
+        </div>
+        <div class="log-entry">
+          <div>
+            <span class="pill hi">7</span> &nbsp; Sharp pain down right leg, hard to sleep.
+          </div>
+          <span class="when">2 days ago</span>
+        </div>
+        <div class="log-entry">
+          <div>
+            <span class="pill lo">3</span> &nbsp; Better day. Did 10 min of PT stretches.
+          </div>
+          <span class="when">3 days ago</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section id="timeline">
+    <div class="section-title">
+      <div class="eyebrow">The Whole Story</div>
+      <h2>Frank's healing timeline</h2>
+      <p>Every surgery, every doctor, every turning point — gathered in one quiet place.</p>
+    </div>
+
+    <div class="card">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-date">2026 · Today</div>
+          <div class="tl-title">Pathway started</div>
+          <p style="margin:0;">Frank began organizing his records and tracking his daily progress.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">August 2024</div>
+          <div class="tl-title">Follow-up MRI — L4/L5</div>
+          <p style="margin:0;">Dr. Patel ordered repeat imaging after persistent pain. Findings ready to be summarized.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">Spring 2024</div>
+          <div class="tl-title">Started physical therapy</div>
+          <p style="margin:0;">Movement Health Clinic — 6 week program focused on core stability and gentle mobility.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2023</div>
+          <div class="tl-title">Lumbar fusion surgery</div>
+          <p style="margin:0;">St. Vincent's Hospital. Operative report uploaded.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2021</div>
+          <div class="tl-title">First spinal procedure</div>
+          <p style="margin:0;">Earlier surgery — records to be added.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p><em>Built with love, so Frank can walk without pain.</em></p>
+    <p style="font-size:.8rem;">Prototype · not yet connected to a real provider · all data shown is illustrative.</p>
+  </footer>
+</main>
+
+<div class="proto-badge">Prototype</div>
+
+<script>
+  // --- File upload (mock) ---
+  const dz = document.getElementById('dropzone');
+  const fi = document.getElementById('file-input');
+  const fl = document.getElementById('file-list');
+  dz.addEventListener('click', () => fi.click());
+  ['dragenter','dragover'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.add('drag'); }));
+  ['dragleave','drop'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.remove('drag'); }));
+  dz.addEventListener('drop', ev => addFiles(ev.dataTransfer.files));
+  fi.addEventListener('change', () => addFiles(fi.files));
+  function addFiles(files) {
+    [...files].forEach(f => {
+      const row = document.createElement('div');
+      row.className = 'file-item';
+      row.innerHTML = `<div><div>${f.name}</div><div class="meta">${(f.size/1024).toFixed(0)} KB · just now</div></div><span class="badge">⏳ Reading…</span>`;
+      fl.prepend(row);
+      setTimeout(() => row.querySelector('.badge').outerHTML = '<span class="badge">✓ Processed</span>', 1400);
+    });
+  }
+
+  // --- Chat (mock) ---
+  const chat = document.getElementById('chat');
+  const form = document.getElementById('chat-form');
+  const input = document.getElementById('chat-input');
+  const replies = {
+    'summarize my last mri in plain english': "Here's your <strong>August 2024 MRI</strong> in everyday language:<br><br>• The fusion at L4–L5 is holding well.<br>• There's <strong>moderate narrowing</strong> just above the fusion (L3–L4) — this can press on the nerve that runs down the right leg.<br>• Mild disc bulge at L2–L3, no nerve compression.<br><br>Plain takeaway: the surgery did its job, but the level above is now doing extra work. That's a common pattern, and it's something a spine specialist can talk through with you.",
+    'what questions should i ask my next doctor?': "Here are <strong>5 questions</strong> based on Frank's records I'd bring to the next visit:<br><br>1. \"Given the narrowing at L3–L4, am I a candidate for an epidural injection before considering more surgery?\"<br>2. \"Should we revisit nerve conduction testing on the right leg?\"<br>3. \"Are any of my current medications working against each other?\"<br>4. \"What's a realistic walking goal for the next 60 days?\"<br>5. \"What signs should make me call you right away?\"<br><br>Want me to print these on a single page Frank can hand to the doctor?",
+    'walk me through gentle movements i could try today': "Based on Frank's PT plan from Movement Health, here are three he's already cleared for — start with whatever feels possible today:<br><br>• <strong>Pelvic tilts</strong> — lying on back, 10 slow reps.<br>• <strong>Knee-to-chest</strong> — one leg at a time, hold 20 seconds.<br>• <strong>Wall-supported standing</strong> — 2 minutes, focus on even weight on both feet.<br><br>If anything sharpens the pain, stop. Gentle is the goal.",
+    'make a one-page summary i can hand to a new doctor': "I'll generate a <strong>one-page summary</strong> covering:<br><br>• Surgical history (2021, 2023 fusion)<br>• Imaging highlights (Aug 2024 MRI)<br>• Current medications<br>• PT progress<br>• Recent pain log trends<br>• Frank's top 5 questions<br><br>📄 <em>Generating PDF…</em> Ready to download or email to Dr. ___.",
+  };
+  function pushMsg(text, who) {
+    const d = document.createElement('div');
+    d.className = 'msg ' + who;
+    d.innerHTML = text;
+    chat.appendChild(d);
+    chat.scrollTop = chat.scrollHeight;
+    return d;
+  }
+  function botReply(q) {
+    const typing = pushMsg('<span class="typing"><span></span><span></span><span></span></span>', 'bot');
+    setTimeout(() => {
+      const key = q.toLowerCase().trim();
+      const ans = replies[key] || "That's a good question. Once your records are connected, I'll be able to look across Frank's reports, surgeries, and pain log and give you a thoughtful answer. For now, this is a prototype — but the real version will be grounded in everything you've uploaded.";
+      typing.innerHTML = ans;
+    }, 900);
+  }
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const v = input.value.trim();
+    if (!v) return;
+    pushMsg(v, 'user');
+    input.value = '';
+    botReply(v);
+  });
+  document.querySelectorAll('.quick').forEach(b => b.addEventListener('click', () => {
+    const q = b.dataset.q;
+    pushMsg(q, 'user');
+    botReply(q);
+  }));
+
+  // --- Pain scale ---
+  document.querySelectorAll('#scale button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#scale button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+  }));
+  document.getElementById('log-save').addEventListener('click', () => {
+    const active = document.querySelector('#scale button.active');
+    const v = active ? +active.dataset.v : null;
+    const loc = document.getElementById('location').value;
+    const notes = document.getElementById('notes').value.trim();
+    if (v === null) { alert('Pick a pain level first'); return; }
+    const cls = v <= 3 ? 'lo' : v <= 6 ? 'md' : 'hi';
+    const list = document.getElementById('log-list');
+    const row = document.createElement('div');
+    row.className = 'log-entry';
+    row.innerHTML = `<div><span class="pill ${cls}">${v}</span> &nbsp; ${loc}${notes ? ' — ' + notes : ''}</div><span class="when">Just now</span>`;
+    list.prepend(row);
+    document.getElementById('notes').value = '';
+    active.classList.remove('active');
+  });
+</script>
+
+</body>
+</html>
