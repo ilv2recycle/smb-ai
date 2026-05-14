@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>He Yama Yo — Ukulele Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdf6ee;
+    --wood: #c8844a;
+    --wood-dark: #a0622e;
+    --string: #8b6914;
+    --fret: #5a3e1b;
+    --dot1: #e8534a;
+    --dot2: #4a90d9;
+    --dot3: #2db37a;
+    --accent: #f4a235;
+    --text: #2c1a0e;
+    --card: #fff8f0;
+    --shadow: rgba(100,60,20,0.15);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 16px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-align: center;
+    color: var(--wood-dark);
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #9b7050;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--wood-dark);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* HAND DIAGRAM */
+  .hand-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 3px 12px var(--shadow);
+    margin-bottom: 20px;
+  }
+  .hand-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .hand-svg-wrap { flex-shrink: 0; }
+  .finger-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 160px;
+  }
+  .finger-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .finger-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .f1 { background: var(--dot1); }
+  .f2 { background: var(--dot2); }
+  .f3 { background: var(--dot3); }
+  .f4 { background: #9b59b6; }
+
+  /* STRINGS GUIDE */
+  .strings-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 3px 12px var(--shadow);
+    margin-bottom: 20px;
+  }
+  .string-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px dashed #e8d5c0;
+    font-size: 0.88rem;
+  }
+  .string-row:last-child { border-bottom: none; }
+  .string-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--wood);
+    color: white;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .string-note {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--wood-dark);
+    width: 28px;
+  }
+  .string-desc { color: #7a5535; }
+  .gcea-mnemonic {
+    margin-top: 12px;
+    padding: 10px;
+    background: #fff3dc;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #6b4a1e;
+    font-weight: 600;
+  }
+  .gcea-mnemonic strong { color: var(--wood-dark); font-size: 1.05rem; }
+
+  /* CHORD DIAGRAMS */
+  .chords-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .chord-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 14px 12px 12px;
+    box-shadow: 0 3px 12px var(--shadow);
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    border: 2px solid transparent;
+    user-select: none;
+  }
+  .chord-card:active { transform: scale(0.97); }
+  .chord-card.active {
+    border-color: var(--accent);
+    box-shadow: 0 4px 16px rgba(244,162,53,0.3);
+    transform: translateY(-2px);
+  }
+  .chord-name {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--wood-dark);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .chord-svg { width: 100%; height: auto; display: block; }
+
+  /* INFO PANEL */
+  .info-panel {
+    background: linear-gradient(135deg, var(--wood) 0%, var(--wood-dark) 100%);
+    border-radius: 16px;
+    padding: 16px;
+    color: white;
+    margin-bottom: 20px;
+    min-height: 100px;
+    box-shadow: 0 4px 14px var(--shadow);
+    transition: all 0.3s;
+  }
+  .info-panel h3 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.2rem;
+    margin-bottom: 6px;
+  }
+  .info-panel p { font-size: 0.88rem; line-height: 1.5; opacity: 0.95; }
+  .info-panel .fingers-used {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .finger-tag {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.22);
+  }
+
+  /* STRUM PATTERN */
+  .strum-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 3px 12px var(--shadow);
+    margin-bottom: 20px;
+  }
+  .strum-pattern {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 12px 0;
+    flex-wrap: wrap;
+  }
+  .strum-beat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .strum-arrow {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+  .down { background: #fde8d8; color: var(--wood-dark); }
+  .up { background: #d8edf5; color: #2a6090; }
+  .strum-label { font-size: 0.7rem; color: #9b7050; font-weight: 700; }
+
+  .tip-box {
+    background: #fff3dc;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    color: #6b4a1e;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  /* SONG LYRICS */
+  .lyrics-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 3px 12px var(--shadow);
+    margin-bottom: 20px;
+  }
+  .lyrics-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 10px;
+    align-items: baseline;
+    line-height: 2;
+  }
+  .lyric-word {
+    position: relative;
+    padding-top: 22px;
+    font-size: 1rem;
+  }
+  .chord-above {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: 'Baloo 2', cursive;
+    font-weight: 800;
+    color: var(--wood-dark);
+    font-size: 0.85rem;
+    background: #fff3dc;
+    padding: 1px 6px;
+    border-radius: 6px;
+  }
+
+  /* PRACTICE STEPS */
+  .steps-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 3px 12px var(--shadow);
+    margin-bottom: 20px;
+  }
+  .step {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    align-items: flex-start;
+  }
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Baloo 2', cursive;
+  }
+  .step-text { font-size: 0.9rem; line-height: 1.5; padding-top: 4px; }
+  .step-text strong { color: var(--wood-dark); }
+
+  footer {
+    text-align: center;
+    color: #9b7050;
+    font-size: 0.8rem;
+    padding: 16px 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>🎵 He Yama Yo</h1>
+<p class="subtitle">Ukulele beginner guide — tap each chord to learn it!</p>
+
+<!-- HAND DIAGRAM -->
+<div class="hand-card">
+  <div class="section-title">✋ Your Fretting Hand</div>
+  <div class="hand-wrap">
+    <div class="hand-svg-wrap">
+      <svg width="140" height="160" viewBox="0 0 140 160">
+        <!-- Palm -->
+        <path d="M 35 80 Q 30 120 45 145 L 95 145 Q 110 120 105 80 Z" fill="#f4c9a0" stroke="#a0622e" stroke-width="2"/>
+        <!-- Thumb -->
+        <ellipse cx="25" cy="95" rx="12" ry="22" fill="#f4c9a0" stroke="#a0622e" stroke-width="2" transform="rotate(-25 25 95)"/>
+        <text x="15" y="125" font-family="Nunito" font-size="10" font-weight="700" fill="#5a3e1b">T</text>
+        <!-- Index finger (1) -->
+        <rect x="42" y="20" width="14" height="62" rx="7" fill="#f4c9a0" stroke="#a0622e" stroke-width="2"/>
+        <circle cx="49" cy="28" r="11" fill="#e8534a" stroke="white" stroke-width="2"/>
+        <text x="49" y="32" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="white">1</text>
+        <!-- Middle finger (2) -->
+        <rect x="60" y="10" width="14" height="72" rx="7" fill="#f4c9a0" stroke="#a0622e" stroke-width="2"/>
+        <circle cx="67" cy="20" r="11" fill="#4a90d9" stroke="white" stroke-width="2"/>
+        <text x="67" y="24" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="white">2</text>
+        <!-- Ring finger (3) -->
+        <rect x="78" y="18" width="14" height="64" rx="7" fill="#f4c9a0" stroke="#a0622e" stroke-width="2"/>
+        <circle cx="85" cy="26" r="11" fill="#2db37a" stroke="white" stroke-width="2"/>
+        <text x="85" y="30" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="white">3</text>
+        <!-- Pinky (4) -->
+        <rect x="96" y="32" width="13" height="50" rx="6" fill="#f4c9a0" stroke="#a0622e" stroke-width="2"/>
+        <circle cx="102" cy="40" r="10" fill="#9b59b6" stroke="white" stroke-width="2"/>
+        <text x="102" y="44" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="800" fill="white">4</text>
+      </svg>
+    </div>
+    <div class="finger-legend">
+      <div class="finger-item"><div class="finger-badge f1">1</div> Index finger</div>
+      <div class="finger-item"><div class="finger-badge f2">2</div> Middle finger</div>
+      <div class="finger-item"><div class="finger-badge f3">3</div> Ring finger</div>
+      <div class="finger-item"><div class="finger-badge" style="background:#9b59b6">4</div> Pinky</div>
+    </div>
+  </div>
+  <div class="tip-box">💡 Press strings with your <strong>fingertips</strong> (not pads) just behind the metal fret — that gets the cleanest sound!</div>
+</div>
+
+<!-- STRINGS GUIDE -->
+<div class="strings-card">
+  <div class="section-title">🎸 The 4 Strings</div>
+  <div class="string-row">
+    <div class="string-num">4</div>
+    <div class="string-note">G</div>
+    <div class="string-desc">Top string (closest to your face) — high G</div>
+  </div>
+  <div class="string-row">
+    <div class="string-num">3</div>
+    <div class="string-note">C</div>
+    <div class="string-desc">Lowest sounding string — middle C</div>
+  </div>
+  <div class="string-row">
+    <div class="string-num">2</div>
+    <div class="string-note">E</div>
+    <div class="string-desc">Third string from top</div>
+  </div>
+  <div class="string-row">
+    <div class="string-num">1</div>
+    <div class="string-note">A</div>
+    <div class="string-desc">Bottom string (closest to floor) — high A</div>
+  </div>
+  <div class="gcea-mnemonic">
+    Remember: <strong>G – C – E – A</strong><br>
+    <em>"Good Children Eat Apples"</em> 🍎
+  </div>
+</div>
+
+<!-- CHORD DIAGRAMS -->
+<div class="section-title">🎼 Tap a Chord to Learn It</div>
+<div class="chords-grid" id="chordsGrid">
+  <!-- chord cards injected by JS -->
+</div>
+
+<!-- INFO PANEL -->
+<div class="info-panel" id="infoPanel">
+  <h3 id="infoTitle">👆 Tap any chord above</h3>
+  <p id="infoDesc">Tap a chord card to see how to play it, which fingers to use, and tips for clean sound.</p>
+  <div class="fingers-used" id="fingersUsed"></div>
+</div>
+
+<!-- STRUM PATTERN -->
+<div class="strum-card">
+  <div class="section-title">🥁 Easy Strum Pattern</div>
+  <p style="font-size:0.88rem; color:#7a5535; text-align:center;">Start with all <strong>down strums</strong>, one per beat:</p>
+  <div class="strum-pattern">
+    <div class="strum-beat"><div class="strum-arrow down">↓</div><div class="strum-label">1</div></div>
+    <div class="strum-beat"><div class="strum-arrow down">↓</div><div class="strum-label">2</div></div>
+    <div class="strum-beat"><div class="strum-arrow down">↓</div><div class="strum-label">3</div></div>
+    <div class="strum-beat"><div class="strum-arrow down">↓</div><div class="strum-label">4</div></div>
+  </div>
+  <p style="font-size:0.88rem; color:#7a5535; text-align:center; margin-top:12px;">Once that feels easy, add <strong>up strums</strong> in between:</p>
+  <div class="strum-pattern">
+    <div class="strum-beat"><div class="strum-arrow down">↓</div><div class="strum-label">1</div></div>
+    <div class="strum-beat"><div class="strum-arrow up">↑</div><div class="strum-label">&</div></div>
+    <div class="strum-beat"><div class="strum-arrow down">↓</div><div class="strum-label">2</div></div>
+    <div class="strum-beat"><div class="strum-arrow up">↑</div><div class="strum-label">&</div></div>
+    <div class="strum-beat"><div class="strum-arrow down">↓</div><div class="strum-label">3</div></div>
+    <div class="strum-beat"><div class="strum-arrow up">↑</div><div class="strum-label">&</div></div>
+    <div class="strum-beat"><div class="strum-arrow down">↓</div><div class="strum-label">4</div></div>
+    <div class="strum-beat"><div class="strum-arrow up">↑</div><div class="strum-label">&</div></div>
+  </div>
+  <div class="tip-box">💡 Brush the strings near where the neck meets the body. Use the pad of your index fingertip going down, the nail going up.</div>
+</div>
+
+<!-- LYRICS WITH CHORDS -->
+<div class="lyrics-card">
+  <div class="section-title">🎤 He Yama Yo — Lyrics</div>
+  <p style="font-size:0.85rem; color:#7a5535; margin-bottom:12px;">A traditional song. Just two chords: <strong>C</strong> and <strong>F</strong>!</p>
+  <div class="lyrics-line">
+    <span class="lyric-word"><span class="chord-above">C</span>He</span>
+    <span class="lyric-word">ya</span>
+    <span class="lyric-word">ma</span>
+    <span class="lyric-word"><span class="chord-above">F</span>yo</span>
+  </div>
+  <div class="lyrics-line">
+    <span class="lyric-word"><span class="chord-above">C</span>He</span>
+    <span class="lyric-word">ya</span>
+    <span class="lyric-word">ma</span>
+    <span class="lyric-word"><span class="chord-above">F</span>yo</span>
+  </div>
+  <div class="lyrics-line">
+    <span class="lyric-word"><span class="chord-above">C</span>He</span>
+    <span class="lyric-word">ya</span>
+    <span class="lyric-word">ma</span>
+    <span class="lyric-word"><span class="chord-above">F</span>yo</span>
+    <span class="lyric-word"><span class="chord-above">C</span>he</span>
+    <span class="lyric-word">ya</span>
+    <span class="lyric-word">ma</span>
+    <span class="lyric-word">yo</span>
+  </div>
+  <div class="tip-box">💡 Switch from C to F on the word "yo". Practice the change slowly first — speed will come!</div>
+</div>
+
+<!-- PRACTICE STEPS -->
+<div class="steps-card">
+  <div class="section-title">🚀 Your First Practice Session</div>
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-text"><strong>Tune your ukulele.</strong> Use a free tuner app — strings should sound G, C, E, A.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-text"><strong>Learn the C chord</strong> first — it only needs one finger! Strum slowly until each string rings clear.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-text"><strong>Add the F chord.</strong> Two fingers. Practice switching C → F → C → F.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-text"><strong>Strum down only</strong>, four times per chord. Keep a steady beat — even slow is fine.</div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-text"><strong>Sing along</strong> with He Yama Yo! Don't worry about perfection — have fun. 🌺</div>
+  </div>
+</div>
+
+<footer>Made with 🤙 — keep strumming!</footer>
+
+<script>
+  // Chord data: frets per string [G, C, E, A], 0 = open, x = mute
+  const chords = {
+    C: {
+      name: 'C',
+      frets: [0, 0, 0, 3],
+      fingers: [0, 0, 0, 3],
+      desc: 'The easiest chord! Use your ring finger (3) on the A string, 3rd fret. Strum all 4 strings.',
+      fingersUsed: ['Ring finger (3) on A-string, 3rd fret']
+    },
+    F: {
+      name: 'F',
+      frets: [2, 0, 1, 0],
+      fingers: [2, 0, 1, 0],
+      desc: 'Two-finger chord. Index (1) on E-string 1st fret, middle (2) on G-string 2nd fret.',
+      fingersUsed: ['Index (1) → E-string, fret 1', 'Middle (2) → G-string, fret 2']
+    },
+    Am: {
+      name: 'Am',
+      frets: [2, 0, 0, 0],
+      fingers: [2, 0, 0, 0],
+      desc: 'Sad/sweet sound. Just one finger — middle finger (2) on G-string, 2nd fret.',
+      fingersUsed: ['Middle (2) → G-string, fret 2']
+    },
+    G7: {
+      name: 'G7',
+      frets: [0, 2, 1, 2],
+      fingers: [0, 2, 1, 3],
+      desc: 'A great "going home" chord. Three fingers, but no string is hard to reach.',
+      fingersUsed: ['Index (1) → E-string, fret 1', 'Middle (2) → C-string, fret 2', 'Ring (3) → A-string, fret 2']
+    }
+  };
+
+  const fingerColors = { 1: '#e8534a', 2: '#4a90d9', 3: '#2db37a', 4: '#9b59b6' };
+
+  function makeChordSVG(chord) {
+    const W = 140, H = 160;
+    const padX = 18, padTop = 22, padBottom = 18;
+    const fretCount = 4;
+    const stringCount = 4;
+    const innerW = W - padX * 2;
+    const innerH = H - padTop - padBottom;
+    const stringSpace = innerW / (stringCount - 1);
+    const fretSpace = innerH / fretCount;
+
+    let svg = `<svg class="chord-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+    // String labels (G C E A)
+    const labels = ['G', 'C', 'E', 'A'];
+    labels.forEach((lab, i) => {
+      const x = padX + i * stringSpace;
+      svg += `<text x="${x}" y="14" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="700" fill="#9b7050">${lab}</text>`;
+    });
+    // Nut (top thick bar)
+    svg += `<rect x="${padX - 2}" y="${padTop - 3}" width="${innerW + 4}" height="5" fill="#5a3e1b" rx="2"/>`;
+    // Frets
+    for (let f = 1; f <= fretCount; f++) {
+      const y = padTop + f * fretSpace;
+      svg += `<line x1="${padX}" y1="${y}" x2="${padX + innerW}" y2="${y}" stroke="#a0622e" stroke-width="1.5"/>`;
+    }
+    // Strings
+    for (let s = 0; s < stringCount; s++) {
+      const x = padX + s * stringSpace;
+      svg += `<line x1="${x}" y1="${padTop}" x2="${x}" y2="${padTop + innerH}" stroke="#8b6914" stroke-width="1.5"/>`;
+    }
+    // Open string circles & dots
+    chord.frets.forEach((fret, i) => {
+      const x = padX + i * stringSpace;
+      if (fret === 0) {
+        svg += `<circle cx="${x}" cy="${padTop - 12}" r="5" fill="none" stroke="#5a3e1b" stroke-width="1.5"/>`;
+      } else {
+        const y = padTop + (fret - 0.5) * fretSpace;
+        const finger = chord.fingers[i];
+        const color = fingerColors[finger] || '#5a3e1b';
+        svg += `<circle cx="${x}" cy="${y}" r="11" fill="${color}" stroke="white" stroke-width="2"/>`;
+        svg += `<text x="${x}" y="${y + 4}" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="white">${finger}</text>`;
+      }
+    });
+    svg += `</svg>`;
+    return svg;
+  }
+
+  const grid = document.getElementById('chordsGrid');
+  Object.keys(chords).forEach(key => {
+    const c = chords[key];
+    const card = document.createElement('div');
+    card.className = 'chord-card';
+    card.dataset.chord = key;
+    card.innerHTML = `<div class="chord-name">${c.name}</div>${makeChordSVG(c)}`;
+    card.addEventListener('click', () => selectChord(key));
+    grid.appendChild(card);
+  });
+
+  function selectChord(key) {
+    document.querySelectorAll('.chord-card').forEach(el => {
+      el.classList.toggle('active', el.dataset.chord === key);
+    });
+    const c = chords[key];
+    document.getElementById('infoTitle').textContent = `Playing the ${c.name} chord`;
+    document.getElementById('infoDesc').textContent = c.desc;
+    const fu = document.getElementById('fingersUsed');
+    fu.innerHTML = c.fingersUsed.map(f => `<span class="finger-tag">${f}</span>`).join('');
+  }
+
+  // Auto-select C on load
+  selectChord('C');
+</script>
+
+</body>
+</html>
